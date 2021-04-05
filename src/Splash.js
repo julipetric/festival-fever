@@ -1,41 +1,45 @@
 import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Text, View } from 'react-native';
 import DefaultBackground from './DefaultBackground';
+import MainCorporativo from './MainCorporativo';
+import MainAsistente from './MainAsistente';
+import Login from './Login';
 import { setValidSession } from './redux/slices/userSlice';
 
-function Splash({ validSession, setValidSessionConnect }) {
+export default function Splash() {
+  const validSession = useSelector(state => state.user.validSession);
+
+  const userTypeId = useSelector(state => state.user.userTypeId);
+
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    setValidSessionConnect(false);
-  }, [setValidSessionConnect]);
+    dispatch(setValidSession(true));
+  }, [dispatch]);
+
+  let content = null;
+
+  switch (userTypeId) {
+    case 1:
+      content = <MainAsistente />;
+      break;
+    case 2:
+      content = <MainCorporativo />;
+      break;
+    default:
+      content = <Login />;
+      break;
+  }
 
   return (
-    <DefaultBackground>
-      {validSession ? (
+    <>
+      <DefaultBackground>{content}</DefaultBackground>
+      {!validSession && (
         <View>
           <Text>Hello world!</Text>
         </View>
-      ) : (
-        <View>
-          <Text>Goodbye world!</Text>
-        </View>
       )}
-    </DefaultBackground>
+    </>
   );
 }
-
-Splash.propTypes = {
-  validSession: PropTypes.bool.isRequired,
-  setValidSessionConnect: PropTypes.func.isRequired,
-};
-
-const mapStateToProps = state => ({
-  validSession: state.user.validSession,
-});
-
-const mapDispatchToProps = {
-  setValidSessionConnect: setValidSession,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Splash);

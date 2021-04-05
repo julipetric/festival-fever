@@ -7,6 +7,7 @@ export const userSlice = createSlice({
     username: '',
     password: '',
     validSession: true,
+    userTypeId: undefined,
   },
   reducers: {
     setUsername: (state, action) => {
