@@ -1,3 +1,5 @@
 {
-    "login": "Hello world!"
+    "login": "Login",
+    "username": "Username",
+    "password": "Password"
 }

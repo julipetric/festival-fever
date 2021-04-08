@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Text, View } from 'react-native';
-import DefaultBackground from './DefaultBackground';
 import MainCorporativo from './MainCorporativo';
 import MainAsistente from './MainAsistente';
 import Login from './Login';
@@ -34,7 +33,7 @@ export default function Splash() {
 
   return (
     <>
-      <DefaultBackground>{content}</DefaultBackground>
+      {content}
       {!validSession && (
         <View>
           <Text>Hello world!</Text>
