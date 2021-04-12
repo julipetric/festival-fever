@@ -1,18 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
 import * as Localization from 'expo-localization';
 import i18n from 'i18n-js';
-import { Provider as PaperProvider } from 'react-native-paper';
-import { ImageBackground, Platform, StyleSheet, View } from 'react-native';
-import Constants from 'expo-constants';
+import { ImageBackground, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { store, persistor } from './src/redux/store';
+import firebase from 'firebase/app';
 import Splash from './src/Splash';
 import en from './src/assets/locales/en/en.json';
-import theme from './src/assets/theme';
 import image from './assets/default_bg.png';
+import Providers from './src/context/Providers';
+import { fbConfig } from './src/context/FirebaseConfig';
+import AuthGate from './src/context/AuthGate';
 
 const styles = StyleSheet.create({
   image: {
@@ -35,19 +33,23 @@ function initializeLanguage() {
 export default function App() {
   initializeLanguage();
 
+  if (!firebase.apps.length) {
+    firebase.initializeApp(fbConfig);
+  } else {
+    firebase.app(); // if already initialized, use that one
+  }
+
   return (
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <PaperProvider>
-          <ImageBackground source={image} style={styles.image}>
-            <SafeAreaView>
-              {/* eslint-disable-next-line react/style-prop-object */}
-              <StatusBar style="light" translucent />
-              <Splash />
-            </SafeAreaView>
-          </ImageBackground>
-        </PaperProvider>
-      </PersistGate>
-    </Provider>
+    <Providers>
+      <ImageBackground source={image} style={styles.image}>
+        <SafeAreaView>
+          <AuthGate>
+            {/* eslint-disable-next-line react/style-prop-object */}
+            <StatusBar style="light" translucent />
+            <Splash />
+          </AuthGate>
+        </SafeAreaView>
+      </ImageBackground>
+    </Providers>
   );
 }

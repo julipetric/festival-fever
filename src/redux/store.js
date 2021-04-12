@@ -13,16 +13,22 @@ import {
   PURGE,
   REGISTER,
 } from 'redux-persist';
+import { firebaseReducer } from 'react-redux-firebase';
+import hardSet from 'redux-persist/lib/stateReconciler/hardSet';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import userReducer from './slices/userSlice';
 
 const reducers = combineReducers({
   user: userReducer,
+  firebase: persistReducer(
+    { key: 'firebaseState', storage: AsyncStorage, stateReconciler: hardSet },
+    firebaseReducer
+  ),
 });
 
 const persistConfig = {
   key: 'root',
-  whitelist: ['user'],
+  whitelist: ['user', 'firebase'],
   storage: AsyncStorage,
 };
 
