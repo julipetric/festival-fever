@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Text, View } from 'react-native';
-import MainCorporativo from './MainCorporativo';
-import MainAsistente from './MainAsistente';
+import MainCorporativo from '../corporativo/MainCorporativo';
+import MainAsistente from '../asistente/MainAsistente';
 import Login from './Login';
-import { setValidSession } from './redux/slices/userSlice';
+import { setValidSession } from '../../redux/slices/userSlice';
 
 export default function Splash() {
   const validSession = useSelector(state => state.user.validSession);

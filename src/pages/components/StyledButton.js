@@ -17,10 +17,21 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function StyledButton({ children, mode, style, ...props }) {
+export default function StyledButton({
+  children,
+  mode,
+  style,
+  onPress,
+  ...props
+}) {
   return (
     <View style={styles.container}>
-      <Button {...props} mode={mode} style={[styles.button, style]}>
+      <Button
+        {...props}
+        mode={mode}
+        style={[styles.button, style]}
+        onPress={onPress}
+      >
         {children}
       </Button>
     </View>
@@ -30,10 +41,12 @@ export default function StyledButton({ children, mode, style, ...props }) {
 StyledButton.defaultProps = {
   mode: 'text',
   style: {},
+  onPress: () => {},
 };
 
 StyledButton.propTypes = {
   children: PropTypes.any.isRequired,
   mode: PropTypes.string,
   style: PropTypes.object,
+  onPress: PropTypes.func,
 };

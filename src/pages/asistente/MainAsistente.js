@@ -3,12 +3,15 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
+import { useSelector } from 'react-redux';
 import MisEventosScreen from './MisEventosScreen';
-import { PinkPrimary } from '../assets/Colors';
+import { PinkPrimary } from '../../../assets/Colors';
 
 const Tab = createMaterialBottomTabNavigator();
 
-export default function MainCorporativo() {
+export default function MainAsistente() {
+  const profile = useSelector(state => state.firebase.profile);
+
   return (
     <>
       <NavigationContainer>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
-import FestivalFeverHeader from './FestivalFeverHeader';
+import { View, Text, StyleSheet } from 'react-native';
+import FestivalFeverHeader from '../components/FestivalFeverHeader';
 
 const styles = StyleSheet.create({
   container: {
@@ -12,8 +12,6 @@ const styles = StyleSheet.create({
 });
 
 export default function MisEventosScreen() {
-  const [astrises, setAstrises] = useState([1]);
-
   return (
     <>
       <FestivalFeverHeader />

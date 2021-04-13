@@ -5,7 +5,7 @@ import { isLoaded } from 'react-redux-firebase';
 
 export default function AuthGate({ children }) {
   const auth = useSelector(state => state.firebase.auth);
-  console.log(useSelector(state => state));
+
   if (!isLoaded(auth))
     return (
       <View>
