@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import FestivalFeverHeader from '../components/FestivalFeverHeader';
+import React, { useEffect } from 'react';
+import { View, StyleSheet } from 'react-native';
+import { Text } from 'react-native-paper';
+import { useFirebase } from 'react-redux-firebase';
 
 const styles = StyleSheet.create({
   container: {
@@ -14,9 +15,8 @@ const styles = StyleSheet.create({
 export default function MisEventosScreen() {
   return (
     <>
-      <FestivalFeverHeader />
       <View style={styles.container}>
-        <Text>Hello World!</Text>
+        <Text>Mis Eventos</Text>
       </View>
     </>
   );

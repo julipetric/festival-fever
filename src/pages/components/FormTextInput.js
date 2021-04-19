@@ -11,10 +11,14 @@ export default function FormTextInput({
   defaultValue,
   label,
   error,
+  mode,
+  autoCapitalize,
 }) {
   const { field } = useController({ control, defaultValue, name });
   return (
     <TextInput
+      autoCapitalize={autoCapitalize}
+      mode={mode}
       label={label}
       error={error}
       onChangeText={field.onChange}
@@ -31,6 +35,8 @@ FormTextInput.defaultProps = {
   defaultValue: undefined,
   label: undefined,
   error: false,
+  mode: 'flat',
+  autoCapitalize: true,
 };
 
 FormTextInput.propTypes = {
@@ -41,4 +47,6 @@ FormTextInput.propTypes = {
   defaultValue: PropTypes.string,
   label: PropTypes.string,
   error: PropTypes.bool,
+  mode: PropTypes.oneOf(['flat', 'outlined']),
+  autoCapitalize: PropTypes.bool,
 };

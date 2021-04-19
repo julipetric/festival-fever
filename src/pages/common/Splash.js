@@ -1,39 +1,41 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { Text, View } from 'react-native';
+import { useFirebase } from 'react-redux-firebase';
 import MainCorporativo from '../corporativo/MainCorporativo';
 import MainAsistente from '../asistente/MainAsistente';
 import Login from './Login';
-import { setValidSession } from '../../redux/slices/userSlice';
 
 export default function Splash() {
+  const firebase = useFirebase();
+
   const validSession = useSelector(state => state.user.validSession);
 
   const userTypeId = useSelector(state => state.user.userTypeId);
+  const { currentUser } = firebase.auth();
 
-  const dispatch = useDispatch();
+  const content = useRef();
 
   useEffect(() => {
-    dispatch(setValidSession(true));
-  }, [dispatch]);
-
-  let content = null;
-
-  switch (userTypeId) {
-    case 1:
-      content = <MainAsistente />;
-      break;
-    case 2:
-      content = <MainCorporativo />;
-      break;
-    default:
-      content = <Login />;
-      break;
-  }
+    // console.log({ currentUser, userTypeId });
+    if (currentUser) {
+      switch (userTypeId) {
+        case 1:
+          content.current = <MainAsistente />;
+          break;
+        case 2:
+          content.current = <MainCorporativo />;
+          break;
+        default:
+          content.current = <Login />;
+          break;
+      }
+    } else content.current = <Login />;
+  }, [currentUser, userTypeId]);
 
   return (
     <>
-      {content}
+      {content.current}
       {!validSession && (
         <View>
           <Text>Hello world!</Text>

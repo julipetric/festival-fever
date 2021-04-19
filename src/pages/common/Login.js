@@ -3,7 +3,6 @@ import { Text, View, StyleSheet } from 'react-native';
 import { t } from 'i18n-js';
 import { useForm } from 'react-hook-form';
 import { Dialog, Portal } from 'react-native-paper';
-import { useSelector } from 'react-redux';
 import { useFirebase } from 'react-redux-firebase';
 import StyledButton from '../components/StyledButton';
 import FormTextInput from '../components/FormTextInput';
@@ -36,14 +35,10 @@ export default function Login() {
   }
 
   function loginFunction() {
-    firebase
-      .login({
-        email: getValues().username,
-        password: getValues().password,
-      })
-      .then(() => {
-        console.log('success');
-      });
+    firebase.login({
+      email: getValues().username,
+      password: getValues().password,
+    });
   }
 
   return (
@@ -69,6 +64,7 @@ export default function Login() {
         control={control}
         label={t('password')}
         style={styles.elementsPadding}
+        autoCapitalize={false}
       />
 
       <StyledButton
