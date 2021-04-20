@@ -43,7 +43,7 @@ export default function App() {
   return (
     <Providers>
       <ImageBackground source={image} style={styles.image}>
-        <SafeAreaView>
+        <SafeAreaView style={{ flex: 1 }}>
           <AuthGate>
             {/* eslint-disable-next-line react/style-prop-object */}
             <StatusBar style="light" translucent />

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import { useController } from 'react-hook-form';
 import { TextInput } from 'react-native-paper';
@@ -13,6 +14,11 @@ export default function FormTextInput({
   error,
   mode,
   autoCapitalize,
+  autoCompleteType,
+  autoFocus,
+  autoCorrect,
+  right,
+  ...props
 }) {
   const { field } = useController({ control, defaultValue, name });
   return (
@@ -25,6 +31,11 @@ export default function FormTextInput({
       style={style}
       value={field.value}
       placeholder={placeholder}
+      autoFocus={autoFocus}
+      autoCorrect={autoCorrect}
+      autoCompleteType={autoCompleteType}
+      right={right}
+      {...props}
     />
   );
 }
@@ -36,7 +47,11 @@ FormTextInput.defaultProps = {
   label: undefined,
   error: false,
   mode: 'flat',
-  autoCapitalize: true,
+  autoCapitalize: 'sentences',
+  autoFocus: false,
+  autoCorrect: false,
+  autoCompleteType: undefined,
+  right: undefined,
 };
 
 FormTextInput.propTypes = {
@@ -48,5 +63,9 @@ FormTextInput.propTypes = {
   label: PropTypes.string,
   error: PropTypes.bool,
   mode: PropTypes.oneOf(['flat', 'outlined']),
-  autoCapitalize: PropTypes.bool,
+  autoCapitalize: PropTypes.string,
+  autoFocus: PropTypes.bool,
+  autoCorrect: PropTypes.bool,
+  autoCompleteType: PropTypes.string,
+  right: PropTypes.element,
 };

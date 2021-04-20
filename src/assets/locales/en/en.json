@@ -1,8 +1,9 @@
 {
+    "explore": "Explore",
     "login": "Login",
-    "signUp": "Sign Up",
-    "username": "Username",
-    "password": "Password",
     "myEvents": "My Events",
-    "explore": "Explore"
+    "password": "Password",
+    "register": "Register",
+    "signUp": "Sign Up",
+    "username": "Username"
 }

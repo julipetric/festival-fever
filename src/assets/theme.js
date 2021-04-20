@@ -8,7 +8,7 @@ const theme = {
     accent: 'white',
     text: 'white',
     placeholder: 'rgb(100,100,100)',
-    background: 'rgba(0,0,0, 0.2)',
+    background: 'rgb(30,30,30)',
   },
 };
 

@@ -4,11 +4,15 @@ import { t } from 'i18n-js';
 import { useForm } from 'react-hook-form';
 import { Dialog, Portal } from 'react-native-paper';
 import { useFirebase } from 'react-redux-firebase';
+import { useNavigation } from '@react-navigation/core';
 import StyledButton from '../components/StyledButton';
 import FormTextInput from '../components/FormTextInput';
+import PasswordFormTextInput from '../components/PasswordFormTextInput';
 
 const styles = StyleSheet.create({
   container: {
+    resizeMode: 'cover',
+    flex: 1,
     justifyContent: 'center',
     height: '100%',
     width: '80%',
@@ -21,6 +25,10 @@ const styles = StyleSheet.create({
   button: {
     margin: 10,
   },
+  image: {
+    flex: 1,
+    resizeMode: 'cover',
+  },
 });
 
 export default function Login() {
@@ -29,6 +37,7 @@ export default function Login() {
   const [alertVisible, setAlertVisible] = useState(false);
 
   const firebase = useFirebase();
+  const navigation = useNavigation();
 
   function hideDialog() {
     setAlertVisible(false);
@@ -39,6 +48,10 @@ export default function Login() {
       email: getValues().username,
       password: getValues().password,
     });
+  }
+
+  function handleRegister() {
+    navigation.push(t('register'));
   }
 
   return (
@@ -54,17 +67,21 @@ export default function Login() {
 
       <FormTextInput
         name="username"
+        mode="outlined"
+        autoCapitalize="none"
         control={control}
         label={t('username')}
         style={styles.elementsPadding}
+        autoFocus
+        autoCompleteType="username"
       />
 
-      <FormTextInput
+      <PasswordFormTextInput
         name="password"
+        mode="outlined"
         control={control}
         label={t('password')}
         style={styles.elementsPadding}
-        autoCapitalize={false}
       />
 
       <StyledButton
@@ -73,6 +90,10 @@ export default function Login() {
         onPress={handleSubmit(loginFunction)}
       >
         {t('login')}
+      </StyledButton>
+
+      <StyledButton mode="text" style={styles.button} onPress={handleRegister}>
+        {t('register')}
       </StyledButton>
 
       <Portal>

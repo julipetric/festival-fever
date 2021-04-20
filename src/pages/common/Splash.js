@@ -4,7 +4,7 @@ import { Text, View } from 'react-native';
 import { useFirebase } from 'react-redux-firebase';
 import MainCorporativo from '../corporativo/MainCorporativo';
 import MainAsistente from '../asistente/MainAsistente';
-import Login from './Login';
+import InitialNavigator from './InitialNavigator';
 
 export default function Splash() {
   const firebase = useFirebase();
@@ -27,10 +27,10 @@ export default function Splash() {
           content.current = <MainCorporativo />;
           break;
         default:
-          content.current = <Login />;
+          content.current = <InitialNavigator />;
           break;
       }
-    } else content.current = <Login />;
+    } else content.current = <InitialNavigator />;
   }, [currentUser, userTypeId]);
 
   return (

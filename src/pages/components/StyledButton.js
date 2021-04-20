@@ -46,7 +46,7 @@ StyledButton.defaultProps = {
 
 StyledButton.propTypes = {
   children: PropTypes.any.isRequired,
-  mode: PropTypes.string,
+  mode: PropTypes.oneOf(['text', 'outlined', 'contained']),
   style: PropTypes.object,
   onPress: PropTypes.func,
 };
