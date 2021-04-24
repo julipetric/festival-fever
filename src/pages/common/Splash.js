@@ -9,15 +9,13 @@ import InitialNavigator from './InitialNavigator';
 export default function Splash() {
   const firebase = useFirebase();
 
-  const validSession = useSelector(state => state.user.validSession);
-
   const userTypeId = useSelector(state => state.user.userTypeId);
   const { currentUser } = firebase.auth();
 
   const content = useRef();
 
   useEffect(() => {
-    // console.log({ currentUser, userTypeId });
+    console.log({ currentUser, userTypeId });
     if (currentUser) {
       switch (userTypeId) {
         case 1:
@@ -33,14 +31,5 @@ export default function Splash() {
     } else content.current = <InitialNavigator />;
   }, [currentUser, userTypeId]);
 
-  return (
-    <>
-      {content.current}
-      {!validSession && (
-        <View>
-          <Text>Hello world!</Text>
-        </View>
-      )}
-    </>
-  );
+  return <>{content.current}</>;
 }

@@ -1,8 +1,12 @@
 {
+    "email": "E-Mail",
     "explore": "Explore",
+    "lastName": "Last Name",
     "login": "Login",
     "myEvents": "My Events",
+    "name": "Name",
     "password": "Password",
+    "passwordsDontMatch": "The two passwords don't match",
     "register": "Register",
     "signUp": "Sign Up",
     "username": "Username"

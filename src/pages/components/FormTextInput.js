@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useController } from 'react-hook-form';
-import { TextInput } from 'react-native-paper';
+import { HelperText, TextInput } from 'react-native-paper';
 import PropTypes from 'prop-types';
 
 export default function FormTextInput({
@@ -11,32 +11,41 @@ export default function FormTextInput({
   style,
   defaultValue,
   label,
-  error,
   mode,
   autoCapitalize,
   autoCompleteType,
   autoFocus,
   autoCorrect,
   right,
+  hideHelperText,
+  helperTextType,
   ...props
 }) {
-  const { field } = useController({ control, defaultValue, name });
+  const { field, fieldState } = useController({ control, defaultValue, name });
+
   return (
-    <TextInput
-      autoCapitalize={autoCapitalize}
-      mode={mode}
-      label={label}
-      error={error}
-      onChangeText={field.onChange}
-      style={style}
-      value={field.value}
-      placeholder={placeholder}
-      autoFocus={autoFocus}
-      autoCorrect={autoCorrect}
-      autoCompleteType={autoCompleteType}
-      right={right}
-      {...props}
-    />
+    <>
+      <TextInput
+        autoCapitalize={autoCapitalize}
+        mode={mode}
+        label={label}
+        error={fieldState.error}
+        onChangeText={field.onChange}
+        style={style}
+        value={field.value}
+        placeholder={placeholder}
+        autoFocus={autoFocus}
+        autoCorrect={autoCorrect}
+        autoCompleteType={autoCompleteType}
+        right={right}
+        {...props}
+      />
+      {!hideHelperText && (
+        <HelperText visible={fieldState.error} type={helperTextType}>
+          {fieldState.error && fieldState.error.message}
+        </HelperText>
+      )}
+    </>
   );
 }
 
@@ -45,13 +54,14 @@ FormTextInput.defaultProps = {
   style: {},
   defaultValue: undefined,
   label: undefined,
-  error: false,
   mode: 'flat',
   autoCapitalize: 'sentences',
   autoFocus: false,
   autoCorrect: false,
   autoCompleteType: undefined,
   right: undefined,
+  hideHelperText: false,
+  helperTextType: 'error',
 };
 
 FormTextInput.propTypes = {
@@ -61,11 +71,12 @@ FormTextInput.propTypes = {
   style: PropTypes.object,
   defaultValue: PropTypes.string,
   label: PropTypes.string,
-  error: PropTypes.bool,
   mode: PropTypes.oneOf(['flat', 'outlined']),
   autoCapitalize: PropTypes.string,
   autoFocus: PropTypes.bool,
   autoCorrect: PropTypes.bool,
   autoCompleteType: PropTypes.string,
   right: PropTypes.element,
+  hideHelperText: PropTypes.bool,
+  helperTextType: PropTypes.oneOf(['error', 'info']),
 };

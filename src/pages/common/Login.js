@@ -25,10 +25,6 @@ const styles = StyleSheet.create({
   button: {
     margin: 10,
   },
-  image: {
-    flex: 1,
-    resizeMode: 'cover',
-  },
 });
 
 export default function Login() {

@@ -1,6 +1,10 @@
+import { t } from 'i18n-js';
 import React from 'react';
+import { useForm } from 'react-hook-form';
 import { StyleSheet, View } from 'react-native';
-import { Text } from 'react-native-paper';
+import UserRegisterSchema from '../../schemas/UserRegisterSchema';
+import FormTextInput from '../components/FormTextInput';
+import StyledButton from '../components/StyledButton';
 
 const styles = StyleSheet.create({
   container: {
@@ -10,14 +14,54 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '80%',
     alignSelf: 'center',
-    paddingHorizontal: 20,
   },
 });
 
 export default function Register() {
+  const { control, handleSubmit } = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange',
+    resolver: UserRegisterSchema,
+  });
+
+  function registerFunction() {}
+
   return (
     <View style={styles.container}>
-      <Text>REGISTER</Text>
+      <FormTextInput
+        name="email"
+        mode="outlined"
+        autoCapitalize="none"
+        control={control}
+        label={t('email')}
+        autoFocus
+        autoCompleteType="email"
+      />
+      <FormTextInput
+        name="name"
+        mode="outlined"
+        autoCapitalize="none"
+        control={control}
+        label={t('name')}
+        autoFocus
+        autoCompleteType="email"
+      />
+      <FormTextInput
+        name="lastName"
+        mode="outlined"
+        autoCapitalize="none"
+        control={control}
+        label={t('lastName')}
+        autoFocus
+        autoCompleteType="email"
+      />
+      <StyledButton
+        mode="contained"
+        style={styles.button}
+        onPress={handleSubmit(registerFunction)}
+      >
+        {t('signUp')}
+      </StyledButton>
     </View>
   );
 }
