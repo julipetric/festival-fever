@@ -12,6 +12,7 @@ import image from './assets/default_bg.png';
 import Providers from './src/context/Providers';
 import { fbConfig } from './src/context/FirebaseConfig';
 import AuthGate from './src/context/AuthGate';
+import initializePolyfill from './src/context/Polyfill';
 
 const styles = StyleSheet.create({
   image: {
@@ -33,6 +34,7 @@ function initializeLanguage() {
 
 export default function App() {
   initializeLanguage();
+  initializePolyfill();
 
   if (!firebase.apps.length) {
     firebase.initializeApp(fbConfig);

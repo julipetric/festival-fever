@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { Text, View } from 'react-native';
 import { useFirebase } from 'react-redux-firebase';
 import MainCorporativo from '../corporativo/MainCorporativo';
 import MainAsistente from '../asistente/MainAsistente';
