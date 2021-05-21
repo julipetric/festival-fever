@@ -2,22 +2,28 @@ import i18n, { t } from 'i18n-js';
 import moment from 'moment';
 import React, { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { StyleSheet, View } from 'react-native';
-import { TextInput } from 'react-native-paper';
+import { Alert, StyleSheet } from 'react-native';
+import { HelperText, TextInput } from 'react-native-paper';
 import { DatePickerModal } from 'react-native-paper-dates';
 import { Feather } from '@expo/vector-icons';
+import { useFirebase } from 'react-redux-firebase';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import UserRegisterSchema from '../../schemas/UserRegisterSchema';
 import FormTextInput from '../components/FormTextInput';
 import StyledButton from '../components/StyledButton';
+import PasswordFormTextInput from '../components/PasswordFormTextInput';
 
 const styles = StyleSheet.create({
-  container: {
-    resizeMode: 'cover',
-    flex: 1,
-    justifyContent: 'center',
+  keyboardScrollView: {
     height: '100%',
+    backgroundColor: 'red',
+  },
+  container: {
+    flexGrow: 1,
+    justifyContent: 'center',
     width: '80%',
     alignSelf: 'center',
+    paddingBottom: 20,
   },
   button: {
     marginTop: 40,
@@ -25,13 +31,15 @@ const styles = StyleSheet.create({
 });
 
 export default function Register() {
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, formState, getValues } = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
     resolver: UserRegisterSchema,
   });
 
-  const [date, setDate] = useState(undefined);
+  const firebase = useFirebase();
+
+  const [birthday, setBirthday] = useState(undefined);
   const [open, setOpen] = useState(false);
 
   const onDismissDatePicker = useCallback(() => {
@@ -41,16 +49,37 @@ export default function Register() {
   const onConfirmDatePicker = useCallback(
     params => {
       setOpen(false);
-      setDate(params.date);
+      setBirthday(params.date);
     },
-    [setOpen, setDate]
+    [setOpen]
   );
 
-  function registerFunction() {}
+  function registerFunction() {
+    const { email, password, name, lastName } = getValues();
+    firebase
+      .createUser(
+        { email, password },
+        {
+          name,
+          lastName,
+          birthday: moment(birthday).format('LL'),
+          userTypeId: 1,
+        }
+      )
+      .catch(error => {
+        Alert.alert(t('error'), error);
+      });
+  }
 
   return (
     <>
-      <View style={styles.container}>
+      <KeyboardAwareScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={styles.container}
+        extraHeight={100}
+        enableOnAndroid
+        enableAutomaticScroll
+      >
         <FormTextInput
           name="email"
           mode="outlined"
@@ -66,8 +95,6 @@ export default function Register() {
           autoCapitalize="none"
           control={control}
           label={t('name')}
-          autoFocus
-          autoCompleteType="email"
         />
         <FormTextInput
           name="lastName"
@@ -75,15 +102,12 @@ export default function Register() {
           autoCapitalize="none"
           control={control}
           label={t('lastName')}
-          autoFocus
-          autoCompleteType="email"
         />
-
         <TextInput
           mode="outlined"
           label={t('birthday')}
           placeholder={t('birthday')}
-          value={moment(date).format('LL')}
+          value={moment(birthday).format('LL')}
           editable={false}
           right={
             <TextInput.Icon
@@ -94,21 +118,37 @@ export default function Register() {
             />
           }
         />
+        <HelperText visible={false}>dummyHelper</HelperText>
+
+        <PasswordFormTextInput
+          name="password"
+          mode="outlined"
+          control={control}
+          label={t('password')}
+        />
+
+        <PasswordFormTextInput
+          name="repeatPassword"
+          mode="outlined"
+          control={control}
+          label={t('repeatPassword')}
+        />
 
         <StyledButton
           mode="contained"
           style={styles.button}
           onPress={handleSubmit(registerFunction)}
+          disabled={!formState.isValid}
         >
           {t('signUp')}
         </StyledButton>
-      </View>
+      </KeyboardAwareScrollView>
       <DatePickerModal
         locale={i18n.locale}
         mode="single"
         visible={open}
         onDismiss={onDismissDatePicker}
-        date={date}
+        date={birthday}
         onConfirm={onConfirmDatePicker}
         validRange={{
           endDate: new Date(),

@@ -1,6 +1,7 @@
 {
     "birthday": "Birthday",
     "email": "E-Mail",
+    "error": "Error",
     "explore": "Explore",
     "lastName": "Last Name",
     "login": "Login",
@@ -9,6 +10,7 @@
     "password": "Password",
     "passwordsDontMatch": "The two passwords don't match",
     "register": "Register",
+    "repeatPassword": "Repeat password",
     "signUp": "Sign Up",
     "username": "Username"
 }

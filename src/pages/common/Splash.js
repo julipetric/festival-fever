@@ -1,22 +1,29 @@
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useFirebase } from 'react-redux-firebase';
+import { View, StyleSheet } from 'react-native';
 import MainCorporativo from '../corporativo/MainCorporativo';
 import MainAsistente from '../asistente/MainAsistente';
 import InitialNavigator from './InitialNavigator';
 
+const styles = StyleSheet.create({
+  container: {
+    height: '100%',
+  },
+});
+
 export default function Splash() {
-  const firebase = useFirebase();
+  const profile = useSelector(state => state.firebase.profile);
 
-  const userTypeId = useSelector(state => state.user.userTypeId);
-  const { currentUser } = firebase.auth();
-
-  const content = useRef();
+  const content = useRef(<InitialNavigator />);
 
   useEffect(() => {
-    console.log({ currentUser, userTypeId });
-    if (currentUser) {
-      switch (userTypeId) {
+    console.log(profile.userTypeId);
+  }, [profile]);
+
+  useEffect(() => {
+    if (profile) {
+      switch (profile.userTypeId) {
         case 1:
           content.current = <MainAsistente />;
           break;
@@ -28,7 +35,11 @@ export default function Splash() {
           break;
       }
     } else content.current = <InitialNavigator />;
-  }, [currentUser, userTypeId]);
+  }, [profile]);
 
-  return <>{content.current}</>;
+  return (
+    <View enabled style={styles.container} keyboardVerticalOffset={800}>
+      {content.current}
+    </View>
+  );
 }

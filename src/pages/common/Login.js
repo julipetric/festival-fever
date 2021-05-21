@@ -11,10 +11,8 @@ import PasswordFormTextInput from '../components/PasswordFormTextInput';
 
 const styles = StyleSheet.create({
   container: {
-    resizeMode: 'cover',
     flex: 1,
     justifyContent: 'center',
-    height: '100%',
     width: '80%',
     alignSelf: 'center',
     paddingHorizontal: 20,

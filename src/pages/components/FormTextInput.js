@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useController } from 'react-hook-form';
 import { HelperText, TextInput } from 'react-native-paper';
 import PropTypes from 'prop-types';

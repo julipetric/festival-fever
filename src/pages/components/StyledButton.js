@@ -22,6 +22,7 @@ export default function StyledButton({
   mode,
   style,
   onPress,
+  disabled,
   ...props
 }) {
   return (
@@ -31,6 +32,7 @@ export default function StyledButton({
         mode={mode}
         style={[styles.button, style]}
         onPress={onPress}
+        disabled={disabled}
       >
         {children}
       </Button>
@@ -42,6 +44,7 @@ StyledButton.defaultProps = {
   mode: 'text',
   style: {},
   onPress: () => {},
+  disabled: false,
 };
 
 StyledButton.propTypes = {
@@ -49,4 +52,5 @@ StyledButton.propTypes = {
   mode: PropTypes.oneOf(['text', 'outlined', 'contained']),
   style: PropTypes.object,
   onPress: PropTypes.func,
+  disabled: PropTypes.bool,
 };

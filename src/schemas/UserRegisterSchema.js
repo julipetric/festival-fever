@@ -7,15 +7,12 @@ const UserRegisterSchema = yupResolver(
     email: yup.string().email().required().label(t('email')),
     name: yup.string().required().label(t('name')),
     lastName: yup.string().required().label(t('lastName')),
-    password: yup.string().required(),
+    password: yup.string().required().label(t('password')),
     repeatPassword: yup
       .string()
       .required()
-      .test(
-        'passwords-match',
-        t('passwordsDontMatch'),
-        value => value === yup.ref('password')
-      ),
+      .oneOf([yup.ref('password'), null], t('passwordsDontMatch'))
+      .label(t('repeatPassword')),
   })
 );
 
