@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { t } from 'i18n-js';
 import { useForm } from 'react-hook-form';
-import { Dialog, Portal } from 'react-native-paper';
 import { useFirebase } from 'react-redux-firebase';
 import { useNavigation } from '@react-navigation/core';
 import StyledButton from '../components/StyledButton';
 import FormTextInput from '../components/FormTextInput';
 import PasswordFormTextInput from '../components/PasswordFormTextInput';
+import FormCheckbox from '../components/FormCheckbox';
 
 const styles = StyleSheet.create({
   container: {
@@ -26,16 +26,10 @@ const styles = StyleSheet.create({
 });
 
 export default function Login() {
-  const { control, handleSubmit, watch, getValues } = useForm();
-
-  const [alertVisible, setAlertVisible] = useState(false);
+  const { control, handleSubmit, getValues } = useForm();
 
   const firebase = useFirebase();
   const navigation = useNavigation();
-
-  function hideDialog() {
-    setAlertVisible(false);
-  }
 
   function loginFunction() {
     firebase.login({
@@ -70,6 +64,14 @@ export default function Login() {
         autoCompleteType="username"
       />
 
+      {/* NO FUNCIONA */}
+      <FormCheckbox
+        name="rememberUsername"
+        defaultValue={false}
+        control={control}
+        label="Remember me"
+      />
+
       <PasswordFormTextInput
         name="password"
         mode="outlined"
@@ -89,15 +91,6 @@ export default function Login() {
       <StyledButton mode="text" style={styles.button} onPress={handleRegister}>
         {t('register')}
       </StyledButton>
-
-      <Portal>
-        <Dialog visible={alertVisible} onDismiss={hideDialog}>
-          <Dialog.Title>{watch('username')}</Dialog.Title>
-          <Dialog.Content>
-            <Text>{watch('password')}</Text>
-          </Dialog.Content>
-        </Dialog>
-      </Portal>
     </View>
   );
 }

@@ -1,9 +1,10 @@
 import { Entypo } from '@expo/vector-icons';
 import React from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { IconButton, Title } from 'react-native-paper';
 import { useFirebase } from 'react-redux-firebase';
-import { logout as firebaseLogout } from '../../firebase/Auth';
+
+import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
   container: {
@@ -17,18 +18,16 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function FestivalFeverHeader() {
+export default function FestivalFeverHeader({ corporativo }) {
   const firebase = useFirebase();
 
   async function logout() {
-    const result = await firebaseLogout(firebase);
-    if (result) Alert.alert('success');
-    else Alert.alert('fail');
+    firebase.logout();
   }
 
   return (
     <View style={styles.container}>
-      <Title>FestivalFever</Title>
+      <Title>FestivalFever{corporativo ? ' CORPORATIVO' : ''}</Title>
       <IconButton
         icon={({ size, color }) => (
           <Entypo name="log-out" size={size} color={color} />
@@ -38,3 +37,10 @@ export default function FestivalFeverHeader() {
     </View>
   );
 }
+
+FestivalFeverHeader.defaultProps = {
+  corporativo: false,
+};
+FestivalFeverHeader.propTypes = {
+  corporativo: PropTypes.bool,
+};

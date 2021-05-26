@@ -2,8 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
-import { FontAwesome, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
-import { useSelector } from 'react-redux';
+import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
 import { t } from 'i18n-js';
 import MisEventosScreen from './MisEventosScreen';
@@ -33,8 +32,6 @@ const styles = StyleSheet.create({
 });
 
 export default function MainAsistente() {
-  const profile = useSelector(state => state.firebase.profile);
-
   return (
     <View style={styles.container}>
       <FestivalFeverHeader />

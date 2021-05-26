@@ -7,6 +7,7 @@ const theme = {
   colors: {
     ...DefaultTheme.colors,
     primary: 'fuchsia',
+    accent: 'fuchsia',
     text: 'white',
     placeholder: 'rgb(100,100,100)',
     background: 'rgb(30,30,30)',
