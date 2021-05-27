@@ -6,7 +6,7 @@ import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
 import { t } from 'i18n-js';
 import MisEventosScreen from './MisEventosScreen';
-import { PinkPrimary } from '../../../assets/Colors';
+import { PinkPrimary } from '../../assets/Colors';
 import ExplorarScreen from './ExplorarScreen';
 import theme from '../../assets/theme';
 import FestivalFeverHeader from '../components/FestivalFeverHeader';

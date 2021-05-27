@@ -4,10 +4,12 @@ import React from 'react';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
+import { t } from 'i18n-js';
 import MisEventosScreen from '../asistente/MisEventosScreen';
-import { PinkPrimary } from '../../../assets/Colors';
+import { PinkPrimary, TransparentBackdrop } from '../../assets/Colors';
 import theme from '../../assets/theme';
 import FestivalFeverHeader from '../components/FestivalFeverHeader';
+import Eventos from './Eventos';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -17,6 +19,7 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
     alignSelf: 'center',
+    backgroundColor: TransparentBackdrop,
   },
   mainLayout: {
     flex: 1,
@@ -37,7 +40,7 @@ export default function MainCorporativo() {
         <NavigationContainer theme={theme}>
           <Tab.Navigator
             activeColor={PinkPrimary}
-            initialRouteName="Mis Eventos"
+            initialRouteName={t('events')}
             tabBarOptions={{
               activeTintColor: PinkPrimary,
               style: { position: 'absolute' },
@@ -47,8 +50,8 @@ export default function MainCorporativo() {
             }}
           >
             <Tab.Screen
-              name="Mis Eventos"
-              component={MisEventosScreen}
+              name={t('events')}
+              component={Eventos}
               options={{
                 // eslint-disable-next-line react/prop-types
                 tabBarIcon: ({ color }) => (
@@ -72,9 +75,9 @@ export default function MainCorporativo() {
             />
           </Tab.Navigator>
         </NavigationContainer>
-        {/* eslint-disable-next-line react/style-prop-object */}
-        <StatusBar style="light" translucent />
       </View>
+      {/* eslint-disable-next-line react/style-prop-object */}
+      <StatusBar style="light" translucent />
     </View>
   );
 }

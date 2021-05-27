@@ -16,7 +16,9 @@ export default function MisEventosScreen() {
   return (
     <>
       <View style={styles.container}>
-        <Text>Mis Eventos</Text>
+        <Text>Mis Eventos (entradas)</Text>
+        <Text>Watchlist</Text>
+        <Text>wallet</Text>
       </View>
     </>
   );

@@ -9,7 +9,7 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import Splash from './src/pages/common/Splash';
 import en from './src/assets/locales/en/en.json';
-import image from './assets/default_bg.png';
+import image from './src/assets/default_bg.png';
 import Providers from './src/context/Providers';
 import { fbConfig } from './src/context/FirebaseConfig';
 import AuthGate from './src/context/AuthGate';

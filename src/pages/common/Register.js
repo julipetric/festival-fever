@@ -12,6 +12,7 @@ import UserRegisterSchema from '../../schemas/UserRegisterSchema';
 import FormTextInput from '../components/FormTextInput';
 import StyledButton from '../components/StyledButton';
 import PasswordFormTextInput from '../components/PasswordFormTextInput';
+import { BackgroundGray } from '../../assets/Colors';
 
 const styles = StyleSheet.create({
   keyboardScrollView: {
@@ -108,6 +109,7 @@ export default function Register() {
           label={t('birthday')}
           placeholder={t('birthday')}
           value={moment(birthday).format('LL')}
+          style={{ backgroundColor: BackgroundGray }}
           editable={false}
           right={
             <TextInput.Icon

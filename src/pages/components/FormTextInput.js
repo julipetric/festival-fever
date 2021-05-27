@@ -3,6 +3,7 @@ import React from 'react';
 import { useController } from 'react-hook-form';
 import { HelperText, TextInput } from 'react-native-paper';
 import PropTypes from 'prop-types';
+import { BackgroundGray } from '../../assets/Colors';
 
 export default function FormTextInput({
   name,
@@ -31,7 +32,7 @@ export default function FormTextInput({
         label={label}
         error={fieldState.error}
         onChangeText={field.onChange}
-        style={style}
+        style={{ backgroundColor: BackgroundGray, ...style }}
         value={field.value}
         placeholder={placeholder}
         autoFocus={autoFocus}
