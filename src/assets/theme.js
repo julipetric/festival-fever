@@ -15,7 +15,6 @@ const theme = {
     // background: 'rgb(30,30,30)',
     background: 'transparent',
     surface: '#3c3c3c',
-    disabled: 'blue',
     error: '#f44336',
   },
 };

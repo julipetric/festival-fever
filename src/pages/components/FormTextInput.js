@@ -20,6 +20,8 @@ export default function FormTextInput({
   right,
   hideHelperText,
   helperTextType,
+  multiline,
+  keyboardType,
   ...props
 }) {
   const { field, fieldState } = useController({ control, defaultValue, name });
@@ -39,6 +41,8 @@ export default function FormTextInput({
         autoCorrect={autoCorrect}
         autoCompleteType={autoCompleteType}
         right={right}
+        multiline={multiline}
+        keyboardType={keyboardType}
         {...props}
       />
       {!hideHelperText && (
@@ -63,6 +67,8 @@ FormTextInput.defaultProps = {
   right: undefined,
   hideHelperText: false,
   helperTextType: 'error',
+  multiline: false,
+  keyboardType: undefined,
 };
 
 FormTextInput.propTypes = {
@@ -73,11 +79,13 @@ FormTextInput.propTypes = {
   defaultValue: PropTypes.string,
   label: PropTypes.string,
   mode: PropTypes.oneOf(['flat', 'outlined']),
-  autoCapitalize: PropTypes.string,
+  autoCapitalize: PropTypes.oneOf(['characters', 'words', 'sentences', 'none']),
   autoFocus: PropTypes.bool,
   autoCorrect: PropTypes.bool,
   autoCompleteType: PropTypes.string,
   right: PropTypes.element,
   hideHelperText: PropTypes.bool,
   helperTextType: PropTypes.oneOf(['error', 'info']),
+  multiline: PropTypes.bool,
+  keyboardType: PropTypes.string,
 };

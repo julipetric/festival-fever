@@ -47,13 +47,10 @@ export default function Register() {
     setOpen(false);
   }, [setOpen]);
 
-  const onConfirmDatePicker = useCallback(
-    params => {
-      setOpen(false);
-      setBirthday(params.date);
-    },
-    [setOpen]
-  );
+  function onConfirmDatePicker(params) {
+    setOpen(false);
+    setBirthday(params.date);
+  }
 
   function registerFunction() {
     const { email, password, name, lastName } = getValues();

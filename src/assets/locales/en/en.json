@@ -1,7 +1,13 @@
 {
+    "addEvent": "Add Event",
+    "addressDescription": "Address Description",
     "birthday": "Birthday",
+    "contactEmail": "Contact Email",
+    "contactPhone": "Contact Phone",
+    "createEventProductNotes": "Once the event is created, you will be able to add products, promotions and sellers in the details section",
     "email": "E-Mail",
     "error": "Error",
+    "eventName": "Event Name",
     "events": "Events",
     "explore": "Explore",
     "lastName": "Last Name",
@@ -12,6 +18,9 @@
     "passwordsDontMatch": "The two passwords don't match",
     "register": "Register",
     "repeatPassword": "Repeat password",
+    "save": "Save",
+    "scanQR": "Scan QR Code",
     "signUp": "Sign Up",
+    "timeAndDate": "Time and Date",
     "username": "Username"
 }

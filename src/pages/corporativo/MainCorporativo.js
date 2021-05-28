@@ -60,7 +60,7 @@ export default function MainCorporativo() {
               }}
             />
             <Tab.Screen
-              name="Leer Código QR"
+              name={t('scanQR')}
               component={MisEventosScreen}
               options={{
                 // eslint-disable-next-line react/prop-types

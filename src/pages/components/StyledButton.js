@@ -23,6 +23,7 @@ export default function StyledButton({
   style,
   onPress,
   disabled,
+  icon,
   ...props
 }) {
   return (
@@ -30,9 +31,10 @@ export default function StyledButton({
       <Button
         {...props}
         mode={mode}
-        style={[styles.button, style]}
+        style={[styles.button, icon ? { paddingHorizontal: 5 } : {}, style]}
         onPress={onPress}
         disabled={disabled}
+        icon={icon}
       >
         {children}
       </Button>
@@ -45,6 +47,7 @@ StyledButton.defaultProps = {
   style: {},
   onPress: () => {},
   disabled: false,
+  icon: undefined,
 };
 
 StyledButton.propTypes = {
@@ -53,4 +56,5 @@ StyledButton.propTypes = {
   style: PropTypes.object,
   onPress: PropTypes.func,
   disabled: PropTypes.bool,
+  icon: PropTypes.func,
 };
