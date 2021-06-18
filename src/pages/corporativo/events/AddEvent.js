@@ -5,8 +5,9 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { TextInput, HelperText, Caption } from 'react-native-paper';
 import i18n, { t } from 'i18n-js';
 import moment from 'moment';
-import { Feather } from '@expo/vector-icons';
+import { Feather, Ionicons } from '@expo/vector-icons';
 import { DatePickerModal } from 'react-native-paper-dates';
+import PropTypes from 'prop-types';
 import StyledButton from '../../components/StyledButton';
 import FormTextInput from '../../components/FormTextInput';
 import { BackgroundGray } from '../../../assets/Colors';
@@ -20,7 +21,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function AddEvent() {
+function AddEvent({ navigation }) {
   const { control, handleSubmit, formState } = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
@@ -28,6 +29,10 @@ function AddEvent() {
 
   const [timeDate, setTimeDate] = useState(undefined);
   const [timeDateOpen, setTimeDateOpen] = useState(false);
+  const [
+    address,
+    // setAddress
+  ] = useState();
 
   function onConfirmTimeDate(params) {
     setTimeDateOpen(false);
@@ -56,7 +61,6 @@ function AddEvent() {
           label={t('timeAndDate')}
           placeholder={t('timeAndDate')}
           value={moment(timeDate).format('LL')}
-          // style={{ backgroundColor: BackgroundGray }}
           editable={false}
           right={
             <TextInput.Icon
@@ -64,6 +68,22 @@ function AddEvent() {
                 <Feather name="calendar" size={size} color={color} />
               )}
               onPress={() => setTimeDateOpen(true)}
+            />
+          }
+          style={{ backgroundColor: BackgroundGray }}
+        />
+        <HelperText visible={false}>dummyHelper</HelperText>
+        <TextInput
+          label={t('address')}
+          placeholder={t('address')}
+          value={address}
+          editable={false}
+          right={
+            <TextInput.Icon
+              icon={({ size, color }) => (
+                <Ionicons name="location" size={size} color={color} />
+              )}
+              onPress={() => navigation.push('FullScreenMapView')}
             />
           }
           style={{ backgroundColor: BackgroundGray }}
@@ -114,5 +134,12 @@ function AddEvent() {
     </>
   );
 }
+
+AddEvent.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+};
 
 export default AddEvent;

@@ -4,7 +4,6 @@ import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Title } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import { StackNavigationProp } from '@react-navigation/stack';
 import StyledButton from '../../components/StyledButton';
 
 const styles = StyleSheet.create({
