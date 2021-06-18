@@ -74,8 +74,8 @@ function AddEvent({ navigation }) {
         />
         <HelperText visible={false}>dummyHelper</HelperText>
         <TextInput
-          label={t('address')}
-          placeholder={t('address')}
+          label={t('location')}
+          placeholder={t('location')}
           value={address}
           editable={false}
           right={
@@ -90,10 +90,10 @@ function AddEvent({ navigation }) {
         />
         <HelperText visible={false}>dummyHelper</HelperText>
         <FormTextInput
-          name="addressDescription"
+          name="address"
           autoCapitalize="words"
           control={control}
-          label={t('addressDescription')}
+          label={t('address')}
           multiline
         />
         <FormTextInput

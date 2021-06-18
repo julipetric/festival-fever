@@ -24,6 +24,7 @@ export default function StyledButton({
   onPress,
   disabled,
   icon,
+  label,
   ...props
 }) {
   return (
@@ -36,25 +37,28 @@ export default function StyledButton({
         disabled={disabled}
         icon={icon}
       >
-        {children}
+        {label || children}
       </Button>
     </View>
   );
 }
 
 StyledButton.defaultProps = {
+  children: undefined,
   mode: 'text',
   style: {},
   onPress: () => {},
   disabled: false,
   icon: undefined,
+  label: undefined,
 };
 
 StyledButton.propTypes = {
-  children: PropTypes.any.isRequired,
+  children: PropTypes.any,
   mode: PropTypes.oneOf(['text', 'outlined', 'contained']),
   style: PropTypes.object,
   onPress: PropTypes.func,
   disabled: PropTypes.bool,
   icon: PropTypes.func,
+  label: PropTypes.string,
 };
