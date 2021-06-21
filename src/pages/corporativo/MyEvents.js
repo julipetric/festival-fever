@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
 
 const Stack = createStackNavigator();
 
-function Eventos() {
+function MyEvents() {
   return (
     <>
       <View style={styles.container}>
@@ -29,4 +29,4 @@ function Eventos() {
   );
 }
 
-export default Eventos;
+export default MyEvents;

@@ -3,6 +3,7 @@ import MapView, { Marker } from 'react-native-maps';
 import { Alert, StyleSheet, View } from 'react-native';
 import * as Location from 'expo-location';
 import { t } from 'i18n-js';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import StyledButton from '../components/StyledButton';
 
 const styles = StyleSheet.create({
@@ -23,9 +24,15 @@ const styles = StyleSheet.create({
 });
 
 function FullScreenMapView() {
+  const { params } = useRoute();
+
   const [location, setLocation] = useState();
   const [errorMsg, setErrorMsg] = useState();
-  const [markerCoordinates, setMarkerCoordinates] = useState();
+  const [markerCoordinates, setMarkerCoordinates] = useState(
+    params.defaultMarker ? JSON.parse(params.defaultMarker) : undefined
+  );
+
+  const navigation = useNavigation();
 
   const mapRef = useRef();
 
@@ -83,6 +90,10 @@ function FullScreenMapView() {
           label={t('done')}
           style={styles.button}
           mode="contained"
+          onPress={() => {
+            params.callback(markerCoordinates);
+            navigation.pop();
+          }}
         />
       )}
     </View>

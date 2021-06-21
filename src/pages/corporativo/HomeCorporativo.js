@@ -6,7 +6,7 @@ import { StyleSheet, View } from 'react-native';
 import { t } from 'i18n-js';
 import MisEventosScreen from '../asistente/MisEventosScreen';
 import { PinkPrimary, TransparentBackdrop } from '../../assets/Colors';
-import Eventos from './Eventos';
+import MyEvents from './MyEvents';
 import Perfil from '../common/Perfil';
 
 const Drawer = createDrawerNavigator();
@@ -40,14 +40,14 @@ function HomeCorporativo() {
           */
         >
           <Drawer.Screen
-            name={t('events')}
-            component={Eventos}
+            name={t('myEvents')}
+            component={MyEvents}
             options={{
               // eslint-disable-next-line react/prop-types
               tabBarIcon: ({ color }) => (
                 <FontAwesome5 name="calendar-alt" size={23} color={color} />
               ),
-              title: t('events'),
+              title: t('myEvents'),
             }}
           />
           <Drawer.Screen

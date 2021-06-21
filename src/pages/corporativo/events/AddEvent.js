@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { StyleSheet } from 'react-native';
+import { Alert, StyleSheet } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { TextInput, HelperText, Caption } from 'react-native-paper';
+import {
+  TextInput,
+  HelperText,
+  Caption,
+  ActivityIndicator,
+} from 'react-native-paper';
 import i18n, { t } from 'i18n-js';
 import moment from 'moment';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { DatePickerModal } from 'react-native-paper-dates';
 import PropTypes from 'prop-types';
+import { useNavigation } from '@react-navigation/native';
+import { useFirestore } from 'react-redux-firebase';
 import StyledButton from '../../components/StyledButton';
 import FormTextInput from '../../components/FormTextInput';
 import { BackgroundGray } from '../../../assets/Colors';
@@ -21,25 +28,49 @@ const styles = StyleSheet.create({
   },
 });
 
-function AddEvent({ navigation }) {
-  const { control, handleSubmit, formState } = useForm({
-    mode: 'onChange',
-    reValidateMode: 'onChange',
-  });
+function AddEvent() {
+  const navigation = useNavigation();
+  const firestore = useFirestore();
+
+  const { control, handleSubmit, formState, register, watch, setValue } =
+    useForm({
+      mode: 'onChange',
+      reValidateMode: 'onChange',
+    });
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    register('location');
+  }, [register]);
 
   const [timeDate, setTimeDate] = useState(undefined);
   const [timeDateOpen, setTimeDateOpen] = useState(false);
-  const [
-    address,
-    // setAddress
-  ] = useState();
 
   function onConfirmTimeDate(params) {
     setTimeDateOpen(false);
     setTimeDate(params.date);
   }
 
-  function onSave() {}
+  function onLocationSelected(location) {
+    setValue('location', JSON.stringify(location));
+  }
+
+  function onSaveSuccess() {
+    setLoading(false);
+    navigation.pop();
+  }
+
+  async function onSave() {
+    setLoading(true);
+    try {
+      await firestore.collection('events').add(watch());
+      onSaveSuccess();
+    } catch (e) {
+      Alert.alert(t('error'), e);
+      setLoading(false);
+    }
+  }
 
   return (
     <>
@@ -76,14 +107,19 @@ function AddEvent({ navigation }) {
         <TextInput
           label={t('location')}
           placeholder={t('location')}
-          value={address}
+          value={watch('location') ? t('seeSelectedLocation') : undefined}
           editable={false}
           right={
             <TextInput.Icon
               icon={({ size, color }) => (
                 <Ionicons name="location" size={size} color={color} />
               )}
-              onPress={() => navigation.push('FullScreenMapView')}
+              onPress={() =>
+                navigation.push('FullScreenMapView', {
+                  callback: onLocationSelected,
+                  defaultMarker: watch('location'),
+                })
+              }
             />
           }
           style={{ backgroundColor: BackgroundGray }}
@@ -94,7 +130,6 @@ function AddEvent({ navigation }) {
           autoCapitalize="words"
           control={control}
           label={t('address')}
-          multiline
         />
         <FormTextInput
           name="contactPhone"
@@ -110,14 +145,18 @@ function AddEvent({ navigation }) {
           label={t('contactEmail')}
         />
         <Caption>{t('createEventProductNotes')}</Caption>
-        <StyledButton
-          mode="contained"
-          style={styles.button}
-          onPress={handleSubmit(onSave)}
-          disabled={!formState.isValid}
-        >
-          {t('save')}
-        </StyledButton>
+        {loading ? (
+          <ActivityIndicator style={styles.button} size="large" />
+        ) : (
+          <StyledButton
+            mode="contained"
+            style={styles.button}
+            onPress={handleSubmit(onSave)}
+            disabled={!formState.isValid}
+          >
+            {t('save')}
+          </StyledButton>
+        )}
       </KeyboardAwareScrollView>
       <DatePickerModal
         locale={i18n.locale}
