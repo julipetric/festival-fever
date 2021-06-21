@@ -1,15 +1,15 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
 import { t } from 'i18n-js';
 import MisEventosScreen from '../asistente/MisEventosScreen';
 import { PinkPrimary, TransparentBackdrop } from '../../assets/Colors';
-import FestivalFeverHeader from '../components/FestivalFeverHeader';
 import Eventos from './Eventos';
+import Perfil from '../common/Perfil';
 
-const Tab = createMaterialBottomTabNavigator();
+const Drawer = createDrawerNavigator();
 
 const styles = StyleSheet.create({
   container: {
@@ -27,20 +27,19 @@ const styles = StyleSheet.create({
 function HomeCorporativo() {
   return (
     <View style={styles.container}>
-      <FestivalFeverHeader corporativo />
       <View style={styles.mainLayout}>
-        <Tab.Navigator
+        <Drawer.Navigator
           activeColor={PinkPrimary}
           initialRouteName={t('events')}
-          tabBarOptions={{
-            activeTintColor: PinkPrimary,
-            style: { position: 'absolute' },
+          /*
+          screenOptions={{
+            headerShown: true,
+            headerStyle: { backgroundColor: BackgroundGray },
+            headerTintColor: PinkPrimary,
           }}
-          barStyle={{
-            backgroundColor: 'black',
-          }}
+          */
         >
-          <Tab.Screen
+          <Drawer.Screen
             name={t('events')}
             component={Eventos}
             options={{
@@ -48,9 +47,10 @@ function HomeCorporativo() {
               tabBarIcon: ({ color }) => (
                 <FontAwesome5 name="calendar-alt" size={23} color={color} />
               ),
+              title: t('events'),
             }}
           />
-          <Tab.Screen
+          <Drawer.Screen
             name={t('scanQR')}
             component={MisEventosScreen}
             options={{
@@ -58,9 +58,15 @@ function HomeCorporativo() {
               tabBarIcon: ({ color }) => (
                 <MaterialIcons name="qr-code-scanner" size={26} color={color} />
               ),
+              title: t('scanQR'),
             }}
           />
-        </Tab.Navigator>
+          <Drawer.Screen
+            name="Perfil"
+            component={Perfil}
+            options={{ title: t('profile') }}
+          />
+        </Drawer.Navigator>
       </View>
       {/* eslint-disable-next-line react/style-prop-object */}
       <StatusBar style="light" translucent />

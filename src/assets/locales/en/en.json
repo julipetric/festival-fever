@@ -12,18 +12,22 @@
     "eventName": "Event Name",
     "events": "Events",
     "explore": "Explore",
+    "home": "Home",
     "lastName": "Last Name",
     "location": "Location",
     "login": "Login",
+    "logout": "Logout",
     "myEvents": "My Events",
     "name": "Name",
     "password": "Password",
     "passwordsDontMatch": "The two passwords don't match",
+    "profile": "Profile",
     "register": "Register",
     "repeatPassword": "Repeat password",
     "save": "Save",
     "scanQR": "Scan QR Code",
     "signUp": "Sign Up",
     "timeAndDate": "Time and Date",
-    "username": "Username"
+    "username": "Username",
+    "wrongUserPasswordCombination": "You entered an incorret user or password"
 }

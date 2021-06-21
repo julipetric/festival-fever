@@ -5,6 +5,7 @@ import { IconButton, Title } from 'react-native-paper';
 import { useFirebase } from 'react-redux-firebase';
 
 import PropTypes from 'prop-types';
+import { useNavigation } from '@react-navigation/core';
 
 const styles = StyleSheet.create({
   container: {
@@ -21,8 +22,11 @@ const styles = StyleSheet.create({
 export default function FestivalFeverHeader({ corporativo }) {
   const firebase = useFirebase();
 
+  const navigation = useNavigation();
+
   async function logout() {
-    firebase.logout();
+    await firebase.logout();
+    navigation.navigate('AuthNavigator');
   }
 
   return (

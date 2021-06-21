@@ -1,9 +1,11 @@
-import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Text, View, StyleSheet, Alert } from 'react-native';
 import { t } from 'i18n-js';
 import { useForm } from 'react-hook-form';
 import { useFirebase } from 'react-redux-firebase';
 import { useNavigation } from '@react-navigation/core';
+import { ActivityIndicator } from 'react-native-paper';
+import { useSelector } from 'react-redux';
 import StyledButton from '../components/StyledButton';
 import FormTextInput from '../components/FormTextInput';
 import PasswordFormTextInput from '../components/PasswordFormTextInput';
@@ -31,12 +33,40 @@ export default function Login() {
   const firebase = useFirebase();
   const navigation = useNavigation();
 
-  function loginFunction() {
-    firebase.login({
-      email: getValues().username,
-      password: getValues().password,
-    });
+  const [loading, setLoading] = useState(false);
+
+  const profile = useSelector(state => state.firebase.profile);
+
+  async function loginFunction() {
+    setLoading(true);
+    try {
+      await firebase.login({
+        email: getValues().username,
+        password: getValues().password,
+      });
+    } catch (e) {
+      setLoading(false);
+      Alert.alert(t('error'), t('wrongUserPasswordCombination'));
+    }
   }
+
+  useEffect(() => {
+    if (profile && profile.userTypeId) {
+      if (profile.userTypeId === 1) {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'MainAsistente' }],
+        });
+      }
+      if (profile.userTypeId === 2) {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'MainCorporativo' }],
+        });
+      }
+      setLoading(false);
+    }
+  }, [navigation, profile]);
 
   function handleRegister() {
     navigation.push(t('register'));
@@ -79,18 +109,27 @@ export default function Login() {
         label={t('password')}
         style={styles.elementsPadding}
       />
+      {loading ? (
+        <ActivityIndicator />
+      ) : (
+        <>
+          <StyledButton
+            mode="contained"
+            style={styles.button}
+            onPress={handleSubmit(loginFunction)}
+          >
+            {t('login')}
+          </StyledButton>
 
-      <StyledButton
-        mode="contained"
-        style={styles.button}
-        onPress={handleSubmit(loginFunction)}
-      >
-        {t('login')}
-      </StyledButton>
-
-      <StyledButton mode="text" style={styles.button} onPress={handleRegister}>
-        {t('register')}
-      </StyledButton>
+          <StyledButton
+            mode="text"
+            style={styles.button}
+            onPress={handleRegister}
+          >
+            {t('register')}
+          </StyledButton>
+        </>
+      )}
     </View>
   );
 }

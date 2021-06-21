@@ -1,29 +1,20 @@
-import { NavigationContainer } from '@react-navigation/native';
-import { t } from 'i18n-js';
 import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import Login from './Login';
-import Register from './Register';
+import MainCorporativo from '../corporativo/MainCorporativo';
+import MainAsistente from '../asistente/MainAsistente';
+import AuthNavigator from './AuthNavigator';
 import theme from '../../assets/theme';
 
 const Stack = createStackNavigator();
 
-function screenOptions() {
-  return {
-    headerShown: false,
-    cardStyle: { backgroundColor: 'transparent' },
-  };
-}
-
 export default function InitialNavigator() {
   return (
     <NavigationContainer theme={theme}>
-      <Stack.Navigator
-        initialRouteName={t('login')}
-        screenOptions={screenOptions}
-      >
-        <Stack.Screen name={t('login')} component={Login} />
-        <Stack.Screen name={t('register')} component={Register} />
+      <Stack.Navigator headerMode="none" initialRouteName="AuthNavigator">
+        <Stack.Screen name="AuthNavigator" component={AuthNavigator} />
+        <Stack.Screen name="MainCorporativo" component={MainCorporativo} />
+        <Stack.Screen name="MainAsistente" component={MainAsistente} />
       </Stack.Navigator>
     </NavigationContainer>
   );
