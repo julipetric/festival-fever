@@ -1,9 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import { t } from 'i18n-js';
-import React from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { Title } from 'react-native-paper';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, View, RefreshControl } from 'react-native';
+import { ActivityIndicator, Text, Title } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/core';
+import { useFirestore, useFirestoreConnect } from 'react-redux-firebase';
+import { useSelector } from 'react-redux';
+import _ from 'lodash';
 import StyledButton from '../../components/StyledButton';
 
 const styles = StyleSheet.create({
@@ -12,9 +15,34 @@ const styles = StyleSheet.create({
   },
 });
 
-function EventsHome({ navigation }) {
+function EventsHome() {
+  const navigation = useNavigation();
+  const firestore = useFirestore();
+  const [eventsList, setEventsList] = useState([]);
+
+  useFirestoreConnect('events');
+
+  const events = useSelector(state => state.firestore.data.events);
+
+  useEffect(() => {
+    setEventsList(_.toPairs(events).filter(event => event[1] !== null));
+  }, [events]);
+
+  const requestingEvents = useSelector(
+    state => state.firestore.status.requesting.events
+  );
+
+  function onRefresh() {
+    firestore.get({ collection: 'events' });
+  }
+
   return (
-    <ScrollView contentContainerStyle={styles.contentContainer}>
+    <ScrollView
+      contentContainerStyle={styles.contentContainer}
+      refreshControl={
+        <RefreshControl refreshing={requestingEvents} onRefresh={onRefresh} />
+      }
+    >
       <View
         style={{
           display: 'flex',
@@ -33,15 +61,13 @@ function EventsHome({ navigation }) {
           {t('addEvent')}
         </StyledButton>
       </View>
+      {!requestingEvents &&
+        eventsList &&
+        eventsList.map(event => {
+          return <Text key={event[0]}>{JSON.stringify(event[1])}</Text>;
+        })}
     </ScrollView>
   );
 }
-
-EventsHome.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-    push: PropTypes.func.isRequired,
-  }).isRequired,
-};
 
 export default EventsHome;

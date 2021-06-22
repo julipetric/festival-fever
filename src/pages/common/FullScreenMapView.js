@@ -23,6 +23,9 @@ const styles = StyleSheet.create({
   },
 });
 
+const latitudeDelta = 0.0922;
+const longitudeDelta = 0.0421;
+
 function FullScreenMapView() {
   const { params } = useRoute();
 
@@ -54,8 +57,8 @@ function FullScreenMapView() {
         {
           latitude: location.coords.latitude,
           longitude: location.coords.longitude,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
+          latitudeDelta,
+          longitudeDelta,
         },
         500
       );
