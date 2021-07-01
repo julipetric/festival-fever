@@ -1,10 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome5 } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
 import { t } from 'i18n-js';
-import MisEventosScreen from '../asistente/MisEventosScreen';
 import { PinkPrimary, TransparentBackdrop } from '../../assets/Colors';
 import MyEvents from './MyEvents';
 import Perfil from '../common/Perfil';
@@ -48,17 +47,6 @@ function HomeCorporativo() {
                 <FontAwesome5 name="calendar-alt" size={23} color={color} />
               ),
               title: t('myEvents'),
-            }}
-          />
-          <Drawer.Screen
-            name={t('scanQR')}
-            component={MisEventosScreen}
-            options={{
-              // eslint-disable-next-line react/prop-types
-              tabBarIcon: ({ color }) => (
-                <MaterialIcons name="qr-code-scanner" size={26} color={color} />
-              ),
-              title: t('scanQR'),
             }}
           />
           <Drawer.Screen

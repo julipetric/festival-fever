@@ -1,10 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
 import { t } from 'i18n-js';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View, RefreshControl } from 'react-native';
-import { ActivityIndicator, Text, Title } from 'react-native-paper';
+import { Text, Title } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/core';
-import { useFirestore, useFirestoreConnect } from 'react-redux-firebase';
+import { useFirestore } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
 import _ from 'lodash';
 import StyledButton from '../../components/StyledButton';
@@ -20,27 +20,34 @@ function EventsHome() {
   const firestore = useFirestore();
   const [eventsList, setEventsList] = useState([]);
 
-  useFirestoreConnect('events');
-
   const events = useSelector(state => state.firestore.data.events);
 
   useEffect(() => {
     setEventsList(_.toPairs(events).filter(event => event[1] !== null));
   }, [events]);
 
-  const requestingEvents = useSelector(
-    state => state.firestore.status.requesting.events
-  );
+  const [fetchingEvents, setFetchingEvents] = useState(false);
 
-  function onRefresh() {
-    firestore.get({ collection: 'events' });
-  }
+  const onRefresh = useCallback(async () => {
+    setFetchingEvents(true);
+    try {
+      await firestore.get({ collection: 'events' });
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setFetchingEvents(false);
+    }
+  }, [setFetchingEvents, firestore]);
+
+  useEffect(() => {
+    onRefresh();
+  }, [onRefresh]);
 
   return (
     <ScrollView
       contentContainerStyle={styles.contentContainer}
       refreshControl={
-        <RefreshControl refreshing={requestingEvents} onRefresh={onRefresh} />
+        <RefreshControl refreshing={fetchingEvents} onRefresh={onRefresh} />
       }
     >
       <View
@@ -61,8 +68,7 @@ function EventsHome() {
           {t('addEvent')}
         </StyledButton>
       </View>
-      {!requestingEvents &&
-        eventsList &&
+      {eventsList &&
         eventsList.map(event => {
           return <Text key={event[0]}>{JSON.stringify(event[1])}</Text>;
         })}

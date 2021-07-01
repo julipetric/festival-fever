@@ -3,6 +3,7 @@
     "address": "Address",
     "addressDescription": "Address Description",
     "birthday": "Birthday",
+    "categories": "Categories",
     "contactEmail": "Contact Email",
     "contactPhone": "Contact Phone",
     "createEventProductNotes": "Once the event is created, you will be able to add products, promotions and sellers in the details section",
@@ -12,6 +13,7 @@
     "eventName": "Event Name",
     "events": "Events",
     "explore": "Explore",
+    "favorites": "Favorites",
     "home": "Home",
     "lastName": "Last Name",
     "location": "Location",
@@ -30,5 +32,6 @@
     "signUp": "Sign Up",
     "timeAndDate": "Time and Date",
     "username": "Username",
+    "wallet": "Wallet",
     "wrongUserPasswordCombination": "You entered an incorret user or password"
 }
