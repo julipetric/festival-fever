@@ -54,7 +54,9 @@
     "react-redux": "^7.2.3",
     "react-redux-firebase": "^3.10.0",
     "redux-firestore": "^0.15.0",
-    "yup": "^0.32.9"
+    "yup": "^0.32.9",
+    "expo-linear-gradient": "~9.1.0",
+    "expo-font": "~9.1.0"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",

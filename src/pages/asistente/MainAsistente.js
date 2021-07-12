@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { PinkPrimary } from '../../assets/Colors';
 import HomeAsistente from './HomeAsistente';
 import CategoryDetails from './categories/CategoryDetails';
+import FestivalFeverHeader from '../components/Header/FestivalFeverHeader';
 
 const Stack = createStackNavigator();
 
@@ -19,6 +20,7 @@ const styles = StyleSheet.create({
 export default function MainAsistente() {
   return (
     <View style={styles.container}>
+      <FestivalFeverHeader />
       <Stack.Navigator
         activeColor={PinkPrimary}
         initialRouteName="HomeCorporativo"

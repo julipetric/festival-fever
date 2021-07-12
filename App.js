@@ -12,7 +12,7 @@ import en from './src/assets/locales/en/en.json';
 import image from './src/assets/default_bg.png';
 import Providers from './src/context/Providers';
 import { fbConfig } from './src/context/FirebaseConfig';
-import AuthGate from './src/context/AuthGate';
+import SplashGate from './src/context/SplashGate';
 import initializePolyfill from './src/context/Polyfill';
 
 const styles = StyleSheet.create({
@@ -50,11 +50,11 @@ export default function App() {
     <Providers>
       <ImageBackground source={image} style={styles.image}>
         <SafeAreaView style={styles.image}>
-          <AuthGate>
+          <SplashGate>
             {/* eslint-disable-next-line react/style-prop-object */}
             <StatusBar style="light" translucent />
             <InitialNavigator />
-          </AuthGate>
+          </SplashGate>
         </SafeAreaView>
       </ImageBackground>
     </Providers>

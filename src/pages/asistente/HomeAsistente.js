@@ -5,7 +5,6 @@ import { AntDesign, Entypo, FontAwesome } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
 import { t } from 'i18n-js';
 import { PinkPrimary } from '../../assets/Colors';
-import FestivalFeverHeader from '../components/FestivalFeverHeader';
 import CategoriesScreen from './categories/CategoriesScreen';
 import WalletScreen from './wallet/WalletScreen';
 import FavoritesScreen from './favorites/FavoritesScreen';
@@ -33,7 +32,6 @@ const styles = StyleSheet.create({
 function HomeAsistente() {
   return (
     <View style={styles.container}>
-      <FestivalFeverHeader />
       <View style={styles.mainLayout}>
         <Tab.Navigator
           activeColor={PinkPrimary}
