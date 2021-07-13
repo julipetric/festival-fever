@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { PinkPrimary } from '../../assets/Colors';
 import HomeAsistente from './HomeAsistente';
-import CategoryDetails from './categories/CategoryDetails';
+import CategoryDetails from './categories/categoryDetails/CategoryDetails';
 import FestivalFeverHeader from '../components/Header/FestivalFeverHeader';
 
 const Stack = createStackNavigator();

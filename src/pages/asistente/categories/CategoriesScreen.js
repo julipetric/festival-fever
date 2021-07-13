@@ -6,15 +6,58 @@ import BeerBackground from '../../../assets/categoriesBackgrounds/beer.png';
 import ConcertBackground from '../../../assets/categoriesBackgrounds/concert.png';
 import PartyBackground from '../../../assets/categoriesBackgrounds/party.png';
 
+const dummyEventList = [
+  { name: 'eventName', id: '1' },
+  { name: 'eventName', id: '2' },
+  { name: 'eventName', id: '3' },
+  { name: 'eventName', id: '4' },
+  { name: 'eventName', id: '5' },
+];
+
 const items = [
-  { name: 'dummyItem', id: '1', image: TheatreBackground },
-  { name: 'dummyItem', id: '2', image: BeerBackground },
-  { name: 'dummyItem', id: '3', image: ConcertBackground },
-  { name: 'dummyItem', id: '4', image: PartyBackground },
-  { name: 'dummyItem', id: '5', image: TheatreBackground },
-  { name: 'dummyItem', id: '6', image: BeerBackground },
-  { name: 'dummyItem', id: '7', image: ConcertBackground },
-  { name: 'dummyItem', id: '8', image: PartyBackground },
+  {
+    name: 'dummyItem',
+    id: '1',
+    image: TheatreBackground,
+    events: dummyEventList,
+  },
+  { name: 'dummyItem', id: '2', image: BeerBackground, events: dummyEventList },
+  {
+    name: 'dummyItem',
+    id: '3',
+    image: ConcertBackground,
+    events: dummyEventList,
+  },
+  {
+    name: 'dummyItem',
+    id: '4',
+    image: PartyBackground,
+    events: dummyEventList,
+  },
+  {
+    name: 'dummyItem',
+    id: '5',
+    image: TheatreBackground,
+    events: dummyEventList,
+  },
+  {
+    name: 'dummyItem',
+    id: '6',
+    image: BeerBackground,
+    events: dummyEventList,
+  },
+  {
+    name: 'dummyItem',
+    id: '7',
+    image: ConcertBackground,
+    events: dummyEventList,
+  },
+  {
+    name: 'dummyItem',
+    id: '8',
+    image: PartyBackground,
+    events: dummyEventList,
+  },
 ];
 
 function CategoriesScreen() {
