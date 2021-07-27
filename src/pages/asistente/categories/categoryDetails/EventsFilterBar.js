@@ -10,6 +10,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     width: '100%',
     paddingHorizontal: 10,
+    marginBottom: 10,
   },
   counter: {
     display: 'flex',

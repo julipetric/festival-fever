@@ -8,8 +8,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/core';
 import { GradientEnd, GradientStart } from '../../../assets/Colors';
 
-import HeaderButton from './HeaderButton';
-
 const styles = StyleSheet.create({
   container: {
     width: '100%',
@@ -24,7 +22,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginVertical: 8,
   },
+  buttonContainer: {
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    borderRadius: 100,
+    margin: 0,
+    padding: 0,
+    marginLeft: 7,
+  },
 });
+
+function HeaderButton({ children }) {
+  return <View style={styles.buttonContainer}>{children}</View>;
+}
+
+HeaderButton.propTypes = {
+  children: PropTypes.element.isRequired,
+};
 
 export default function FestivalFeverHeader({ corporativo }) {
   const firebase = useFirebase();

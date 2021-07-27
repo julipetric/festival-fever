@@ -7,11 +7,11 @@ import ConcertBackground from '../../../assets/categoriesBackgrounds/concert.png
 import PartyBackground from '../../../assets/categoriesBackgrounds/party.png';
 
 const dummyEventList = [
-  { name: 'eventName', id: '1' },
-  { name: 'eventName', id: '2' },
-  { name: 'eventName', id: '3' },
-  { name: 'eventName', id: '4' },
-  { name: 'eventName', id: '5' },
+  { name: 'eventName', id: '1', image: BeerBackground },
+  { name: 'eventName', id: '2', image: ConcertBackground },
+  { name: 'eventName', id: '3', image: TheatreBackground },
+  { name: 'eventName', id: '4', image: BeerBackground },
+  { name: 'eventName', id: '5', image: PartyBackground },
 ];
 
 const items = [
