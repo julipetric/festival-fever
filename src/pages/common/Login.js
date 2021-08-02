@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, Alert } from 'react-native';
 import { t } from 'i18n-js';
 import { useForm } from 'react-hook-form';
 import { useFirebase } from 'react-redux-firebase';
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/native';
 import { ActivityIndicator } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import StyledButton from '../components/StyledButton';
@@ -51,20 +51,22 @@ export default function Login() {
   }
 
   useEffect(() => {
-    if (profile && profile.userTypeId) {
-      if (profile.userTypeId === 1) {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'MainAsistente' }],
-        });
+    if (navigation) {
+      if (profile && profile.userTypeId) {
+        if (profile.userTypeId === 1) {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'MainAsistente' }],
+          });
+        }
+        if (profile.userTypeId === 2) {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'MainCorporativo' }],
+          });
+        }
+        setLoading(false);
       }
-      if (profile.userTypeId === 2) {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'MainCorporativo' }],
-        });
-      }
-      setLoading(false);
     }
   }, [navigation, profile]);
 

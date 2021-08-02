@@ -11,7 +11,10 @@ const Stack = createStackNavigator();
 export default function InitialNavigator() {
   return (
     <NavigationContainer theme={theme}>
-      <Stack.Navigator headerMode="none" initialRouteName="AuthNavigator">
+      <Stack.Navigator
+        initialRouteName="AuthNavigator"
+        screenOptions={{ headerMode: 'none' }}
+      >
         <Stack.Screen name="AuthNavigator" component={AuthNavigator} />
         <Stack.Screen name="MainCorporativo" component={MainCorporativo} />
         <Stack.Screen name="MainAsistente" component={MainAsistente} />

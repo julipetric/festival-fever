@@ -5,7 +5,7 @@ import { IconButton, Title } from 'react-native-paper';
 import { useFirebase } from 'react-redux-firebase';
 import PropTypes from 'prop-types';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/native';
 import { GradientEnd, GradientStart } from '../../../assets/Colors';
 
 const styles = StyleSheet.create({
@@ -70,7 +70,7 @@ export default function FestivalFeverHeader({ corporativo }) {
         <HeaderButton>
           <IconButton
             icon={() => <Ionicons name="person" size={17} color="white" />}
-            onPress={logout}
+            onPress={() => navigation.navigate('MyAccount')}
             style={{ margin: 1 }}
           />
         </HeaderButton>

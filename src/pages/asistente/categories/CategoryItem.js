@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
 import { Text } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/native';
 
 const styles = StyleSheet.create({
   itemBackground: {

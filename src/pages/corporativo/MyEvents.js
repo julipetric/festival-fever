@@ -20,7 +20,7 @@ function MyEvents() {
   return (
     <>
       <View style={styles.container}>
-        <Stack.Navigator headerMode="none">
+        <Stack.Navigator screenOptions={{ headerMode: 'none' }}>
           <Stack.Screen name={t('events')} component={EventsHome} />
           <Stack.Screen name={t('addEvent')} component={AddEvent} />
         </Stack.Navigator>

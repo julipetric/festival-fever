@@ -7,7 +7,7 @@ import { FontAwesome5, Feather } from '@expo/vector-icons';
 const styles = StyleSheet.create({
   card: {
     backgroundColor: 'white',
-    borderRadius: 10,
+    borderRadius: 4,
     display: 'flex',
     height: '80%',
     overflow: 'hidden',

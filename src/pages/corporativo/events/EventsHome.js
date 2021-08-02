@@ -3,7 +3,7 @@ import { t } from 'i18n-js';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View, RefreshControl } from 'react-native';
 import { Text, Title } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/native';
 import { useFirestore } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
 import _ from 'lodash';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dimensions, FlatList, StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import PropTypes from 'prop-types';
 import EventCardView from './EventCardsView';

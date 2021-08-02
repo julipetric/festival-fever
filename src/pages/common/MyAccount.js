@@ -2,10 +2,10 @@ import { t } from 'i18n-js';
 import React from 'react';
 import { View } from 'react-native';
 import { useFirebase } from 'react-redux-firebase';
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/native';
 import StyledButton from '../components/StyledButton';
 
-function Perfil() {
+export default function MyAccount() {
   const firebase = useFirebase();
   const navigation = useNavigation();
 
@@ -20,5 +20,3 @@ function Perfil() {
     </View>
   );
 }
-
-export default Perfil;

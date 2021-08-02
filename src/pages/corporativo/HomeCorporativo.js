@@ -6,7 +6,7 @@ import { StyleSheet, View } from 'react-native';
 import { t } from 'i18n-js';
 import { PinkPrimary, TransparentBackdrop } from '../../assets/Colors';
 import MyEvents from './MyEvents';
-import Perfil from '../common/Perfil';
+import MyAccount from '../common/MyAccount';
 
 const Drawer = createDrawerNavigator();
 
@@ -50,9 +50,9 @@ function HomeCorporativo() {
             }}
           />
           <Drawer.Screen
-            name="Perfil"
-            component={Perfil}
-            options={{ title: t('profile') }}
+            name="MyAccount"
+            component={MyAccount}
+            options={{ title: t('myAccount') }}
           />
         </Drawer.Navigator>
       </View>

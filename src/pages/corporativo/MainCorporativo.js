@@ -22,7 +22,7 @@ export default function MainCorporativo() {
       <Stack.Navigator
         activeColor={PinkPrimary}
         initialRouteName="HomeCorporativo"
-        headerMode="none"
+        screenOptions={{ headerMode: 'none' }}
       >
         <Stack.Screen name="HomeCorporativo" component={HomeCorporativo} />
         <Stack.Screen name="FullScreenMapView" component={FullScreenMapView} />
