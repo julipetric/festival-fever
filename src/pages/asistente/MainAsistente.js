@@ -3,7 +3,6 @@ import { StyleSheet, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { PinkPrimary } from '../../assets/Colors';
 import HomeAsistente from './HomeAsistente';
-import CategoryDetails from './categories/categoryDetails/CategoryDetails';
 import MyAccount from '../common/MyAccount';
 import FestivalFeverHeader from '../components/Header/FestivalFeverHeader';
 
@@ -27,7 +26,6 @@ export default function MainAsistente() {
         screenOptions={{ header: () => <FestivalFeverHeader /> }}
       >
         <Stack.Screen name="HomeAsistente" component={HomeAsistente} />
-        <Stack.Screen name="CategoryDetails" component={CategoryDetails} />
         <Stack.Screen name="MyAccount" component={MyAccount} />
       </Stack.Navigator>
     </View>

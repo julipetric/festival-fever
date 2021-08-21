@@ -8,6 +8,7 @@ import { PinkPrimary } from '../../assets/Colors';
 import CategoriesScreen from './categories/CategoriesScreen';
 import WalletScreen from './wallet/WalletScreen';
 import FavoritesScreen from './favorites/FavoritesScreen';
+import CategoriesMain from './categories/CategoriesMain';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -46,7 +47,7 @@ function HomeAsistente() {
         >
           <Tab.Screen
             name={t('categories')}
-            component={CategoriesScreen}
+            component={CategoriesMain}
             options={{
               // eslint-disable-next-line react/prop-types
               tabBarIcon: ({ color }) => (

@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { useRoute } from '@react-navigation/core';
+import { useRoute } from '@react-navigation/native';
 import CategoryDetailsHeader from './CategoryDetailsHeader';
 import EventsFilterBar from './EventsFilterBar';
 import { BackgroundGray } from '../../../../assets/Colors';
