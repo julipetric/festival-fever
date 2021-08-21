@@ -28,7 +28,11 @@ export default function MainAsistente() {
         screenOptions={{ header: () => <FestivalFeverHeader /> }}
       >
         <Stack.Screen name="HomeAsistente" component={HomeAsistente} />
-        <Stack.Screen name={t('myAccount')} component={MyAccount} />
+        <Stack.Screen
+          name={t('myAccount')}
+          component={MyAccount}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen name={t('search')} component={SearchScreen} />
         <Stack.Screen
           name={t('eventDetails')}
