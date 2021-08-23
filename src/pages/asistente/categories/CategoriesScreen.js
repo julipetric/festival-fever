@@ -1,18 +1,18 @@
 import React from 'react';
 import { FlatList } from 'react-native';
+import { uniqueId, sample } from 'lodash';
 import CategoryItem from './CategoryItem';
 import TheatreBackground from '../../../assets/categoriesBackgrounds/theatre.png';
 import BeerBackground from '../../../assets/categoriesBackgrounds/beer.png';
 import ConcertBackground from '../../../assets/categoriesBackgrounds/concert.png';
 import PartyBackground from '../../../assets/categoriesBackgrounds/party.png';
+import { demoEvents } from '../../../mocks/eventsDemoData';
 
-const dummyEventList = [
-  { name: 'eventName', id: '1', image: BeerBackground },
-  { name: 'eventName', id: '2', image: ConcertBackground },
-  { name: 'eventName', id: '3', image: TheatreBackground },
-  { name: 'eventName', id: '4', image: BeerBackground },
-  { name: 'eventName', id: '5', image: PartyBackground },
-];
+const dummyEventList = [];
+
+for (let i = 0; i < 10; i += 1) {
+  dummyEventList.push({ ...sample(demoEvents), id: uniqueId() });
+}
 
 const items = [
   {
