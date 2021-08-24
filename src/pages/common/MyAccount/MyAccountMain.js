@@ -99,7 +99,7 @@ export default function MyAccountMain() {
         <List.Item
           title="Datos personales"
           titleStyle={{ color: 'white', fontSize: 16, fontWeight: '500' }}
-          onPress={() => navigation.navigate(t('personalInformation'))}
+          onPress={() => navigation.navigate(t('personalInformation'), {avatar: avatar, name: name, address: address})}
           style={styles.listItemContainer}
           right={() => (
             <MaterialCommunityIcons
