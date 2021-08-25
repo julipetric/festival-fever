@@ -5,8 +5,8 @@ import { IconButton } from 'react-native-paper';
 import { FontAwesome5, Feather } from '@expo/vector-icons';
 import moment from 'moment';
 import { t } from 'i18n-js';
+import MapView from 'react-native-maps';
 import { PinkPrimary } from '../../../../../assets/Colors';
-import StyledButton from '../../../../components/StyledButton';
 
 const styles = StyleSheet.create({
   card: {
@@ -24,7 +24,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   contentContainer: {
-    padding: 10,
     display: 'flex',
     flex: 1,
     maxHeight: '50%',
@@ -43,8 +42,12 @@ const styles = StyleSheet.create({
     opacity: 0.6,
     fontSize: 14,
   },
-  buttonsContainer: {
-    alignItems: 'center',
+  dataContainer: {
+    padding: 10,
+    flex: 4,
+  },
+  mapContainer: {
+    flex: 6,
   },
 });
 
@@ -77,7 +80,7 @@ function EventCardView({ item }) {
         <View
           style={{ display: 'flex', flex: 1, justifyContent: 'space-between' }}
         >
-          <View style={{ display: 'flex' }}>
+          <View style={styles.dataContainer}>
             {event.dates.length === 1 && (
               <View style={{ flexDirection: 'row' }}>
                 <Text style={styles.eventDate}>
@@ -96,10 +99,7 @@ function EventCardView({ item }) {
             <Text style={styles.eventTime}>{event.location.description}</Text>
             <Text style={styles.eventTime}>{event.location.address}</Text>
           </View>
-          <View style={styles.buttonsContainer}>
-            <StyledButton mode="contained" label={t('getTickets')} />
-            <StyledButton mode="outlined" label={t('moreInformation')} />
-          </View>
+          <MapView style={styles.mapContainer} scrollEnabled={false} />
         </View>
       </View>
     </View>

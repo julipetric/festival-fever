@@ -20,3 +20,8 @@ const theme = {
 };
 
 export default theme;
+
+export const themeBlackText = {
+  ...theme,
+  colors: { ...theme.colors, text: 'black' },
+};
