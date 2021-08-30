@@ -1,9 +1,9 @@
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
-import PropTypes from 'prop-types';
 import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { PinkPrimary } from '../../../../assets/Colors';
+import PillButton from '../../../common/PillButton';
 
 const styles = StyleSheet.create({
   container: {
@@ -61,14 +61,6 @@ const filters = [
   { text: 'Filter', id: 'filter' },
 ];
 
-function FilterButton({ children, selected }) {
-  return (
-    <View style={[styles.filterButton, { opacity: selected ? 1 : 0.3 }]}>
-      {children}
-    </View>
-  );
-}
-
 function EventsFilterBar() {
   return (
     <View style={styles.container}>
@@ -80,35 +72,27 @@ function EventsFilterBar() {
       <View style={styles.rowSpaceBetween}>
         <ScrollView style={styles.filtersScroll} horizontal>
           {filters.map(filter => (
-            <FilterButton selected={filter.selected}>
-              <Text>{filter.text}</Text>
-            </FilterButton>
+            <PillButton selected={filter.selected} text={filter.text} />
           ))}
         </ScrollView>
         <View style={[styles.rowSpaceBetween, { paddingBottom: 7 }]}>
-          <FilterButton selected>
-            <MaterialCommunityIcons
-              name="view-carousel"
-              size={22}
-              color="white"
-            />
-          </FilterButton>
-          <FilterButton>
-            <FontAwesome5 name="th-list" size={16} color="white" />
-          </FilterButton>
+          <PillButton
+            selected
+            element={
+              <MaterialCommunityIcons
+                name="view-carousel"
+                size={22}
+                color="white"
+              />
+            }
+          />
+          <PillButton
+            element={<FontAwesome5 name="th-list" size={16} color="white" />}
+          />
         </View>
       </View>
     </View>
   );
 }
-
-FilterButton.defaultProps = {
-  selected: false,
-};
-
-FilterButton.propTypes = {
-  children: PropTypes.element.isRequired,
-  selected: PropTypes.bool,
-};
 
 export default EventsFilterBar;
