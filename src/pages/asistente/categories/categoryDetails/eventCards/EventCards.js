@@ -16,7 +16,7 @@ function EventCards({ events }) {
       data={events}
       renderItem={EventCardView}
       sliderWidth={windowWidth}
-      itemWidth={windowWidth * 0.6}
+      itemWidth={windowWidth * 0.7}
       keyExtractor={event => event.id}
       contentContainerStyle={{ flexGrow: 1 }}
       removeClippedSubviews

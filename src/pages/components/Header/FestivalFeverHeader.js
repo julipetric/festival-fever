@@ -2,10 +2,14 @@ import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { IconButton, Title } from 'react-native-paper';
-import { useFirebase } from 'react-redux-firebase';
 import PropTypes from 'prop-types';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useNavigation } from '@react-navigation/native';
+import {
+  TabActions,
+  useNavigation,
+  useNavigationState,
+} from '@react-navigation/native';
+import { t } from 'i18n-js';
 import { GradientEnd, GradientStart } from '../../../assets/Colors';
 
 const styles = StyleSheet.create({
@@ -40,14 +44,15 @@ HeaderButton.propTypes = {
 };
 
 export default function FestivalFeverHeader({ corporativo }) {
-  const firebase = useFirebase();
-
   const navigation = useNavigation();
 
-  async function logout() {
-    await firebase.logout();
-    navigation.navigate('AuthNavigator');
-  }
+  const tabIndex = useNavigationState(
+    state =>
+      state.routes &&
+      state.routes[0] &&
+      state.routes[0].state &&
+      state.routes[0].state.index
+  );
 
   return (
     <LinearGradient
@@ -63,7 +68,11 @@ export default function FestivalFeverHeader({ corporativo }) {
         <HeaderButton>
           <IconButton
             icon={() => <FontAwesome5 name="search" size={17} color="white" />}
-            onPress={logout}
+            onPress={() => {
+              if (tabIndex !== 0)
+                navigation.dispatch(TabActions.jumpTo(t('categories')));
+              navigation.navigate(t('search'));
+            }}
             style={{ margin: 1 }}
           />
         </HeaderButton>
