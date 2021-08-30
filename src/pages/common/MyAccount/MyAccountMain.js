@@ -3,8 +3,12 @@ import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useFirebase } from 'react-redux-firebase';
 import { useNavigation } from '@react-navigation/native';
-import { Avatar, List } from 'react-native-paper';
+import { Avatar } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useSelector } from 'react-redux';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+
+import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
   scroll: {
@@ -21,48 +25,59 @@ const styles = StyleSheet.create({
   userImage: {
     marginRight: 12,
   },
-  listItemContainer: {
-    height: 60,
-    justifyContent: 'center',
-  },
-  infoTextContainer: {
-    paddingTop: 20,
-    paddingBottom: 12,
-    backgroundColor: '#1A1C28',
-  },
   infoText: {
     fontSize: 12,
-    marginLeft: 20,
+    paddingLeft: 20,
     color: 'gray',
     fontWeight: '500',
+    textTransform: 'uppercase',
+    paddingVertical: 14,
+    backgroundColor: '#1A1C28',
   },
 });
 
-function InfoText({ text }) {
+function ListItem({ text, onPress, right, textStyle }) {
   return (
-    <View style={styles.infoTextContainer}>
-      <Text style={styles.infoText}>{text}</Text>
-    </View>
+    <TouchableOpacity
+      onPress={onPress}
+      style={{
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        padding: 14,
+      }}
+    >
+      <Text
+        style={[
+          { color: 'white', fontSize: 16, opacity: 0.8 },
+          { ...textStyle },
+        ]}
+      >
+        {text}
+      </Text>
+      {right}
+    </TouchableOpacity>
   );
 }
 
-export default function MyAccountMain() {
+ListItem.defaultProps = {
+  onPress: () => {},
+  right: undefined,
+  textStyle: {},
+};
+ListItem.propTypes = {
+  text: PropTypes.string.isRequired,
+  onPress: PropTypes.func,
+  right: PropTypes.element,
+  textStyle: PropTypes.object,
+};
+
+function MyAccountMain() {
+  const { profile } = useSelector(state => ({
+    profile: state.firebase.profile,
+  }));
+
   const avatar = 'https://i.imgur.com/GfkNpVG.jpg';
-  const name = 'Laureano López';
-  const address = {
-    streetA: 'Abbott Shoals',
-    streetB: '505 Winona Place',
-    streetC: '4306 Hudson Street Suite 875',
-    streetD: 'Suite 489',
-    city: 'Santa Fe',
-    state: 'Santa Fe',
-    country: 'Argentina',
-    zipcode: '41428-0189',
-    geo: {
-      lat: '-75.8513',
-      lng: '81.3262',
-    },
-  };
 
   const firebase = useFirebase();
   const navigation = useNavigation();
@@ -80,101 +95,81 @@ export default function MyAccountMain() {
         </View>
         <View>
           <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold' }}>
-            {name}
-          </Text>
-          <Text style={{ color: 'white', fontSize: 14 }}>
-            {address.city}, {address.country}{' '}
-            <MaterialCommunityIcons
-              name="map-marker"
-              size={14}
-              color="#F936CC"
-            />
+            {profile.name} {profile.lastName}
           </Text>
         </View>
       </View>
-
-      <InfoText text="CONFIGURACIÓN DE LA CUENTA" />
-
+      <Text style={styles.infoText}>{t('accountSettings')}</Text>
       <View>
-        <List.Item
-          title="Datos personales"
-          titleStyle={{ color: 'white', fontSize: 16, fontWeight: '500' }}
-          onPress={() => navigation.navigate(t('personalInformation'), {avatar: avatar, name: name, address: address})}
-          style={styles.listItemContainer}
-          right={() => (
+        <ListItem
+          text="Datos personales"
+          onPress={() => navigation.navigate(t('personalInformation'))}
+          right={
             <MaterialCommunityIcons
               name="account-circle-outline"
               size={24}
               color="white"
             />
-          )}
+          }
         />
-        <List.Item
-          title="Ubicación"
-          titleStyle={{ color: 'white', fontSize: 16, fontWeight: '500' }}
-          style={styles.listItemContainer}
-          right={() => (
+        <ListItem
+          text="Ubicación"
+          right={
             <MaterialCommunityIcons
               name="map-marker-outline"
               size={24}
               color="white"
             />
-          )}
+          }
         />
-        <List.Item
-          title="Pagos y cobros"
-          titleStyle={{ color: 'white', fontSize: 16, fontWeight: '500' }}
-          style={styles.listItemContainer}
-          right={() => (
+        <ListItem
+          text="Pagos y cobros"
+          right={
             <MaterialCommunityIcons
               name="cash-multiple"
               size={24}
               color="white"
             />
-          )}
+          }
         />
       </View>
-
-      <InfoText text="ASISTENCIA" />
+      <Text style={styles.infoText}>{t('help')}</Text>
       <View>
-        <List.Item
-          title="Tengo un problema"
-          titleStyle={{ color: 'white', fontSize: 16, fontWeight: '500' }}
-          style={styles.listItemContainer}
-          right={() => (
+        <ListItem
+          text="Tengo un problema"
+          right={
             <MaterialCommunityIcons
               name="alert-outline"
               size={24}
               color="white"
             />
-          )}
+          }
         />
-        <List.Item
-          title="Términos de servicio"
-          titleStyle={{ color: 'white', fontSize: 16, fontWeight: '500' }}
-          style={styles.listItemContainer}
-          right={() => (
+        <ListItem
+          text="Términos de servicio"
+          right={
             <MaterialCommunityIcons
               name="file-document-outline"
               size={24}
               color="white"
             />
-          )}
+          }
         />
-        <List.Item
-          title="Cerrar sesión"
-          titleStyle={{ color: '#FF6E6E', fontSize: 16, fontWeight: '500' }}
+        <ListItem
+          text="Cerrar sesión"
+          textStyle={{ color: '#FF6E6E' }}
           onPress={logout}
-          style={styles.listItemContainer}
-          right={() => (
+          right={
             <MaterialCommunityIcons
               name="login-variant"
               size={24}
               color="#FF6E6E"
             />
-          )}
+          }
         />
       </View>
     </ScrollView>
   );
 }
+
+export default MyAccountMain;

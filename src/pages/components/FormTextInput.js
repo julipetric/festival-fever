@@ -26,6 +26,7 @@ export default function FormTextInput({
   editable,
   valueGetter,
   left,
+  maxLength,
   ...props
 }) {
   const { field, fieldState } = useController({ control, defaultValue, name });
@@ -50,6 +51,7 @@ export default function FormTextInput({
         keyboardType={keyboardType}
         disabled={disabled}
         editable={editable}
+        maxLength={maxLength}
         {...props}
       />
       {!hideHelperText && (
@@ -80,6 +82,7 @@ FormTextInput.defaultProps = {
   editable: true,
   valueGetter: undefined,
   left: undefined,
+  maxLength: undefined,
 };
 
 FormTextInput.propTypes = {
@@ -98,6 +101,7 @@ FormTextInput.propTypes = {
   hideHelperText: PropTypes.bool,
   helperTextType: PropTypes.oneOf(['error', 'info']),
   multiline: PropTypes.bool,
+  maxLength: PropTypes.number,
   keyboardType: PropTypes.string,
   disabled: PropTypes.bool,
   editable: PropTypes.bool,

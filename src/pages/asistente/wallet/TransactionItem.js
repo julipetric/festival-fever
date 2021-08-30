@@ -28,7 +28,6 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    fontWeight: 'bold',
   },
   date: {
     fontSize: 12,
@@ -50,6 +49,7 @@ const styles = StyleSheet.create({
   },
   eventName: {
     fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
@@ -146,9 +146,22 @@ function TransactionItem({
             ))}
           </>
         )}
-        <Text style={styles.date}>
-          {moment.unix(transaction.timestamp).format('MM/DD/YYYY - HH:mm')}
-        </Text>
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingTop: 2,
+          }}
+        >
+          <Text style={styles.date}>
+            {moment.unix(transaction.timestamp).format('MM/DD/YYYY - HH:mm')}
+          </Text>
+          {hideOrderTotal && (
+            <Text style={{ opacity: 0.6 }}>Total: ${transaction.amount}</Text>
+          )}
+        </View>
       </View>
       {!hideOrderTotal && <AmountLabel amount={transaction.amount} />}
     </TouchableOpacity>

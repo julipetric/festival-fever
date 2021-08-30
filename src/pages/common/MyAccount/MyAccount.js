@@ -25,7 +25,11 @@ export default function MyAccount() {
         presentation: 'modal',
       }}
     >
-      <Stack.Screen name={t('myAccount')} component={MyAccountMain} />
+      <Stack.Screen
+        name="MyAccountMain"
+        component={MyAccountMain}
+        options={{ title: t('myAccount') }}
+      />
       <Stack.Screen
         name={t('personalInformation')}
         component={PersonalInformation}

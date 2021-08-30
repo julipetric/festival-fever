@@ -1,11 +1,16 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Avatar, TextInput, ToggleButton } from 'react-native-paper';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { ToggleButton } from 'react-native-paper';
+import { useForm } from 'react-hook-form';
+import { t } from 'i18n-js';
+import { useSelector } from 'react-redux';
+import UserRegisterSchema from '../../../schemas/UserRegisterSchema';
+import StyledButton from '../../components/StyledButton';
+import FormTextInput from '../../components/FormTextInput';
 
 const styles = StyleSheet.create({
   scroll: {
-    backgroundColor: '#20222D',
+    backgroundColor: '#1A1C28',
   },
   userRow: {
     alignItems: 'center',
@@ -14,113 +19,91 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
     paddingRight: 15,
     paddingTop: 16,
+    backgroundColor: '#20222D',
   },
   userImage: {
     marginRight: 12,
   },
-  infoTextContainer: {
-    backgroundColor: '#1A1C28',
-    paddingBottom: 6,
-  },
   infoText: {
     fontSize: 13,
-    marginLeft: 20,
+    marginLeft: 5,
     color: 'gray',
     fontWeight: '500',
-    paddingTop: 16,
-    paddingBottom: 0
+    paddingTop: 8,
+    paddingBottom: 2,
   },
 });
 
-function InfoText({ text }) {
-  return (
-    <View style={styles.infoTextContainer}>
-      <Text style={styles.infoText}>{text}</Text>
-    </View>
-  );
-}
-function PersonalInformation({ route, navigation }) {
-  const avatar = route.params.avatar;
-  const address = route.params.address;
-  const [firstName, setFirstname] = React.useState(route.params.name.split(' ')[0]);
-  const [lastName, setLastname] = React.useState(route.params.name.split(' ')[1]);
-  const email = 'user@example.com';
-  const [phone, setPhone] = React.useState('+54 3492 414014');
-  const [selectedSex, setSelectedSex] = React.useState('h');
+function PersonalInformation() {
+  const [selectedGenre, setSelectedGenre] = React.useState('h');
+
+  const { profile } = useSelector(state => ({
+    profile: state.firebase.profile,
+  }));
+
+  const { control, handleSubmit, formState } = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange',
+    resolver: UserRegisterSchema,
+    defaultValues: profile,
+  });
+
+  function onSubmit(values) {
+    console.log(values.name);
+  }
 
   return (
     <ScrollView style={styles.scroll}>
-      <View style={styles.userRow}>
-        <View style={styles.userImage}>
-          <Avatar.Image rounded size={90} source={{ uri: avatar }} />
-        </View>
-        <View>
-          <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold' }}>
-            {firstName} {lastName}
-          </Text>
-          <Text style={{ color: 'white', fontSize: 14 }}>
-            {address.city}, {address.country}{' '}
-            <MaterialCommunityIcons
-              name="map-marker"
-              size={14}
-              color="#F936CC"
-            />
-          </Text>
-        </View>
-      </View>
-
-      <InfoText text="Nombre" />
-      <View style={styles.infoTextContainer}>
-        <TextInput style={{ paddingLeft: 16, paddingRight: 16}}
-          value={firstName}
-          onChangeText={firstName => setFirstname(firstName)}
+      <View
+        style={{
+          paddingHorizontal: 20,
+          paddingTop: 10,
+        }}
+      >
+        <FormTextInput
+          label={t('name')}
+          name="name"
+          placeholder={t('name')}
+          control={control}
+          style={{ backgroundColor: '#1A1C28' }}
           mode="outlined"
-          placeholder="Nombre"
-          maxLength={10}
-          type="default"
         />
-      </View>
-
-      <InfoText text="Apellido" />
-      <View style={styles.infoTextContainer}>
-        <TextInput style={{ paddingLeft: 16, paddingRight: 16}}
-          value={lastName}
-          onChangeText={lastName => setLastname(lastName)}
-          mode="outlined"
+        <FormTextInput
+          label={t('lastName')}
+          name="lastName"
           placeholder="Apellido"
-          maxLength={12}
-          type="default"
-        />
-      </View>
-
-      <InfoText text="Correo Electrónico" />
-      <View style={styles.infoTextContainer}>
-        <TextInput style={{ paddingLeft: 16, paddingRight: 16}}
-          value={email}
-          editable={false}
+          control={control}
+          style={{ backgroundColor: '#1A1C28' }}
           mode="outlined"
-          placeholder="Correo Electrónico"
         />
-      </View>
-
-      <InfoText text="Teléfono" />
-      <View style={styles.infoTextContainer}>
-        <TextInput style={{ paddingLeft: 16, paddingRight: 16}}
-          value={phone}
-          onChangeText={phone => setPhone(phone)}
+        <FormTextInput
+          label={t('email')}
+          name="email"
+          disabled
+          defaultValue="ajosdwoajd@aowidfma.com"
+          control={control}
+          style={{ backgroundColor: '#1A1C28' }}
           mode="outlined"
-          placeholder="Teléfono"
-          keyboardType="number-pad"
         />
-      </View>
-
-      <InfoText text="Sexo" />
-      <View style={styles.infoTextContainer}>
-        <ToggleButton.Row onValueChange={selectedSex => setSelectedSex(selectedSex)} value={selectedSex} style={{alignSelf: 'center'}}>
-          <ToggleButton icon="gender-male" value="h" />
-          <ToggleButton icon="gender-female" value="m" />
-          <ToggleButton icon="gender-male-female" value="t" />
-        </ToggleButton.Row>
+        <Text style={styles.infoText}>{t('genre')}</Text>
+        <View style={{}}>
+          <ToggleButton.Row
+            onValueChange={value => setSelectedGenre(value)}
+            value={selectedGenre}
+            style={{ alignSelf: 'center', marginVertical: 4 }}
+          >
+            <ToggleButton icon="gender-male" value="h" />
+            <ToggleButton icon="gender-female" value="m" />
+            <ToggleButton icon="gender-male-female" value="t" />
+          </ToggleButton.Row>
+        </View>
+        <StyledButton
+          label={t('save')}
+          mode="contained"
+          onPress={handleSubmit(onSubmit)}
+          disabled={!formState.isValid}
+          style={{ marginTop: 14 }}
+        />
       </View>
     </ScrollView>
   );

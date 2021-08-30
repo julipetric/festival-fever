@@ -43,7 +43,6 @@ PillButton.defaultProps = {
   selected: false,
   onPress: () => {},
   element: undefined,
-  key: undefined,
 };
 
 PillButton.propTypes = {
@@ -51,7 +50,6 @@ PillButton.propTypes = {
   selected: PropTypes.bool,
   onPress: PropTypes.func,
   element: PropTypes.element,
-  key: PropTypes.string,
 };
 
 export default PillButton;

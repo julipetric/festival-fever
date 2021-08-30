@@ -1,13 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, View, Animated } from 'react-native';
 import { ActivityIndicator, FAB, Snackbar, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
 import { t } from 'i18n-js';
 import Accordion from 'react-native-collapsible/Accordion';
-import { useFirestore } from 'react-redux-firebase';
+import { useFirebase, useFirestore } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
-import { first, orderBy, sumBy } from 'lodash';
+import { first, orderBy, remove, sumBy } from 'lodash';
 import { PinkPrimary, TransparentBackdrop } from '../../../assets/Colors';
 import EventLandingPage from '../../common/EventLandingPage';
 import ProductItem from '../../corporativo/products/ProductItem';
@@ -60,10 +60,14 @@ const styles = StyleSheet.create({
 function EventDetails() {
   const navigation = useNavigation();
   const firestore = useFirestore();
+  const firebase = useFirebase();
 
-  const { event } = useSelector(state => ({
+  const { event, profile } = useSelector(state => ({
     event: state.myStore.selectedEvent,
+    profile: state.firebase.profile,
   }));
+
+  const { favorites } = profile;
 
   const [priceTag, setPriceTag] = useState('-');
 
@@ -212,8 +216,18 @@ function EventDetails() {
   }, [ticketSegments, eventTickets]);
 
   function navigateToMap() {
-    navigation.navigate('FullScreenMapView');
+    navigation.navigate('FullScreenMapView', {
+      defaultMarker: event.location?.coordinates,
+    });
   }
+
+  const onFavAdded = useCallback(async () => {
+    const newFavorites = (favorites && [...favorites]) || [];
+    if (newFavorites.includes(event.id))
+      remove(newFavorites, e => e === event.id);
+    else newFavorites.push(event.id);
+    await firebase.updateProfile({ favorites: newFavorites });
+  }, [event.id, favorites, firebase]);
 
   return event && products && !loading ? (
     <>
@@ -221,6 +235,8 @@ function EventDetails() {
         event={event}
         category={event.category}
         navigateToMap={navigateToMap}
+        isFavorite={favorites?.includes(event.id)}
+        onFavPress={onFavAdded}
       >
         <View style={{ paddingHorizontal: 15 }}>
           {priceTag && (

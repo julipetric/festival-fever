@@ -15,7 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useSelector } from 'react-redux';
 import { PinkPrimary, TransparentBackdrop } from '../../assets/Colors';
-import MyAccount from '../common/MyAccount/MyAccount';
+import MyAccount from '../common/myAccount/MyAccount';
 import InactiveEvents from './InactiveEvents';
 import MyEvents from './events/MyEvents';
 import MyOrganization from './MyOrganization/MyOrganization';
