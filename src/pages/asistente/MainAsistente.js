@@ -1,10 +1,12 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { t } from 'i18n-js';
 import { PinkPrimary } from '../../assets/Colors';
 import HomeAsistente from './HomeAsistente';
 import MyAccount from '../common/MyAccount';
 import FestivalFeverHeader from '../components/Header/FestivalFeverHeader';
+import EventDetails from './event/EventDetails';
 
 const Stack = createStackNavigator();
 
@@ -26,7 +28,12 @@ export default function MainAsistente() {
         screenOptions={{ header: () => <FestivalFeverHeader /> }}
       >
         <Stack.Screen name="HomeAsistente" component={HomeAsistente} />
-        <Stack.Screen name="MyAccount" component={MyAccount} />
+        <Stack.Screen name={t('myAccount')} component={MyAccount} />
+        <Stack.Screen
+          name={t('eventDetails')}
+          component={EventDetails}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </View>
   );

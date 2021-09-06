@@ -1,5 +1,11 @@
 import React from 'react';
-import { ImageBackground, StyleSheet, Text, View } from 'react-native';
+import {
+  ImageBackground,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import { IconButton } from 'react-native-paper';
 import { FontAwesome5, Feather } from '@expo/vector-icons';
@@ -59,11 +65,15 @@ CircleButton.propTypes = {
   children: PropTypes.element.isRequired,
 };
 
-function EventCardView({ item }) {
+function EventCardView({ item, navigate }) {
   const event = item;
 
   return (
-    <View key={event.id} style={styles.card}>
+    <TouchableOpacity
+      key={event.id}
+      style={styles.card}
+      onPress={() => navigate(event)}
+    >
       <ImageBackground style={styles.imageContainer} source={item.image}>
         <IconButton
           icon={() => <FontAwesome5 name="share-alt" size={17} color="white" />}
@@ -102,12 +112,13 @@ function EventCardView({ item }) {
           <MapView style={styles.mapContainer} scrollEnabled={false} />
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
 EventCardView.propTypes = {
   item: PropTypes.object.isRequired,
+  navigate: PropTypes.func.isRequired,
 };
 
 export default EventCardView;
