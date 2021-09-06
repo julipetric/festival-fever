@@ -7,7 +7,7 @@ import { PinkPrimary } from '../../assets/Colors';
 const styles = StyleSheet.create({
   filterButton: {
     backgroundColor: PinkPrimary,
-    paddingVertical: 3,
+    paddingVertical: 2,
     paddingHorizontal: 9,
     marginHorizontal: 3,
     borderRadius: 100,
@@ -29,7 +29,8 @@ function PillButton({ text, selected, onPress, element }) {
       style={[styles.filterButton, { opacity: selected ? 1 : 0.3 }]}
     >
       <View style={styles.content}>
-        {text && <Text style={{ marginRight: 5 }}>{text}</Text>}
+        {text && <Text style={{ fontSize: 12 }}>{text}</Text>}
+        {element && text && <View style={{ width: 5 }} />}
         {element}
       </View>
     </TouchableOpacity>
