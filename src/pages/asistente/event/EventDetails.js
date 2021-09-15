@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Dimensions,
   Image,
@@ -6,7 +6,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { IconButton, Text } from 'react-native-paper';
+import { FAB, IconButton, Text } from 'react-native-paper';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import {
   Feather,
@@ -18,10 +18,13 @@ import PropTypes from 'prop-types';
 import { ScrollView } from 'react-native-gesture-handler';
 import moment from 'moment';
 import { t } from 'i18n-js';
+import Accordion from 'react-native-collapsible/Accordion';
 import {
   BackgroundGray,
   PinkPrimary,
   PurplePill,
+  TabBarBackground,
+  TransparentBackdrop,
 } from '../../../assets/Colors';
 
 const styles = StyleSheet.create({
@@ -42,11 +45,12 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 15,
+    alignSelf: 'flex-start',
   },
   dataContainer: {
-    alignItems: 'flex-start',
     paddingHorizontal: 15,
     flex: 1,
+    display: 'flex',
   },
   eventTitle: {
     fontSize: 50,
@@ -70,6 +74,30 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: 'white',
     marginTop: 15,
+  },
+  row: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flex: 1,
+    marginTop: 14,
+  },
+  bodyText: {
+    fontSize: 16,
+  },
+  floatingButton: {
+    position: 'absolute',
+    bottom: '2%',
+    alignSelf: 'center',
+  },
+  collapsibleHeader: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flex: 1,
+    marginVertical: 15,
   },
 });
 
@@ -152,18 +180,79 @@ function EventDetails() {
   const route = useRoute();
   const { event } = route.params;
 
-  return (
-    <ScrollView style={styles.container}>
-      <ImageHeader image={event.image} />
-      <View style={styles.dataContainer}>
-        <View style={styles.categoryPill}>
-          <Text style={styles.categoryText}>Category</Text>
-        </View>
-        <Text style={styles.eventTitle}>{event.name}</Text>
-        <DatePlaceRow event={event} />
-        <View style={styles.divider} />
+  const [activeSections, setActiveSections] = useState([]);
+
+  const SECTIONS = [
+    {
+      title: 'Products',
+      content: [
+        { title: 'title', description: 'description' },
+        { title: 'title', description: 'description' },
+        { title: 'title', description: 'description' },
+        { title: 'title', description: 'description' },
+        { title: 'title', description: 'description' },
+        { title: 'title', description: 'description' },
+      ],
+    },
+  ];
+
+  function renderContent(section) {
+    return (
+      <>
+        {section.content.map(item => (
+          <View style={styles.row}>
+            <Text style={styles.bodyText}>{item.title}</Text>
+            <Text style={[styles.bodyText, { fontWeight: 'bold' }]}>
+              {item.description}
+            </Text>
+          </View>
+        ))}
+      </>
+    );
+  }
+
+  function renderHeader(section) {
+    return (
+      <View style={styles.collapsibleHeader}>
+        <Text style={styles.headerText}>{section.title}</Text>
       </View>
-    </ScrollView>
+    );
+  }
+
+  return (
+    <>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={{ paddingBottom: 70 }}
+      >
+        <ImageHeader image={event.image} />
+        <View style={styles.dataContainer}>
+          <View style={styles.categoryPill}>
+            <Text style={styles.categoryText}>Category</Text>
+          </View>
+          <Text style={styles.eventTitle}>{event.name}</Text>
+          <DatePlaceRow event={event} />
+          <View style={styles.divider} />
+          <View style={styles.row}>
+            <Text style={styles.bodyText}>{t('ticketValue')}</Text>
+            <Text style={[styles.bodyText, { fontWeight: 'bold' }]}>text2</Text>
+          </View>
+          <Accordion
+            sections={SECTIONS}
+            activeSections={activeSections}
+            onChange={e => setActiveSections(e)}
+            renderContent={renderContent}
+            renderHeader={renderHeader}
+            underlayColor={TransparentBackdrop}
+          />
+        </View>
+      </ScrollView>
+      <FAB
+        label={t('buyTickets')}
+        style={styles.floatingButton}
+        onPress={() => {}}
+      />
+    </>
   );
 }
 
