@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Dimensions,
-  Image,
   ImageBackground,
   StyleSheet,
   View,
   Animated,
+  Image,
 } from 'react-native';
 import { FAB, IconButton, Text } from 'react-native-paper';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -125,6 +125,28 @@ const styles = StyleSheet.create({
 });
 
 function DatePlaceRow({ event }) {
+  let startDateString;
+  let hoursString;
+  if (event.dates.length === 1 && event.dates[0].start === 'dummyDate') {
+    startDateString = moment()
+      .add(3, 'days')
+      .format(`dddd D [${t('of')}] MMMM`);
+    hoursString = `${moment()
+      .add(3, 'days')
+      .add(2, 'hours')
+      .format(`HH:mm`)} - ${moment()
+      .add(3, 'days')
+      .add(7, 'hours')
+      .format(`HH:mm`)}`;
+  } else {
+    startDateString = moment(event.dates[0].start).format(
+      `dddd D [${t('of')}] MMMM`
+    );
+    hoursString = `${moment(event.dates[0].start).format(`HH:mm`)} - ${moment(
+      event.dates[0].end
+    ).format(`HH:mm`)}`;
+  }
+
   return (
     <View
       style={{
@@ -144,12 +166,8 @@ function DatePlaceRow({ event }) {
             marginLeft: 10,
           }}
         >
-          <Text style={styles.text1}>
-            {moment(event.dates[0].start).format(`dddd D [${t('of')}] MMMM`)}
-          </Text>
-          <Text style={styles.text2}>{`${moment(event.dates[0].start).format(
-            `HH:mm`
-          )} - ${moment(event.dates[0].end).format(`HH:mm`)} hs`}</Text>
+          <Text style={styles.text1}>{startDateString}</Text>
+          <Text style={styles.text2}>{hoursString}</Text>
         </View>
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -166,13 +184,22 @@ function DatePlaceRow({ event }) {
 function ImageHeader({ image }) {
   const navigation = useNavigation();
 
-  const imageSource = Image.resolveAssetSource(image);
-  const { width } = Dimensions.get('window');
-  const ratio = width / imageSource.width;
-  const height = imageSource.height * ratio;
+  const screenWidth = Dimensions.get('window').width;
+
+  const [imageHeight, setImageHeight] = useState(0);
+
+  useEffect(() => {
+    Image.getSize(image, (width, height) => {
+      const ratio = screenWidth / width;
+      setImageHeight(height * ratio);
+    });
+  }, [image, screenWidth]);
 
   return (
-    <ImageBackground source={image} style={[styles.image, { height }]}>
+    <ImageBackground
+      source={{ uri: image }}
+      style={[styles.image, { height: imageHeight }]}
+    >
       <IconButton
         icon={({ size }) => (
           <Ionicons name="arrow-back" size={size} color="white" />
@@ -271,7 +298,7 @@ function EventDetails() {
         style={styles.container}
         contentContainerStyle={{ paddingBottom: 70 }}
       >
-        <ImageHeader image={event.image} />
+        <ImageHeader image={event.imageUrl} />
         <View style={styles.dataContainer}>
           <View style={styles.categoryPill}>
             <Text style={styles.categoryText}>Category</Text>

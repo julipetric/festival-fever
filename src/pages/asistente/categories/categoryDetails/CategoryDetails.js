@@ -2,6 +2,8 @@ import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useSelector } from 'react-redux';
+import { ActivityIndicator } from 'react-native-paper';
 import CategoryDetailsHeader from './CategoryDetailsHeader';
 import { BackgroundGray } from '../../../../assets/Colors';
 import EventCards from './eventCards/EventCards';
@@ -27,6 +29,10 @@ const styles = StyleSheet.create({
 function CategoryDetails() {
   const route = useRoute();
   const { category } = route.params;
+  const { loadingEvents, events } = useSelector(state => ({
+    loadingEvents: state.events.loadingEvents,
+    events: state.events.events,
+  }));
 
   const filters = [
     { text: 'Filter', id: 'filter', selected: true },
@@ -42,7 +48,10 @@ function CategoryDetails() {
 
   return (
     <View style={styles.container}>
-      <CategoryDetailsHeader name={category.name} image={category.image} />
+      <CategoryDetailsHeader
+        name={category.name}
+        image={{ uri: category.imageUrl }}
+      />
       <FilterBar
         left={
           <ScrollView style={styles.filtersScroll} horizontal>
@@ -70,7 +79,11 @@ function CategoryDetails() {
         }
         text="Events Count"
       />
-      <EventCards events={category.events} />
+      {loadingEvents ? (
+        <ActivityIndicator size="large" />
+      ) : (
+        <EventCards events={events} />
+      )}
     </View>
   );
 }

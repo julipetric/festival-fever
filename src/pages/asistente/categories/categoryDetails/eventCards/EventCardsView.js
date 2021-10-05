@@ -68,13 +68,38 @@ CircleButton.propTypes = {
 function EventCardView({ item, navigate }) {
   const event = item;
 
+  let startDateString;
+  let hoursString;
+  if (event.dates.length === 1 && event.dates[0].start === 'dummyDate') {
+    startDateString = moment()
+      .add(3, 'days')
+      .format(`dddd D [${t('of')}] MMMM`);
+    hoursString = `${moment()
+      .add(3, 'days')
+      .add(2, 'hours')
+      .format(`HH:mm`)} - ${moment()
+      .add(3, 'days')
+      .add(7, 'hours')
+      .format(`HH:mm`)}`;
+  } else {
+    startDateString = moment(event.dates[0].start).format(
+      `dddd D [${t('of')}] MMMM`
+    );
+    hoursString = `${moment(event.dates[0].start).format(`HH:mm`)} - ${moment(
+      event.dates[0].end
+    ).format(`HH:mm`)}`;
+  }
+
   return (
     <TouchableOpacity
       key={event.id}
       style={styles.card}
       onPress={() => navigate(event)}
     >
-      <ImageBackground style={styles.imageContainer} source={item.image}>
+      <ImageBackground
+        style={styles.imageContainer}
+        source={{ uri: event.imageUrl }}
+      >
         <IconButton
           icon={() => <FontAwesome5 name="share-alt" size={17} color="white" />}
           style={styles.circleIcon}
@@ -93,16 +118,8 @@ function EventCardView({ item, navigate }) {
           <View style={styles.dataContainer}>
             {event.dates.length === 1 && (
               <View style={{ flexDirection: 'row' }}>
-                <Text style={styles.eventDate}>
-                  {moment(event.dates[0].start).format(
-                    `dddd D [${t('of')}] MMMM`
-                  )}
-                </Text>
-                <Text style={styles.eventTime}>
-                  {`${moment(event.dates[0].start).format(`HH:mm`)} - ${moment(
-                    event.dates[0].end
-                  ).format(`HH:mm`)}`}
-                </Text>
+                <Text style={styles.eventDate}>{startDateString}</Text>
+                <Text style={styles.eventTime}>{hoursString}</Text>
               </View>
             )}
             <Text style={styles.eventName}>{event.name}</Text>

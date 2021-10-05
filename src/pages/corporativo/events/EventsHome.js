@@ -33,7 +33,7 @@ function EventsHome() {
     try {
       await firestore.get({ collection: 'events' });
     } catch (e) {
-      console.log(e);
+      // console.log(e);
     } finally {
       setFetchingEvents(false);
     }

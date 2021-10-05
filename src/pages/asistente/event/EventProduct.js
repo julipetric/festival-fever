@@ -1,15 +1,17 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 
-// TODO: HACER QUE EL ANCHO SEA WIDTH/3
+import PropTypes from 'prop-types';
+
+const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: { padding: 9 },
   itemContainer: {
     backgroundColor: 'white',
-    width: 115,
-    height: 115,
+    width: width / 4,
+    height: width / 4,
     borderRadius: 10,
   },
 });
@@ -23,5 +25,9 @@ function EventProduct({ product }) {
     </View>
   );
 }
+
+EventProduct.propTypes = {
+  product: PropTypes.object.isRequired,
+};
 
 export default EventProduct;
