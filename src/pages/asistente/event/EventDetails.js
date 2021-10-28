@@ -21,6 +21,8 @@ import { ScrollView } from 'react-native-gesture-handler';
 import moment from 'moment';
 import { t } from 'i18n-js';
 import Accordion from 'react-native-collapsible/Accordion';
+import { useFirestore, useFirestoreConnect } from 'react-redux-firebase';
+import { useSelector } from 'react-redux';
 import {
   BackgroundGray,
   PinkPrimary,
@@ -181,6 +183,8 @@ function DatePlaceRow({ event }) {
   );
 }
 
+DatePlaceRow.propTypes = { event: PropTypes.object.isRequired };
+
 function ImageHeader({ image }) {
   const navigation = useNavigation();
 
@@ -229,6 +233,26 @@ function ImageHeader({ image }) {
 function EventDetails() {
   const route = useRoute();
   const { event } = route.params;
+  const firestore = useFirestore();
+
+  const { ticketSegments, purchasables } = useSelector(state => ({
+    ticketSegments: state.firestore.ordered.ticketSegments,
+    purchasables: state.firestore.ordered.purchasables,
+  }));
+
+  useFirestoreConnect([
+    { collection: 'ticketSegments', where: ['eventId', '==', event.id] },
+    {
+      collection: 'purchasables',
+      where: [
+        firestore.FieldPath.documentId(),
+        'in',
+        ticketSegments.map(segment => segment.purchasableId),
+      ],
+    },
+  ]);
+
+  console.log(purchasables);
 
   const [activeSections, setActiveSections] = useState([]);
 
@@ -327,7 +351,7 @@ function EventDetails() {
       <FAB
         label={t('buyTickets')}
         style={styles.floatingButton}
-        onPress={() => {}}
+        // TODO: design Get Tickets page
       />
     </>
   );

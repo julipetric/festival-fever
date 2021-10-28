@@ -4,6 +4,7 @@ import { useRoute } from '@react-navigation/native';
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 import { ActivityIndicator } from 'react-native-paper';
+import { useFirebaseConnect, useFirestoreConnect } from 'react-redux-firebase';
 import CategoryDetailsHeader from './CategoryDetailsHeader';
 import { BackgroundGray } from '../../../../assets/Colors';
 import EventCards from './eventCards/EventCards';
@@ -29,9 +30,13 @@ const styles = StyleSheet.create({
 function CategoryDetails() {
   const route = useRoute();
   const { category } = route.params;
+
+  useFirestoreConnect([
+    { collection: 'events', where: ['categoryId', '==', category.id] },
+  ]);
+
   const { loadingEvents, events } = useSelector(state => ({
-    loadingEvents: state.events.loadingEvents,
-    events: state.events.events,
+    events: state.firestore.ordered.events,
   }));
 
   const filters = [
@@ -79,10 +84,10 @@ function CategoryDetails() {
         }
         text="Events Count"
       />
-      {loadingEvents ? (
-        <ActivityIndicator size="large" />
-      ) : (
+      {events ? (
         <EventCards events={events} />
+      ) : (
+        <ActivityIndicator size="large" />
       )}
     </View>
   );

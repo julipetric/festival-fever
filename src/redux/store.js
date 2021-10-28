@@ -5,12 +5,10 @@ import {
 } from '@reduxjs/toolkit';
 import { firebaseReducer } from 'react-redux-firebase';
 import { firestoreReducer } from 'redux-firestore';
-import eventsReducer from './slices/eventsSlice';
 
 const reducer = combineReducers({
   firebase: firebaseReducer,
   firestore: firestoreReducer,
-  events: eventsReducer,
 });
 
 const store = configureStore({

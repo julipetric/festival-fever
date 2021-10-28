@@ -3,9 +3,6 @@ import { StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
 import { Text } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { useNavigation } from '@react-navigation/native';
-import { useDispatch } from 'react-redux';
-import { setLoadingEvents } from '../../../redux/slices/eventsSlice';
-import { getEvents } from '../../../firebase/eventsHelper';
 
 const styles = StyleSheet.create({
   itemBackground: {
@@ -23,14 +20,9 @@ const styles = StyleSheet.create({
 
 function CategoryItem({ category }) {
   const navigation = useNavigation();
-  const dispatch = useDispatch();
 
   function handleOnPress() {
-    dispatch(setLoadingEvents(true));
-    navigation.push('CategoryDetails', {
-      category: { ...category, events: [] },
-    });
-    if (category.events) getEvents(category.events, dispatch);
+    navigation.push('CategoryDetails', { category });
   }
 
   return (
