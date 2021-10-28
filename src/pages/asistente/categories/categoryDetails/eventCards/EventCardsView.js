@@ -1,5 +1,11 @@
 import React from 'react';
-import { ImageBackground, StyleSheet, Text, View } from 'react-native';
+import {
+  ImageBackground,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import PropTypes from 'prop-types';
 import { IconButton } from 'react-native-paper';
 import { FontAwesome5, Feather } from '@expo/vector-icons';
@@ -59,12 +65,41 @@ CircleButton.propTypes = {
   children: PropTypes.element.isRequired,
 };
 
-function EventCardView({ item }) {
+function EventCardView({ item, navigate }) {
   const event = item;
 
+  let startDateString;
+  let hoursString;
+  if (event.dates.length === 1 && event.dates[0].start === 'dummyDate') {
+    startDateString = moment()
+      .add(3, 'days')
+      .format(`dddd D [${t('of')}] MMMM`);
+    hoursString = `${moment()
+      .add(3, 'days')
+      .add(2, 'hours')
+      .format(`HH:mm`)} - ${moment()
+      .add(3, 'days')
+      .add(7, 'hours')
+      .format(`HH:mm`)}`;
+  } else {
+    startDateString = moment(event.dates[0].start).format(
+      `dddd D [${t('of')}] MMMM`
+    );
+    hoursString = `${moment(event.dates[0].start).format(`HH:mm`)} - ${moment(
+      event.dates[0].end
+    ).format(`HH:mm`)}`;
+  }
+
   return (
-    <View key={event.id} style={styles.card}>
-      <ImageBackground style={styles.imageContainer} source={item.image}>
+    <TouchableOpacity
+      key={event.id}
+      style={styles.card}
+      onPress={() => navigate(event)}
+    >
+      <ImageBackground
+        style={styles.imageContainer}
+        source={{ uri: event.imageUrl }}
+      >
         <IconButton
           icon={() => <FontAwesome5 name="share-alt" size={17} color="white" />}
           style={styles.circleIcon}
@@ -83,16 +118,8 @@ function EventCardView({ item }) {
           <View style={styles.dataContainer}>
             {event.dates.length === 1 && (
               <View style={{ flexDirection: 'row' }}>
-                <Text style={styles.eventDate}>
-                  {moment(event.dates[0].start).format(
-                    `dddd D [${t('of')}] MMMM`
-                  )}
-                </Text>
-                <Text style={styles.eventTime}>
-                  {`${moment(event.dates[0].start).format(`HH:mm`)} - ${moment(
-                    event.dates[0].end
-                  ).format(`HH:mm`)}`}
-                </Text>
+                <Text style={styles.eventDate}>{startDateString}</Text>
+                <Text style={styles.eventTime}>{hoursString}</Text>
               </View>
             )}
             <Text style={styles.eventName}>{event.name}</Text>
@@ -102,12 +129,13 @@ function EventCardView({ item }) {
           <MapView style={styles.mapContainer} scrollEnabled={false} />
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
 EventCardView.propTypes = {
   item: PropTypes.object.isRequired,
+  navigate: PropTypes.func.isRequired,
 };
 
 export default EventCardView;

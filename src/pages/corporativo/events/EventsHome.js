@@ -23,6 +23,7 @@ function EventsHome() {
   const events = useSelector(state => state.firestore.data.events);
 
   useEffect(() => {
+    console.log(events);
     setEventsList(_.toPairs(events).filter(event => event[1] !== null));
   }, [events]);
 
@@ -33,7 +34,7 @@ function EventsHome() {
     try {
       await firestore.get({ collection: 'events' });
     } catch (e) {
-      console.log(e);
+      // console.log(e);
     } finally {
       setFetchingEvents(false);
     }

@@ -29,7 +29,7 @@ function CategoryItem({ category }) {
     <ImageBackground
       key={category.id}
       style={styles.itemBackground}
-      source={category.image}
+      source={{ uri: category.imageUrl }}
       blurRadius={1.4}
     >
       <TouchableOpacity
@@ -47,8 +47,8 @@ CategoryItem.propTypes = {
   category: PropTypes.shape({
     name: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
-    // Ver tipo de prop, calidad de código
-    image: PropTypes.any.isRequired,
+    imageUrl: PropTypes.string.isRequired,
+    events: PropTypes.array,
   }).isRequired,
 };
 

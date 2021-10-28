@@ -79,7 +79,7 @@ export default function FestivalFeverHeader({ corporativo }) {
         <HeaderButton>
           <IconButton
             icon={() => <Ionicons name="person" size={17} color="white" />}
-            onPress={() => navigation.navigate('MyAccount')}
+            onPress={() => navigation.navigate(t('myAccount'))}
             style={{ margin: 1 }}
           />
         </HeaderButton>
