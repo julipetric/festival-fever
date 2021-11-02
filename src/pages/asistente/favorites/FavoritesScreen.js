@@ -3,7 +3,7 @@ import React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { BackgroundGray } from '../../../assets/Colors';
 import { demoEvents } from '../../../mocks/eventsDemoData';
-import FavouriteEventCard from './FavouriteEventCard';
+import EventListItem from '../../components/EventListItem';
 
 const styles = StyleSheet.create({
   container: {
@@ -28,7 +28,7 @@ function FavoritesScreen() {
     <View style={styles.container}>
       <FlatList
         data={repeatedEvents}
-        renderItem={({ item }) => <FavouriteEventCard event={item} />}
+        renderItem={({ item }) => <EventListItem event={item} />}
         style={styles.scrollView}
       />
     </View>

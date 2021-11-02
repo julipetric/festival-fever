@@ -242,14 +242,16 @@ function EventDetails() {
 
   useFirestoreConnect([
     { collection: 'ticketSegments', where: ['eventId', '==', event.id] },
-    {
-      collection: 'purchasables',
-      where: [
-        firestore.FieldPath.documentId(),
-        'in',
-        ticketSegments.map(segment => segment.purchasableId),
-      ],
-    },
+    ticketSegments
+      ? {
+          collection: 'purchasables',
+          where: [
+            firestore.FieldPath.documentId(),
+            'in',
+            ticketSegments.map(segment => segment.purchasableId),
+          ],
+        }
+      : undefined,
   ]);
 
   console.log(purchasables);

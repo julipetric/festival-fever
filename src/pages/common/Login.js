@@ -96,6 +96,14 @@ export default function Login() {
         autoCompleteType="username"
       />
 
+      <PasswordFormTextInput
+        name="password"
+        mode="outlined"
+        control={control}
+        label={t('password')}
+        style={styles.elementsPadding}
+      />
+
       {/* NO FUNCIONA */}
       <FormCheckbox
         name="rememberUsername"
@@ -104,13 +112,6 @@ export default function Login() {
         label="Remember me"
       />
 
-      <PasswordFormTextInput
-        name="password"
-        mode="outlined"
-        control={control}
-        label={t('password')}
-        style={styles.elementsPadding}
-      />
       {loading ? (
         <ActivityIndicator />
       ) : (

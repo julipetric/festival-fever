@@ -1,10 +1,9 @@
-import { t } from 'i18n-js';
-import moment from 'moment';
 import React from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import { PinkPrimary, PurplePill } from '../../../assets/Colors';
+import { PinkPrimary, PurplePill } from '../../assets/Colors';
+import { formatEventDateTime } from '../../utils';
 
 const styles = StyleSheet.create({
   container: {
@@ -49,28 +48,42 @@ const styles = StyleSheet.create({
   },
 });
 
-function FavouriteEventCard({ event }) {
+function EventListItem({ event, hideCategory }) {
+  const { dateString, hoursString } = formatEventDateTime(event);
+
+  console.log(event.imageUrl);
+
   return (
     <View style={styles.container}>
       <View style={{ display: 'flex', flex: 7, alignItems: 'flex-start' }}>
-        <View style={styles.categoryPill}>
-          <Text style={styles.categoryText}>Category</Text>
-        </View>
-        <Text style={styles.eventDate}>
-          {moment(event.dates[0].start).format(`dddd D [${t('of')}] MMMM`)}
-        </Text>
+        {!hideCategory && (
+          <View style={styles.categoryPill}>
+            <Text style={styles.categoryText}>Category</Text>
+          </View>
+        )}
+
+        <Text style={styles.eventDate}>{`${dateString} ${hoursString}`}</Text>
         <Text style={styles.eventName}>{event.name}</Text>
         <Text style={styles.location}>{event.location.description}</Text>
       </View>
       <View style={{ flex: 4 }}>
-        <Image source={event.image} style={styles.image} resizeMode="cover" />
+        <Image
+          source={event.imageUrl ? { uri: event.imageUrl } : event.image}
+          style={styles.image}
+          resizeMode="cover"
+        />
       </View>
     </View>
   );
 }
 
-FavouriteEventCard.propTypes = {
-  event: PropTypes.object.isRequired,
+EventListItem.defaultProps = {
+  hideCategory: false,
 };
 
-export default FavouriteEventCard;
+EventListItem.propTypes = {
+  event: PropTypes.object.isRequired,
+  hideCategory: PropTypes.bool,
+};
+
+export default EventListItem;

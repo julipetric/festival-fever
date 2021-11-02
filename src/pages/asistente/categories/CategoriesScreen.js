@@ -6,7 +6,7 @@ import { ActivityIndicator } from 'react-native-paper';
 import CategoryItem from './CategoryItem';
 
 function CategoriesScreen() {
-  useFirestoreConnect(() => ['categories']);
+  useFirestoreConnect(() => [{ collection: 'categories', orderBy: ['order'] }]);
   const { categories } = useSelector(state => ({
     categories: state.firestore.ordered.categories,
   }));
