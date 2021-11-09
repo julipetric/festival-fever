@@ -51,8 +51,6 @@ const styles = StyleSheet.create({
 function EventListItem({ event, hideCategory }) {
   const { dateString, hoursString } = formatEventDateTime(event);
 
-  console.log(event.imageUrl);
-
   return (
     <View style={styles.container}>
       <View style={{ display: 'flex', flex: 7, alignItems: 'flex-start' }}>

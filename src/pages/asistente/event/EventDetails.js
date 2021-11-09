@@ -242,16 +242,14 @@ function EventDetails() {
 
   useFirestoreConnect([
     { collection: 'ticketSegments', where: ['eventId', '==', event.id] },
-    ticketSegments
-      ? {
-          collection: 'purchasables',
-          where: [
-            firestore.FieldPath.documentId(),
-            'in',
-            ticketSegments.map(segment => segment.purchasableId),
-          ],
-        }
-      : undefined,
+    {
+      collection: 'purchasables',
+      where: [
+        firestore.FieldPath.documentId(),
+        'in',
+        (ticketSegments || []).map(segment => segment.purchasableId),
+      ],
+    },
   ]);
 
   console.log(purchasables);
@@ -362,5 +360,5 @@ function EventDetails() {
 export default EventDetails;
 
 ImageHeader.propTypes = {
-  image: PropTypes.object.isRequired,
+  image: PropTypes.string.isRequired,
 };

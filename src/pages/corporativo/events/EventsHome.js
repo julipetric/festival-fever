@@ -1,62 +1,39 @@
 import { Ionicons } from '@expo/vector-icons';
 import { t } from 'i18n-js';
-import React, { useCallback, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, View, RefreshControl } from 'react-native';
-import { Text, Title } from 'react-native-paper';
+import React from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Title } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import { useFirestore } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
-import _ from 'lodash';
+import { useFirestoreConnect } from 'react-redux-firebase';
 import StyledButton from '../../components/StyledButton';
+import EventListItem from '../../components/EventListItem';
+import { PagePaddingHorizontal } from '../../../assets/UIConstants';
 
 const styles = StyleSheet.create({
   contentContainer: {
-    paddingTop: 30,
+    paddingTop: 10,
+    width: '100%',
   },
 });
 
 function EventsHome() {
   const navigation = useNavigation();
-  const firestore = useFirestore();
-  const [eventsList, setEventsList] = useState([]);
 
-  const events = useSelector(state => state.firestore.data.events);
+  useFirestoreConnect(() => [{ collection: 'events' }]);
+  const { events } = useSelector(state => ({
+    events: state.firestore.ordered.events,
+  }));
 
-  useEffect(() => {
-    console.log(events);
-    setEventsList(_.toPairs(events).filter(event => event[1] !== null));
-  }, [events]);
-
-  const [fetchingEvents, setFetchingEvents] = useState(false);
-
-  const onRefresh = useCallback(async () => {
-    setFetchingEvents(true);
-    try {
-      await firestore.get({ collection: 'events' });
-    } catch (e) {
-      // console.log(e);
-    } finally {
-      setFetchingEvents(false);
-    }
-  }, [setFetchingEvents, firestore]);
-
-  useEffect(() => {
-    onRefresh();
-  }, [onRefresh]);
-
-  return (
-    <ScrollView
-      contentContainerStyle={styles.contentContainer}
-      refreshControl={
-        <RefreshControl refreshing={fetchingEvents} onRefresh={onRefresh} />
-      }
-    >
+  return events ? (
+    <ScrollView contentContainerStyle={styles.contentContainer}>
       <View
         style={{
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
+          paddingHorizontal: PagePaddingHorizontal,
         }}
       >
         <Title>{t('myEvents')}</Title>
@@ -69,11 +46,12 @@ function EventsHome() {
           {t('addEvent')}
         </StyledButton>
       </View>
-      {eventsList &&
-        eventsList.map(event => {
-          return <Text key={event[0]}>{JSON.stringify(event[1])}</Text>;
-        })}
+      {(events || []).map(event => (
+        <EventListItem event={event} />
+      ))}
     </ScrollView>
+  ) : (
+    <ActivityIndicator style={{ flex: 1 }} />
   );
 }
 

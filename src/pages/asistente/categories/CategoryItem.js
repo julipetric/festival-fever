@@ -1,5 +1,10 @@
 import React from 'react';
-import { StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  ImageBackground,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 import { Text } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { useNavigation } from '@react-navigation/native';
@@ -37,6 +42,13 @@ function CategoryItem({ category }) {
         activeOpacity={0.5}
         onPress={handleOnPress}
       >
+        {category.iconUrl && (
+          <Image
+            source={{ uri: category.iconUrl }}
+            style={{ height: 50, width: 50, marginBottom: 5 }}
+            resizeMode="contain"
+          />
+        )}
         <Text>{category.name}</Text>
       </TouchableOpacity>
     </ImageBackground>
@@ -47,6 +59,7 @@ CategoryItem.propTypes = {
   category: PropTypes.shape({
     name: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
+    iconUrl: PropTypes.string,
     imageUrl: PropTypes.string.isRequired,
     events: PropTypes.array,
   }).isRequired,

@@ -4,7 +4,7 @@ import { useRoute } from '@react-navigation/native';
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 import { ActivityIndicator } from 'react-native-paper';
-import { useFirebaseConnect, useFirestoreConnect } from 'react-redux-firebase';
+import { useFirestoreConnect } from 'react-redux-firebase';
 import { t } from 'i18n-js';
 import CategoryDetailsHeader from './CategoryDetailsHeader';
 import { BackgroundGray } from '../../../../assets/Colors';
