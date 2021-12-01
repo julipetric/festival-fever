@@ -9,6 +9,7 @@
     "byDate": "By Date",
     "byAmount": "By Amount",
     "categories": "Categories",
+    "category": "Category",
     "contactEmail": "Contact Email",
     "contactPhone": "Contact Phone",
     "createEventProductNotes": "Once the event is created, you will be able to add products, promotions and sellers in the details section",

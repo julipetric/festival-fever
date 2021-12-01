@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert, StyleSheet } from 'react-native';
+import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {
   TextInput,
   HelperText,
   Caption,
   ActivityIndicator,
+  Menu,
 } from 'react-native-paper';
 import i18n, { t } from 'i18n-js';
 import moment from 'moment';
@@ -14,14 +15,18 @@ import { Feather, Ionicons } from '@expo/vector-icons';
 import { DatePickerModal } from 'react-native-paper-dates';
 import PropTypes from 'prop-types';
 import { useNavigation } from '@react-navigation/native';
-import { useFirestore } from 'react-redux-firebase';
+import { useFirestore, useFirestoreConnect } from 'react-redux-firebase';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { useSelector } from 'react-redux';
 import StyledButton from '../../components/StyledButton';
 import FormTextInput from '../../components/FormTextInput';
 import { BackgroundGray } from '../../../assets/Colors';
+import { formatNewEvent } from '../../../firebase/EventsHelper';
 
 const styles = StyleSheet.create({
   container: {
     paddingTop: 30,
+    paddingHorizontal: 20,
   },
   button: {
     marginTop: 20,
@@ -31,6 +36,11 @@ const styles = StyleSheet.create({
 function AddEvent() {
   const navigation = useNavigation();
   const firestore = useFirestore();
+
+  useFirestoreConnect(() => [{ collection: 'categories', orderBy: ['order'] }]);
+  const { categories } = useSelector(state => ({
+    categories: state.firestore.ordered.categories,
+  }));
 
   const { control, handleSubmit, formState, register, watch, setValue } =
     useForm({
@@ -46,10 +56,11 @@ function AddEvent() {
 
   const [timeDate, setTimeDate] = useState(undefined);
   const [timeDateOpen, setTimeDateOpen] = useState(false);
+  const [menuVisible, setMenuVisible] = useState(false);
 
   function onConfirmTimeDate(params) {
     setTimeDateOpen(false);
-    setTimeDate(params.date);
+    setTimeDate(params.date || params.dates);
   }
 
   function onLocationSelected(location) {
@@ -62,10 +73,12 @@ function AddEvent() {
   }
 
   async function onSave() {
-    setLoading(true);
+    // setLoading(true);
     try {
-      await firestore.collection('events').add(watch());
-      onSaveSuccess();
+      const saveEvent = formatNewEvent(watch(), timeDate);
+      console.log(saveEvent);
+      /* await firestore.collection('events').add(watch());
+      onSaveSuccess(); */
     } catch (e) {
       Alert.alert(t('error'), e);
       setLoading(false);
@@ -88,6 +101,33 @@ function AddEvent() {
           label={t('eventName')}
           autoFocus
         />
+        <Menu
+          style={{ paddingTop: 60 }}
+          contentStyle={{ display: 'flex' }}
+          visible={menuVisible}
+          onDismiss={() => setMenuVisible(false)}
+          anchor={
+            <>
+              <TouchableOpacity onPress={() => setMenuVisible(true)}>
+                <TextInput
+                  label={t('category')}
+                  style={{ backgroundColor: BackgroundGray }}
+                  placeholder={t('category')}
+                  editable={false}
+                />
+              </TouchableOpacity>
+              <HelperText visible={false}>dummyHelper</HelperText>
+            </>
+          }
+        >
+          {(categories || []).map(category => (
+            <Menu.Item
+              onPress={() => {}}
+              title={category.name}
+              key={category.id}
+            />
+          ))}
+        </Menu>
         <TextInput
           label={t('timeAndDate')}
           placeholder={t('timeAndDate')}
@@ -130,6 +170,12 @@ function AddEvent() {
           autoCapitalize="words"
           control={control}
           label={t('address')}
+        />
+        <FormTextInput
+          name="addressDescription"
+          autoCapitalize="words"
+          control={control}
+          label={t('addressDescription')}
         />
         <FormTextInput
           name="contactPhone"
