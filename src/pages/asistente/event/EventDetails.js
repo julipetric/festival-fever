@@ -235,9 +235,8 @@ function EventDetails() {
   const { event } = route.params;
   const firestore = useFirestore();
 
-  const { ticketSegments, purchasables } = useSelector(state => ({
+  const { ticketSegments } = useSelector(state => ({
     ticketSegments: state.firestore.ordered.ticketSegments,
-    purchasables: state.firestore.ordered.purchasables,
   }));
 
   useFirestoreConnect([
@@ -251,8 +250,6 @@ function EventDetails() {
       ],
     },
   ]);
-
-  console.log(purchasables);
 
   const [activeSections, setActiveSections] = useState([]);
 

@@ -1,0 +1,130 @@
+import React, { useEffect, useState } from 'react';
+import { Image, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Text } from 'react-native-paper';
+import PropTypes from 'prop-types';
+import { t } from 'i18n-js';
+import { PinkPrimary, PurplePill } from '../../../assets/Colors';
+import { formatEventDateTime } from '../../../utils';
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    marginHorizontal: 20,
+    marginVertical: 8,
+    padding: 10,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  },
+  eventName: {
+    color: 'black',
+    fontSize: 24,
+  },
+  image: {
+    flex: 4,
+    backgroundColor: 'blue',
+    alignItems: 'flex-start',
+  },
+  categoryPill: {
+    backgroundColor: PurplePill,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderRadius: 15,
+    marginBottom: 10,
+  },
+  categoryText: {
+    fontSize: 10,
+    textTransform: 'uppercase',
+  },
+  eventDate: {
+    color: PinkPrimary,
+    opacity: 0.8,
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  location: {
+    color: 'black',
+    opacity: 0.6,
+    fontSize: 12,
+  },
+});
+
+function EventItem({ event, category }) {
+  const { dateString, hoursString } = formatEventDateTime(event);
+
+  console.log(event);
+
+  const [imageHeight, setImageHeight] = useState(0);
+  const [imageWidth, setImageWidth] = useState(0);
+  const [ticketsSold, setTicketsSold] = useState();
+
+  useEffect(() => {
+    Image.getSize(event.imageUrl, (width, height) => {
+      const ratio = imageWidth / width;
+      setImageHeight(height * ratio);
+    });
+  }, [event, imageWidth]);
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.categoryPill}>
+        <Text style={styles.categoryText}>{category.name}</Text>
+      </View>
+      <Text style={styles.eventDate}>{`${dateString} ${hoursString}`}</Text>
+      <Text style={styles.eventName}>{event.name}</Text>
+      <Text style={styles.location}>{event.location.description}</Text>
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'flex-start',
+          paddingTop: 10,
+        }}
+      >
+        <Image
+          source={{ uri: event.imageUrl }}
+          style={[styles.image, { width: imageWidth, height: imageHeight }]}
+          resizeMode="contain"
+          onLayout={e => {
+            setImageWidth(e.nativeEvent.layout.width);
+          }}
+        />
+        <View
+          style={{
+            flex: 6,
+            paddingLeft: 10,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: 'row',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <Text style={styles.location}>{t('ticketsSold')}: </Text>
+            {ticketsSold !== undefined ? (
+              <Text style={[styles.location, { opacity: 1 }]}>
+                {ticketsSold}
+              </Text>
+            ) : (
+              <ActivityIndicator
+                color={PinkPrimary}
+                size={14}
+                style={{ paddingLeft: 10 }}
+              />
+            )}
+          </View>
+        </View>
+      </View>
+    </View>
+  );
+}
+
+EventItem.propTypes = {
+  event: PropTypes.object.isRequired,
+  category: PropTypes.object.isRequired,
+};
+
+export default EventItem;

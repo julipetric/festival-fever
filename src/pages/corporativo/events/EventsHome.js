@@ -7,8 +7,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { useFirestoreConnect } from 'react-redux-firebase';
 import StyledButton from '../../components/StyledButton';
-import EventListItem from '../../components/EventListItem';
 import { PagePaddingHorizontal } from '../../../assets/UIConstants';
+import EventItem from './EventItem';
 
 const styles = StyleSheet.create({
   contentContainer: {
@@ -20,12 +20,13 @@ const styles = StyleSheet.create({
 function EventsHome() {
   const navigation = useNavigation();
 
-  useFirestoreConnect(() => [{ collection: 'events' }]);
-  const { events } = useSelector(state => ({
+  useFirestoreConnect(() => ['events', 'categories']);
+  const { events, categories } = useSelector(state => ({
     events: state.firestore.ordered.events,
+    categories: state.firestore.ordered.categories,
   }));
 
-  return events ? (
+  return events && categories ? (
     <ScrollView contentContainerStyle={styles.contentContainer}>
       <View
         style={{
@@ -47,7 +48,12 @@ function EventsHome() {
         </StyledButton>
       </View>
       {(events || []).map(event => (
-        <EventListItem event={event} />
+        <EventItem
+          event={event}
+          category={categories.find(
+            category => category.id === event.categoryId
+          )}
+        />
       ))}
     </ScrollView>
   ) : (

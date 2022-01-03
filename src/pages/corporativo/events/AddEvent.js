@@ -16,7 +16,6 @@ import { DatePickerModal } from 'react-native-paper-dates';
 import PropTypes from 'prop-types';
 import { useNavigation } from '@react-navigation/native';
 import { useFirestore, useFirestoreConnect } from 'react-redux-firebase';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { useSelector } from 'react-redux';
 import StyledButton from '../../components/StyledButton';
 import FormTextInput from '../../components/FormTextInput';
