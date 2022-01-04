@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function EventListItem({ event, hideCategory }) {
+function EventListItem({ event, category, hideCategory }) {
   const { dateString, hoursString } = formatEventDateTime(event);
 
   return (
@@ -56,7 +56,7 @@ function EventListItem({ event, hideCategory }) {
       <View style={{ display: 'flex', flex: 7, alignItems: 'flex-start' }}>
         {!hideCategory && (
           <View style={styles.categoryPill}>
-            <Text style={styles.categoryText}>Category</Text>
+            <Text style={styles.categoryText}>{category.name}</Text>
           </View>
         )}
 
@@ -81,6 +81,7 @@ EventListItem.defaultProps = {
 
 EventListItem.propTypes = {
   event: PropTypes.object.isRequired,
+  category: PropTypes.object.isRequired,
   hideCategory: PropTypes.bool,
 };
 

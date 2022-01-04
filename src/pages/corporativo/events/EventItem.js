@@ -3,6 +3,7 @@ import { Image, StyleSheet, View } from 'react-native';
 import { ActivityIndicator, Text } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { t } from 'i18n-js';
+import { useSelector } from 'react-redux';
 import { PinkPrimary, PurplePill } from '../../../assets/Colors';
 import { formatEventDateTime } from '../../../utils';
 
@@ -53,11 +54,28 @@ const styles = StyleSheet.create({
 function EventItem({ event, category }) {
   const { dateString, hoursString } = formatEventDateTime(event);
 
-  console.log(event);
+  const { ticketSegments: allTicketSegments, orders: allOrders } = useSelector(
+    state => ({
+      ticketSegments: state.firestore.ordered.ticketSegments,
+      orders: state.firestore.ordered.orders,
+    })
+  );
+
+  const eventTicketSegments = allTicketSegments
+    ? allTicketSegments.filter(segment => segment.eventId === event.id)
+    : undefined;
+
+  const eventSales =
+    allOrders && allTicketSegments
+      ? allOrders.filter(order =>
+          eventTicketSegments
+            .map(segment => segment.purchasableId)
+            .includes(order.purchasableId)
+        ).length
+      : undefined;
 
   const [imageHeight, setImageHeight] = useState(0);
   const [imageWidth, setImageWidth] = useState(0);
-  const [ticketsSold, setTicketsSold] = useState();
 
   useEffect(() => {
     Image.getSize(event.imageUrl, (width, height) => {
@@ -104,9 +122,9 @@ function EventItem({ event, category }) {
             }}
           >
             <Text style={styles.location}>{t('ticketsSold')}: </Text>
-            {ticketsSold !== undefined ? (
+            {eventSales !== undefined ? (
               <Text style={[styles.location, { opacity: 1 }]}>
-                {ticketsSold}
+                {eventSales}
               </Text>
             ) : (
               <ActivityIndicator

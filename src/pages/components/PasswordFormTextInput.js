@@ -15,6 +15,7 @@ export default function PasswordFormTextInput({
   label,
   error,
   defaultShowPassword,
+  disabled,
 }) {
   const [showPassword, setShowPassword] = useState(!!defaultShowPassword);
 
@@ -33,6 +34,7 @@ export default function PasswordFormTextInput({
       autoCorrect={false}
       autoCompleteType="password"
       secureTextEntry={!showPassword}
+      disabled={disabled}
       right={
         <TextInput.Icon
           icon={({ size, color }) => (
@@ -40,6 +42,7 @@ export default function PasswordFormTextInput({
               name={showPassword ? 'eye-off' : 'eye'}
               size={size}
               color={color}
+              style={{ opacity: disabled ? 0.5 : 1 }}
             />
           )}
           onPress={() => setShowPassword(!showPassword)}
@@ -58,6 +61,7 @@ PasswordFormTextInput.defaultProps = {
   mode: 'flat',
   autoFocus: false,
   defaultShowPassword: false,
+  disabled: false,
 };
 
 PasswordFormTextInput.propTypes = {
@@ -71,4 +75,5 @@ PasswordFormTextInput.propTypes = {
   mode: PropTypes.oneOf(['flat', 'outlined']),
   autoFocus: PropTypes.bool,
   defaultShowPassword: PropTypes.bool,
+  disabled: PropTypes.bool,
 };

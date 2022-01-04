@@ -7,6 +7,7 @@ import HomeAsistente from './HomeAsistente';
 import MyAccount from '../common/MyAccount';
 import FestivalFeverHeader from '../components/Header/FestivalFeverHeader';
 import EventDetails from './event/EventDetails';
+import SearchScreen from './SearchScreen';
 
 const Stack = createStackNavigator();
 
@@ -29,6 +30,7 @@ export default function MainAsistente() {
       >
         <Stack.Screen name="HomeAsistente" component={HomeAsistente} />
         <Stack.Screen name={t('myAccount')} component={MyAccount} />
+        <Stack.Screen name={t('search')} component={SearchScreen} />
         <Stack.Screen
           name={t('eventDetails')}
           component={EventDetails}

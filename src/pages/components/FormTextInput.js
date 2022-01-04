@@ -22,6 +22,7 @@ export default function FormTextInput({
   helperTextType,
   multiline,
   keyboardType,
+  disabled,
   ...props
 }) {
   const { field, fieldState } = useController({ control, defaultValue, name });
@@ -43,6 +44,7 @@ export default function FormTextInput({
         right={right}
         multiline={multiline}
         keyboardType={keyboardType}
+        disabled={disabled}
         {...props}
       />
       {!hideHelperText && (
@@ -69,6 +71,7 @@ FormTextInput.defaultProps = {
   helperTextType: 'error',
   multiline: false,
   keyboardType: undefined,
+  disabled: false,
 };
 
 FormTextInput.propTypes = {
@@ -88,4 +91,5 @@ FormTextInput.propTypes = {
   helperTextType: PropTypes.oneOf(['error', 'info']),
   multiline: PropTypes.bool,
   keyboardType: PropTypes.string,
+  disabled: PropTypes.bool,
 };

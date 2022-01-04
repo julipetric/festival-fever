@@ -40,6 +40,7 @@
     "passwordsDontMatch": "The two passwords don't match",
     "profile": "Profile",
     "register": "Register",
+    "rememberMe": "Remember Me",
     "repeatPassword": "Repeat password",
     "save": "Save",
     "scanQR": "Scan QR Code",

@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Text, View, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { t } from 'i18n-js';
 import { useForm } from 'react-hook-form';
 import { useFirebase, useFirestoreConnect } from 'react-redux-firebase';
 import { useNavigation } from '@react-navigation/native';
-import { ActivityIndicator } from 'react-native-paper';
+import { ActivityIndicator, Title } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import StyledButton from '../components/StyledButton';
 import FormTextInput from '../components/FormTextInput';
@@ -21,10 +21,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   elementsPadding: {
-    margin: 10,
+    padding: 8,
   },
   button: {
     margin: 10,
+    marginTop: 20,
   },
 });
 
@@ -34,10 +35,6 @@ export default function Login() {
   const firebase = useFirebase();
   const navigation = useNavigation();
 
-  const [loading, setLoading] = useState(false);
-  const [roleSelectorVisible, setRoleSelectorVisible] = useState(false);
-  const [userRoles, setUserRoles] = useState([]);
-
   useFirestoreConnect(() => ['roles']);
 
   const { profile, roles } = useSelector(state => ({
@@ -45,9 +42,19 @@ export default function Login() {
     roles: state.firestore.ordered.roles,
   }));
 
+  const [loading, setLoading] = useState(
+    firebase.auth().currentUser !== undefined &&
+      firebase.auth().currentUser !== null
+  );
+  const [roleSelectorVisible, setRoleSelectorVisible] = useState(false);
+  const [userRoles, setUserRoles] = useState([]);
+
   async function loginFunction() {
     setLoading(true);
     try {
+      firebase
+        .auth()
+        .setPersistence(getValues().rememberLogin ? 'local' : 'none');
       await firebase.login({
         email: getValues().username,
         password: getValues().password,
@@ -92,13 +99,12 @@ export default function Login() {
         );
       }
     }
-  }, [navigation, profile, roles]);
+  }, [firebase, navigation, profile, roles]);
 
   useEffect(() => {
     if (userRoles.length) {
       if (userRoles.length > 1) {
         setRoleSelectorVisible(true);
-        setLoading(false);
       } else {
         if (userRoles.some(role => role.userTypeId === 2)) {
           navigateCorporativo();
@@ -120,14 +126,19 @@ export default function Login() {
   return (
     <>
       <View style={styles.container}>
-        <Text
+        <Title
           style={[
             styles.elementsPadding,
-            { fontWeight: 'bold', fontSize: 30, color: 'white' },
+            {
+              fontWeight: 'bold',
+              fontSize: 40,
+              color: 'white',
+              fontFamily: 'MADE-Evolve-Sans-Bold',
+            },
           ]}
         >
-          FESTIVAL FEVER LOGO
-        </Text>
+          festival fever
+        </Title>
 
         <FormTextInput
           name="username"
@@ -138,6 +149,7 @@ export default function Login() {
           style={styles.elementsPadding}
           autoFocus
           autoCompleteType="username"
+          disabled={loading}
         />
 
         <PasswordFormTextInput
@@ -146,18 +158,18 @@ export default function Login() {
           control={control}
           label={t('password')}
           style={styles.elementsPadding}
+          disabled={loading}
         />
-
-        {/* NO FUNCIONA */}
         <FormCheckbox
-          name="rememberUsername"
+          name="rememberLogin"
           defaultValue={false}
           control={control}
-          label="Remember me"
+          label={t('rememberMe')}
+          disabled={loading}
         />
 
         {loading ? (
-          <ActivityIndicator />
+          <ActivityIndicator style={{ paddingTop: 10 }} />
         ) : (
           <>
             <StyledButton
@@ -180,7 +192,10 @@ export default function Login() {
       </View>
       <RoleSelectorModal
         visible={roleSelectorVisible}
-        closeModal={() => setRoleSelectorVisible(false)}
+        closeModal={() => {
+          setRoleSelectorVisible(false);
+          setLoading(false);
+        }}
         userRoles={userRoles}
         onRoleSelected={onRoleSelected}
       />

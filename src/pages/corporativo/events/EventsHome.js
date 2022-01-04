@@ -20,11 +20,36 @@ const styles = StyleSheet.create({
 function EventsHome() {
   const navigation = useNavigation();
 
-  useFirestoreConnect(() => ['events', 'categories']);
-  const { events, categories } = useSelector(state => ({
+  const { events, categories, ticketSegments } = useSelector(state => ({
     events: state.firestore.ordered.events,
     categories: state.firestore.ordered.categories,
+    ticketSegments: state.firestore.ordered.ticketSegments,
   }));
+
+  const ticketSegmentsQuery = {
+    collection: 'ticketSegments',
+    where: events
+      ? ['eventId', 'in', events.map(event => event.id)]
+      : undefined,
+  };
+
+  const ordersQuery = {
+    collection: 'orders',
+    where: ticketSegments
+      ? [
+          'purchasableId',
+          'in',
+          ticketSegments.map(segment => segment.purchasableId),
+        ]
+      : undefined,
+  };
+
+  useFirestoreConnect(() => [
+    { collection: 'events' },
+    { collection: 'categories' },
+    ticketSegmentsQuery,
+    ordersQuery,
+  ]);
 
   return events && categories ? (
     <ScrollView contentContainerStyle={styles.contentContainer}>

@@ -15,12 +15,11 @@ import { Feather, Ionicons } from '@expo/vector-icons';
 import { DatePickerModal } from 'react-native-paper-dates';
 import PropTypes from 'prop-types';
 import { useNavigation } from '@react-navigation/native';
-import { useFirestore, useFirestoreConnect } from 'react-redux-firebase';
+import { useFirestoreConnect } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
 import StyledButton from '../../components/StyledButton';
 import FormTextInput from '../../components/FormTextInput';
 import { BackgroundGray } from '../../../assets/Colors';
-import { formatNewEvent } from '../../../firebase/EventsHelper';
 
 const styles = StyleSheet.create({
   container: {
@@ -34,7 +33,6 @@ const styles = StyleSheet.create({
 
 function AddEvent() {
   const navigation = useNavigation();
-  const firestore = useFirestore();
 
   useFirestoreConnect(() => [{ collection: 'categories', orderBy: ['order'] }]);
   const { categories } = useSelector(state => ({
@@ -66,17 +64,17 @@ function AddEvent() {
     setValue('location', JSON.stringify(location));
   }
 
-  function onSaveSuccess() {
+  /* function onSaveSuccess() {
     setLoading(false);
     navigation.pop();
-  }
+  } */
 
   async function onSave() {
     // setLoading(true);
     try {
+      /*
       const saveEvent = formatNewEvent(watch(), timeDate);
-      console.log(saveEvent);
-      /* await firestore.collection('events').add(watch());
+       await firestore.collection('events').add(watch());
       onSaveSuccess(); */
     } catch (e) {
       Alert.alert(t('error'), e);
