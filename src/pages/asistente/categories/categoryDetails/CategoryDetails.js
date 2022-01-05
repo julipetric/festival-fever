@@ -98,9 +98,9 @@ function CategoryDetails() {
             }
           />
           {cardsMode ? (
-            <EventCards events={events} />
+            <EventCards events={events} category={category} />
           ) : (
-            <EventsList events={events} />
+            <EventsList events={events} category={category} />
           )}
         </>
       ) : (

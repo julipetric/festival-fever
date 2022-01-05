@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: 30,
     paddingHorizontal: 20,
+    paddingBottom: 20,
   },
   button: {
     marginTop: 20,
@@ -106,20 +107,25 @@ function AddEvent() {
           anchor={
             <>
               <TouchableOpacity onPress={() => setMenuVisible(true)}>
-                <TextInput
+                <FormTextInput
+                  name="category"
+                  control={control}
                   label={t('category')}
-                  style={{ backgroundColor: BackgroundGray }}
-                  placeholder={t('category')}
-                  editable={false}
+                  disabled
+                  valueGetter={category =>
+                    category ? category.name : undefined
+                  }
                 />
               </TouchableOpacity>
-              <HelperText visible={false}>dummyHelper</HelperText>
             </>
           }
         >
           {(categories || []).map(category => (
             <Menu.Item
-              onPress={() => {}}
+              onPress={() => {
+                setValue('category', category);
+                setMenuVisible(false);
+              }}
               title={category.name}
               key={category.id}
             />

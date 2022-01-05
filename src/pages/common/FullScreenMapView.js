@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     zIndex: -1,
   },
   button: {
-    top: '170%',
+    top: '180%',
     zIndex: 100,
   },
 });
@@ -52,7 +52,18 @@ function FullScreenMapView() {
   }, []);
 
   useEffect(() => {
-    if (location)
+    if (markerCoordinates) {
+      mapRef.current.animateToRegion(
+        {
+          latitude: markerCoordinates.latitude,
+          longitude: markerCoordinates.longitude,
+          latitudeDelta,
+          longitudeDelta,
+        },
+        500
+      );
+    }
+    if (!markerCoordinates && location)
       mapRef.current.animateToRegion(
         {
           latitude: location.coords.latitude,
@@ -62,7 +73,7 @@ function FullScreenMapView() {
         },
         500
       );
-  }, [location]);
+  }, [location, markerCoordinates]);
 
   useEffect(() => {
     if (errorMsg) Alert.alert(t('error'), errorMsg);

@@ -23,6 +23,7 @@ export default function FormTextInput({
   multiline,
   keyboardType,
   disabled,
+  valueGetter,
   ...props
 }) {
   const { field, fieldState } = useController({ control, defaultValue, name });
@@ -36,7 +37,7 @@ export default function FormTextInput({
         error={fieldState.error}
         onChangeText={field.onChange}
         style={{ backgroundColor: BackgroundGray, ...style }}
-        value={field.value}
+        value={valueGetter ? valueGetter(field.value) : field.value}
         placeholder={placeholder}
         autoFocus={autoFocus}
         autoCorrect={autoCorrect}
@@ -72,6 +73,7 @@ FormTextInput.defaultProps = {
   multiline: false,
   keyboardType: undefined,
   disabled: false,
+  valueGetter: undefined,
 };
 
 FormTextInput.propTypes = {
@@ -92,4 +94,5 @@ FormTextInput.propTypes = {
   multiline: PropTypes.bool,
   keyboardType: PropTypes.string,
   disabled: PropTypes.bool,
+  valueGetter: PropTypes.func,
 };

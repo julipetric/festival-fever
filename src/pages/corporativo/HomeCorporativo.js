@@ -69,6 +69,7 @@ function HomeCorporativo() {
             // eslint-disable-next-line react/jsx-props-no-spreading
             <CustomDrawerContent logout={logout} {...props} />
           )}
+          screenOptions={{ headerTintColor: 'white' }}
         >
           <Drawer.Screen
             name={t('myEvents')}

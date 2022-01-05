@@ -1,28 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  Dimensions,
-  ImageBackground,
-  StyleSheet,
-  View,
-  Animated,
-  Image,
-} from 'react-native';
-import { FAB, IconButton, Text } from 'react-native-paper';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import {
-  AntDesign,
-  Feather,
-  FontAwesome5,
-  Ionicons,
-  MaterialIcons,
-} from '@expo/vector-icons';
+import { StyleSheet, View, Animated, Image, ScrollView } from 'react-native';
+import { FAB, Modal, Portal, Text } from 'react-native-paper';
+import { useRoute } from '@react-navigation/native';
+// eslint-disable-next-line import/no-unresolved
+import ZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
+import { AntDesign, Feather, MaterialIcons } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
-import { ScrollView } from 'react-native-gesture-handler';
 import moment from 'moment';
 import { t } from 'i18n-js';
 import Accordion from 'react-native-collapsible/Accordion';
 import { useFirestore, useFirestoreConnect } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
+import { orderBy } from 'lodash';
 import {
   BackgroundGray,
   PinkPrimary,
@@ -30,20 +19,12 @@ import {
   TransparentBackdrop,
 } from '../../../assets/Colors';
 import EventProduct from './EventProduct';
+import ImageHeader from './ImageHeader';
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: BackgroundGray,
   },
-  image: {
-    width: '100%',
-    height: 80,
-    display: 'flex',
-    justifyContent: 'space-between',
-    flexDirection: 'row',
-    marginBottom: 20,
-  },
-  circleIcon: { backgroundColor: 'rgba(0,0,0,0.3)', padding: 3 },
   categoryPill: {
     backgroundColor: PurplePill,
     paddingVertical: 5,
@@ -185,69 +166,32 @@ function DatePlaceRow({ event }) {
 
 DatePlaceRow.propTypes = { event: PropTypes.object.isRequired };
 
-function ImageHeader({ image }) {
-  const navigation = useNavigation();
-
-  const screenWidth = Dimensions.get('window').width;
-
-  const [imageHeight, setImageHeight] = useState(0);
-
-  useEffect(() => {
-    Image.getSize(image, (width, height) => {
-      const ratio = screenWidth / width;
-      setImageHeight(height * ratio);
-    });
-  }, [image, screenWidth]);
-
-  return (
-    <ImageBackground
-      source={{ uri: image }}
-      style={[styles.image, { height: imageHeight }]}
-    >
-      <IconButton
-        icon={({ size }) => (
-          <Ionicons name="arrow-back" size={size} color="white" />
-        )}
-        style={styles.circleIcon}
-        size={25}
-        onPress={() => navigation.goBack()}
-      />
-      <View style={{ flexDirection: 'row' }}>
-        <IconButton
-          icon={({ size }) => (
-            <FontAwesome5 name="share-alt" size={size} color="white" />
-          )}
-          style={styles.circleIcon}
-          size={23}
-        />
-        <IconButton
-          icon={({ size }) => <Feather name="star" size={size} color="white" />}
-          style={styles.circleIcon}
-          size={25}
-        />
-      </View>
-    </ImageBackground>
-  );
-}
-
 function EventDetails() {
   const route = useRoute();
-  const { event } = route.params;
+  const { event, category } = route.params;
   const firestore = useFirestore();
 
-  const { ticketSegments } = useSelector(state => ({
+  const { ticketSegments, eventTickets } = useSelector(state => ({
     ticketSegments: state.firestore.ordered.ticketSegments,
+    eventTickets: state.firestore.ordered.eventTickets,
   }));
+
+  const [priceTag, setPriceTag] = useState('-');
+  const [showImageFullscreen, setShowImageFullscreen] = useState(false);
 
   useFirestoreConnect([
     { collection: 'ticketSegments', where: ['eventId', '==', event.id] },
     {
       collection: 'purchasables',
-      where: [
-        firestore.FieldPath.documentId(),
-        'in',
-        (ticketSegments || []).map(segment => segment.purchasableId),
-      ],
+      where:
+        ticketSegments && ticketSegments.length
+          ? [
+              firestore.FieldPath.documentId(),
+              'in',
+              ticketSegments.map(segment => segment.purchasableId),
+            ]
+          : undefined,
+      storeAs: 'eventTickets',
     },
   ]);
 
@@ -313,23 +257,43 @@ function EventDetails() {
     );
   }
 
+  useEffect(() => {
+    if (eventTickets && eventTickets.length) {
+      let tag;
+      if (eventTickets.length > 1) {
+        const cheapest = orderBy(eventTickets, 'price');
+        tag = t('from').toLowerCase();
+        tag += ' $';
+        tag += cheapest[0].price;
+      } else {
+        tag = `$${eventTickets[0].price}`;
+      }
+      setPriceTag(tag);
+    }
+  }, [eventTickets]);
+
   return (
     <>
       <ScrollView
         style={styles.container}
         contentContainerStyle={{ paddingBottom: 70 }}
       >
-        <ImageHeader image={event.imageUrl} />
+        <ImageHeader
+          image={event.imageUrl}
+          openImage={() => setShowImageFullscreen(true)}
+        />
         <View style={styles.dataContainer}>
           <View style={styles.categoryPill}>
-            <Text style={styles.categoryText}>Category</Text>
+            <Text style={styles.categoryText}>{category.name}</Text>
           </View>
           <Text style={styles.eventTitle}>{event.name}</Text>
           <DatePlaceRow event={event} />
           <View style={styles.divider} />
           <View style={styles.row}>
             <Text style={styles.bodyText}>{t('ticketValue')}</Text>
-            <Text style={[styles.bodyText, { fontWeight: 'bold' }]}>text2</Text>
+            <Text style={[styles.bodyText, { fontWeight: 'bold' }]}>
+              {priceTag}
+            </Text>
           </View>
           <Accordion
             sections={SECTIONS}
@@ -350,12 +314,24 @@ function EventDetails() {
         style={styles.floatingButton}
         // TODO: design Get Tickets page
       />
+      <Portal>
+        <Modal
+          visible={showImageFullscreen}
+          contentContainerStyle={{ height: '100%', width: '100%' }}
+          onDismiss={() => setShowImageFullscreen(false)}
+          style={{ backgroundColor: TransparentBackdrop }}
+        >
+          <ZoomableView maxZoom={4} minZoom={1} initialZoom={1} bindToBorders>
+            <Image
+              source={{ uri: event.imageUrl }}
+              resizeMode="contain"
+              style={{ width: '100%', height: '100%' }}
+            />
+          </ZoomableView>
+        </Modal>
+      </Portal>
     </>
   );
 }
 
 export default EventDetails;
-
-ImageHeader.propTypes = {
-  image: PropTypes.string.isRequired,
-};

@@ -17,10 +17,10 @@ const styles = StyleSheet.create({
   scrollView: { width: '100%', marginTop: 8 },
 });
 
-function EventsList({ events }) {
+function EventsList({ events, category }) {
   const navigation = useNavigation();
   function navigate(event) {
-    navigation.navigate(t('eventDetails'), { event });
+    navigation.navigate(t('eventDetails'), { event, category });
   }
 
   return (
@@ -38,6 +38,7 @@ function EventsList({ events }) {
 
 EventsList.propTypes = {
   events: PropTypes.array.isRequired,
+  category: PropTypes.object.isRequired,
 };
 
 export default EventsList;
