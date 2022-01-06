@@ -34,6 +34,7 @@ function CategoryDetails() {
   const { category } = route.params;
 
   const [cardsMode, setCardsMode] = useState(true);
+  const [listMode, setListMode] = useState(false);
 
   useFirestoreConnect([
     { collection: 'events', where: ['categoryId', '==', category.id] },
@@ -80,14 +81,20 @@ function CategoryDetails() {
                       color="white"
                     />
                   }
-                  onPress={() => setCardsMode(true)}
+                  onPress={() => {
+                    setListMode(false);
+                    setCardsMode(true);
+                  }}
                 />
                 <PillButton
-                  selected={!cardsMode}
+                  selected={listMode}
                   element={
                     <FontAwesome5 name="th-list" size={16} color="white" />
                   }
-                  onPress={() => setCardsMode(false)}
+                  onPress={() => {
+                    setCardsMode(false);
+                    setListMode(true);
+                  }}
                 />
               </View>
             }

@@ -9,3 +9,4 @@ export const TabBarBackground = DarkCardBackground;
 export const GreenTransaction = '#4CB561';
 export const RedTransaction = '#BD4646';
 export const PurplePill = '#B977D5';
+export const LogoBackground = '#1A1C28';

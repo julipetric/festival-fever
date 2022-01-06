@@ -29,6 +29,8 @@ const longitudeDelta = 0.0421;
 function FullScreenMapView() {
   const { params } = useRoute();
 
+  const { hideDoneButton } = params;
+
   const [location, setLocation] = useState();
   const [errorMsg, setErrorMsg] = useState();
   const [markerCoordinates, setMarkerCoordinates] = useState(
@@ -86,7 +88,8 @@ function FullScreenMapView() {
         showsUserLocation
         ref={mapRef}
         onPress={event => {
-          setMarkerCoordinates(event.nativeEvent.coordinate);
+          if (!hideDoneButton)
+            setMarkerCoordinates(event.nativeEvent.coordinate);
         }}
       >
         {markerCoordinates && (
@@ -99,7 +102,7 @@ function FullScreenMapView() {
           />
         )}
       </MapView>
-      {markerCoordinates && (
+      {!hideDoneButton && markerCoordinates && (
         <StyledButton
           label={t('done')}
           style={styles.button}

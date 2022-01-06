@@ -1,7 +1,9 @@
-import React from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import PropTypes from 'prop-types';
+import { useNavigation } from '@react-navigation/native';
+import { t } from 'i18n-js';
 import { PinkPrimary, PurplePill } from '../../assets/Colors';
 import { formatEventDateTime } from '../../utils';
 
@@ -19,10 +21,6 @@ const styles = StyleSheet.create({
   eventName: {
     color: 'black',
     fontSize: 24,
-  },
-  image: {
-    maxHeight: '100%',
-    maxWidth: '100%',
   },
   categoryPill: {
     backgroundColor: PurplePill,
@@ -51,8 +49,23 @@ const styles = StyleSheet.create({
 function EventListItem({ event, category, hideCategory }) {
   const { dateString, hoursString } = formatEventDateTime(event);
 
+  const [imageWidth, setImageWidth] = useState(0);
+  const [imageHeight, setImageHeight] = useState(0);
+
+  useEffect(() => {
+    Image.getSize(event.imageUrl, (width, height) => {
+      const ratio = imageWidth / width;
+      setImageHeight(height * ratio);
+    });
+  }, [event, imageWidth]);
+
+  const navigation = useNavigation();
+  function navigate() {
+    navigation.navigate(t('eventDetails'), { event, category });
+  }
+
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={navigate}>
       <View style={{ display: 'flex', flex: 7, alignItems: 'flex-start' }}>
         {!hideCategory && (
           <View style={styles.categoryPill}>
@@ -64,14 +77,22 @@ function EventListItem({ event, category, hideCategory }) {
         <Text style={styles.eventName}>{event.name}</Text>
         <Text style={styles.location}>{event.location.description}</Text>
       </View>
-      <View style={{ flex: 4 }}>
+      <View
+        style={{ flex: 4, justifyContent: 'center' }}
+        onLayout={e => {
+          setImageWidth(e.nativeEvent.layout.width);
+        }}
+      >
         <Image
           source={event.imageUrl ? { uri: event.imageUrl } : event.image}
-          style={styles.image}
-          resizeMode="cover"
+          style={{
+            height: imageHeight,
+            width: imageWidth,
+          }}
+          resizeMode="contain"
         />
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 

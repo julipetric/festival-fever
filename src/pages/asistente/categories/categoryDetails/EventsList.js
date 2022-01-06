@@ -28,7 +28,12 @@ function EventsList({ events, category }) {
       <FlatList
         data={events}
         renderItem={({ item }) => (
-          <EventListItem event={item} navigate={navigate} hideCategory />
+          <EventListItem
+            event={item}
+            category={category}
+            navigate={navigate}
+            hideCategory
+          />
         )}
         style={styles.scrollView}
       />

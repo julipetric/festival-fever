@@ -25,7 +25,6 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 4,
-    backgroundColor: 'blue',
     alignItems: 'flex-start',
   },
   categoryPill: {
@@ -87,7 +86,7 @@ function EventItem({ event, category }) {
   }, [event, imageWidth]);
 
   function onEventPress() {
-    navigation.navigate(t('eventDetails'), { event });
+    navigation.navigate(t('eventDetails'), { event, category });
   }
 
   return (

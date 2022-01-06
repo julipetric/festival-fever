@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   circleIcon: { backgroundColor: 'rgba(0,0,0,0.3)', padding: 3 },
 });
 
-function ImageHeader({ image, openImage }) {
+function ImageHeader({ image, openImage, hideFavoriteButton }) {
   const navigation = useNavigation();
 
   const screenWidth = Dimensions.get('window').width;
@@ -60,22 +60,29 @@ function ImageHeader({ image, openImage }) {
             style={styles.circleIcon}
             size={23}
           />
-          <IconButton
-            icon={({ size }) => (
-              <Feather name="star" size={size} color="white" />
-            )}
-            style={styles.circleIcon}
-            size={25}
-          />
+          {!hideFavoriteButton && (
+            <IconButton
+              icon={({ size }) => (
+                <Feather name="star" size={size} color="white" />
+              )}
+              style={styles.circleIcon}
+              size={25}
+            />
+          )}
         </View>
       </ImageBackground>
     </TouchableHighlight>
   );
 }
 
+ImageHeader.defaultProps = {
+  hideFavoriteButton: false,
+};
+
 ImageHeader.propTypes = {
   image: PropTypes.string.isRequired,
   openImage: PropTypes.func.isRequired,
+  hideFavoriteButton: PropTypes.bool,
 };
 
 export default ImageHeader;

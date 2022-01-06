@@ -1,8 +1,10 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Image, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import { isLoaded } from 'react-redux-firebase';
 import { useFonts } from 'expo-font';
+import Splash from '../assets/splash.png';
+import { LogoBackground } from '../assets/Colors';
 
 export default function SplashGate({ children }) {
   const auth = useSelector(state => state.firebase.auth);
@@ -14,8 +16,23 @@ export default function SplashGate({ children }) {
 
   if (!isLoaded(auth) || !fontsLoaded)
     return (
-      <View>
-        <Text>splash screen...</Text>
+      <View
+        style={{
+          height: '100%',
+          width: '100%',
+          backgroundColor: LogoBackground,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        <Image
+          source={Splash}
+          style={{
+            height: '100%',
+            width: '100%',
+          }}
+          resizeMode="contain"
+        />
       </View>
     );
   return children;

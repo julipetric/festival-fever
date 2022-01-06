@@ -25,7 +25,11 @@ export default function MainCorporativo() {
         screenOptions={{ headerMode: 'none' }}
       >
         <Stack.Screen name="HomeCorporativo" component={HomeCorporativo} />
-        <Stack.Screen name="FullScreenMapView" component={FullScreenMapView} />
+        <Stack.Screen
+          name="FullScreenMapView"
+          component={FullScreenMapView}
+          initialParams={{ hideDoneButton: false }}
+        />
       </Stack.Navigator>
     </View>
   );

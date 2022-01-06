@@ -8,6 +8,7 @@ import MyAccount from '../common/MyAccount';
 import FestivalFeverHeader from '../components/Header/FestivalFeverHeader';
 import EventDetails from './event/EventDetails';
 import SearchScreen from './SearchScreen';
+import FullScreenMapView from '../common/FullScreenMapView';
 
 const Stack = createStackNavigator();
 
@@ -35,6 +36,11 @@ export default function MainAsistente() {
           name={t('eventDetails')}
           component={EventDetails}
           options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="FullScreenMapView"
+          component={FullScreenMapView}
+          initialParams={{ hideDoneButton: true }}
         />
       </Stack.Navigator>
     </View>

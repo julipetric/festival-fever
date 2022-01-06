@@ -1,17 +1,27 @@
-import { useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import React from 'react';
-import { View } from 'react-native';
 import { Text } from 'react-native-paper';
+import EventLandingPage from '../../common/EventLandingPage';
 
 function EventDetails() {
   const route = useRoute();
+  const navigation = useNavigation();
 
-  const { event } = route.params;
+  const { event, category } = route.params;
+
+  function navigateToMap() {
+    navigation.navigate('FullScreenMapView');
+  }
 
   return (
-    <View>
+    <EventLandingPage
+      event={event}
+      category={category}
+      navigateToMap={navigateToMap}
+      hideFavoriteButton
+    >
       <Text>{event.name}</Text>
-    </View>
+    </EventLandingPage>
   );
 }
 
