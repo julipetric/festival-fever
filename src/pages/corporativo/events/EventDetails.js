@@ -1,16 +1,35 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { t } from 'i18n-js';
+import { head } from 'lodash';
 import React from 'react';
-import { Text } from 'react-native-paper';
+import { View } from 'react-native';
+import { useSelector } from 'react-redux';
+import { useFirestoreConnect } from 'react-redux-firebase';
 import EventLandingPage from '../../common/EventLandingPage';
+import StyledButton from '../../components/StyledButton';
 
 function EventDetails() {
   const route = useRoute();
   const navigation = useNavigation();
 
-  const { event, category } = route.params;
+  const { eventId } = route.params;
+
+  const { event, category } = useSelector(state => ({
+    event: head(state.firestore.ordered.events),
+    category: head(state.firestore.ordered.categories),
+  }));
+
+  useFirestoreConnect([
+    { collection: 'events', doc: eventId },
+    event ? { collection: 'categories', doc: event.categoryId } : undefined,
+  ]);
 
   function navigateToMap() {
     navigation.navigate('FullScreenMapView');
+  }
+
+  function navigateToEventInfo() {
+    navigation.navigate('EditEventInfo', { event });
   }
 
   return (
@@ -20,7 +39,9 @@ function EventDetails() {
       navigateToMap={navigateToMap}
       hideFavoriteButton
     >
-      <Text>{event.name}</Text>
+      <View style={{ alignItems: 'flex-start', paddingTop: 10 }}>
+        <StyledButton label={t('editInfo')} onPress={navigateToEventInfo} />
+      </View>
     </EventLandingPage>
   );
 }

@@ -86,17 +86,20 @@ function EventItem({ event, category }) {
   }, [event, imageWidth]);
 
   function onEventPress() {
-    navigation.navigate(t('eventDetails'), { event, category });
+    navigation.navigate(t('eventDetails'), {
+      eventId: event.id,
+      categoryId: category.id,
+    });
   }
 
   return (
     <TouchableHighlight onPress={onEventPress}>
       <View style={styles.container}>
         <View style={styles.categoryPill}>
-          <Text style={styles.categoryText}>{category.name}</Text>
+          <Text style={styles.categoryText}>{category?.name}</Text>
         </View>
         <Text style={styles.eventDate}>{`${dateString} ${hoursString}`}</Text>
-        <Text style={styles.eventName}>{event.name}</Text>
+        <Text style={styles.eventName}>{event?.name}</Text>
         <Text style={styles.location}>{event.location.description}</Text>
         <View
           style={{

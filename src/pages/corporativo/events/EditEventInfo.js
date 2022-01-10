@@ -13,13 +13,13 @@ import i18n, { t } from 'i18n-js';
 import moment from 'moment';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { DatePickerModal } from 'react-native-paper-dates';
-import PropTypes from 'prop-types';
-import { useNavigation } from '@react-navigation/native';
-import { useFirestoreConnect } from 'react-redux-firebase';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useFirestore, useFirestoreConnect } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
 import StyledButton from '../../components/StyledButton';
 import FormTextInput from '../../components/FormTextInput';
 import { BackgroundGray } from '../../../assets/Colors';
+import { formatNewEvent } from '../../../firebase/EventsHelper';
 
 const styles = StyleSheet.create({
   container: {
@@ -32,25 +32,36 @@ const styles = StyleSheet.create({
   },
 });
 
-function AddEvent() {
+function EditEventInfo() {
   const navigation = useNavigation();
+  const route = useRoute();
 
-  useFirestoreConnect(() => [{ collection: 'categories', orderBy: ['order'] }]);
+  const firestore = useFirestore();
+
+  useFirestoreConnect(() => [
+    { collection: 'categories', orderBy: ['order'] },
+    { collection: 'events' },
+  ]);
   const { categories } = useSelector(state => ({
     categories: state.firestore.ordered.categories,
   }));
+
+  const { event } = route.params;
+
+  console.log(event.location)
 
   const { control, handleSubmit, formState, register, watch, setValue } =
     useForm({
       mode: 'onChange',
       reValidateMode: 'onChange',
+      defaultValues: {
+        ...event,
+        category: categories.find(category => category.id === event.categoryId),
+        //location: JSON.parse(event.location)
+      },
     });
 
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    register('location');
-  }, [register]);
 
   const [timeDate, setTimeDate] = useState(undefined);
   const [timeDateOpen, setTimeDateOpen] = useState(false);
@@ -65,20 +76,22 @@ function AddEvent() {
     setValue('location', JSON.stringify(location));
   }
 
-  /* function onSaveSuccess() {
+  function onSaveSuccess() {
     setLoading(false);
     navigation.pop();
-  } */
+  }
 
   async function onSave() {
     // setLoading(true);
     try {
-      /*
-      const saveEvent = formatNewEvent(watch(), timeDate);
-       await firestore.collection('events').add(watch());
-      onSaveSuccess(); */
+      const saveEvent = { ...watch(), categoryId: watch().category.id };
+      delete saveEvent.category;
+      delete saveEvent.id;
+      if (!event) await firestore.collection('events').add(saveEvent);
+      else await firestore.collection('events').doc(event.id).update(saveEvent);
+      onSaveSuccess();
     } catch (e) {
-      Alert.alert(t('error'), e);
+      Alert.alert(t('error'), JSON.stringify(e));
       setLoading(false);
     }
   }
@@ -93,7 +106,7 @@ function AddEvent() {
         enableAutomaticScroll
       >
         <FormTextInput
-          name="eventName"
+          name="name"
           autoCapitalize="words"
           control={control}
           label={t('eventName')}
@@ -169,13 +182,13 @@ function AddEvent() {
         />
         <HelperText visible={false}>dummyHelper</HelperText>
         <FormTextInput
-          name="address"
+          name="location.address"
           autoCapitalize="words"
           control={control}
           label={t('address')}
         />
         <FormTextInput
-          name="addressDescription"
+          name="location.description"
           autoCapitalize="words"
           control={control}
           label={t('addressDescription')}
@@ -193,7 +206,7 @@ function AddEvent() {
           control={control}
           label={t('contactEmail')}
         />
-        <Caption>{t('createEventProductNotes')}</Caption>
+        {!event && <Caption>{t('createEventProductNotes')}</Caption>}
         {loading ? (
           <ActivityIndicator style={styles.button} size="large" />
         ) : (
@@ -223,11 +236,4 @@ function AddEvent() {
   );
 }
 
-AddEvent.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-    push: PropTypes.func.isRequired,
-  }).isRequired,
-};
-
-export default AddEvent;
+export default EditEventInfo;

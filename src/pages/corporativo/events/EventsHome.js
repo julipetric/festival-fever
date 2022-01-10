@@ -67,7 +67,7 @@ function EventsHome() {
           icon={({ color }) => (
             <Ionicons name="add-circle" size={26} color={color} />
           )}
-          onPress={() => navigation.push(t('addEvent'))}
+          onPress={() => navigation.push('EditEventInfo')}
         >
           {t('addEvent')}
         </StyledButton>

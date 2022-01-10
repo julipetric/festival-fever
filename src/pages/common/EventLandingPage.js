@@ -148,9 +148,9 @@ function EventLandingPage({
         />
         <View style={styles.dataContainer}>
           <View style={styles.categoryPill}>
-            <Text style={styles.categoryText}>{category.name}</Text>
+            <Text style={styles.categoryText}>{category?.name}</Text>
           </View>
-          <Text style={styles.eventTitle}>{event.name}</Text>
+          <Text style={styles.eventTitle}>{event?.name}</Text>
           <DatePlaceRow event={event} navigateToMap={navigateToMap} />
           <View style={styles.divider} />
         </View>
@@ -183,8 +183,8 @@ EventLandingPage.defaultProps = {
 
 EventLandingPage.propTypes = {
   children: PropTypes.element,
-  event: PropTypes.object.isRequired,
-  category: PropTypes.object.isRequired,
+  event: PropTypes.object,
+  category: PropTypes.object,
   navigateToMap: PropTypes.func.isRequired,
   hideFavoriteButton: PropTypes.bool,
 };
