@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {
   TextInput,
@@ -19,7 +19,7 @@ import { useSelector } from 'react-redux';
 import StyledButton from '../../components/StyledButton';
 import FormTextInput from '../../components/FormTextInput';
 import { BackgroundGray } from '../../../assets/Colors';
-import { formatNewEvent } from '../../../firebase/EventsHelper';
+import { formatEventForm } from '../../../firebase/EventsHelper';
 
 const styles = StyleSheet.create({
   container: {
@@ -46,20 +46,19 @@ function EditEventInfo() {
     categories: state.firestore.ordered.categories,
   }));
 
-  const { event } = route.params;
+  const event = route?.params?.event;
 
-  console.log(event.location)
-
-  const { control, handleSubmit, formState, register, watch, setValue } =
-    useForm({
-      mode: 'onChange',
-      reValidateMode: 'onChange',
-      defaultValues: {
-        ...event,
-        category: categories.find(category => category.id === event.categoryId),
-        //location: JSON.parse(event.location)
-      },
-    });
+  const { control, handleSubmit, formState, watch, setValue } = useForm({
+    mode: 'onChange',
+    reValidateMode: 'onChange',
+    defaultValues: {
+      ...event,
+      category: event
+        ? categories.find(category => category.id === event.categoryId)
+        : undefined,
+      // location: JSON.parse(event.location)
+    },
+  });
 
   const [loading, setLoading] = useState(false);
 
@@ -82,11 +81,9 @@ function EditEventInfo() {
   }
 
   async function onSave() {
-    // setLoading(true);
+    setLoading(true);
     try {
-      const saveEvent = { ...watch(), categoryId: watch().category.id };
-      delete saveEvent.category;
-      delete saveEvent.id;
+      const saveEvent = formatEventForm(watch(), timeDate);
       if (!event) await firestore.collection('events').add(saveEvent);
       else await firestore.collection('events').doc(event.id).update(saveEvent);
       onSaveSuccess();
@@ -124,7 +121,7 @@ function EditEventInfo() {
                   name="category"
                   control={control}
                   label={t('category')}
-                  disabled
+                  editable={false}
                   valueGetter={category =>
                     category ? category.name : undefined
                   }
@@ -206,6 +203,18 @@ function EditEventInfo() {
           control={control}
           label={t('contactEmail')}
         />
+        <View
+          style={{
+            alignItems: 'flex-start',
+            padding: 0,
+            margin: 0,
+          }}
+        >
+          <StyledButton
+            label={t('editPhoto')}
+            style={{ paddingHorizontal: 0, marginBottom: 15 }}
+          />
+        </View>
         {!event && <Caption>{t('createEventProductNotes')}</Caption>}
         {loading ? (
           <ActivityIndicator style={styles.button} size="large" />

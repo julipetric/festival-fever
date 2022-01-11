@@ -113,8 +113,8 @@ function DatePlaceRow({ event, navigateToMap }) {
       >
         <MaterialIcons name="restaurant" size={24} color={PinkPrimary} />
         <View style={{ marginLeft: 10 }}>
-          <Text style={styles.text1}>{event.location.description}</Text>
-          <Text style={styles.text2}>{event.location.address}</Text>
+          <Text style={styles.text1}>{event?.location?.description}</Text>
+          <Text style={styles.text2}>{event?.location?.address}</Text>
         </View>
       </TouchableOpacity>
     </View>
@@ -142,7 +142,7 @@ function EventLandingPage({
         contentContainerStyle={{ paddingBottom: 70 }}
       >
         <ImageHeader
-          image={event.imageUrl}
+          image={event?.imageUrl}
           openImage={() => setShowImageFullscreen(true)}
           hideFavoriteButton={hideFavoriteButton}
         />
@@ -165,7 +165,7 @@ function EventLandingPage({
         >
           <ZoomableView maxZoom={4} minZoom={1} initialZoom={1} bindToBorders>
             <Image
-              source={{ uri: event.imageUrl }}
+              source={{ uri: event?.imageUrl }}
               resizeMode="contain"
               style={{ width: '100%', height: '100%' }}
             />

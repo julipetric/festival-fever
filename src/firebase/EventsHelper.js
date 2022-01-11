@@ -1,17 +1,10 @@
 /* eslint-disable import/prefer-default-export */
-export function formatNewEvent(data, timeDate) {
-  const {
-    address,
-    addressDescription,
-    eventName,
-    contactPhone,
-    contactEmail,
-    location: locationObject,
-  } = data;
+export function formatEventForm(data, timeDate) {
+  const { name, category, location, contactPhone, contactEmail } = data;
   return {
-    dates: timeDate,
-    location: { address, addressDescription, locationObject },
-    name: eventName,
+    name,
+    categoryId: category.id,
+    location,
     contactPhone,
     contactEmail,
   };

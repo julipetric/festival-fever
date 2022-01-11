@@ -3,6 +3,7 @@ import { t } from 'i18n-js';
 import { head } from 'lodash';
 import React from 'react';
 import { View } from 'react-native';
+import { ActivityIndicator } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import { useFirestoreConnect } from 'react-redux-firebase';
 import EventLandingPage from '../../common/EventLandingPage';
@@ -15,14 +16,26 @@ function EventDetails() {
   const { eventId } = route.params;
 
   const { event, category } = useSelector(state => ({
-    event: head(state.firestore.ordered.events),
-    category: head(state.firestore.ordered.categories),
+    event: head(state.firestore.ordered.selectedEvent),
+    category: head(state.firestore.ordered.selectedEventCategory),
   }));
 
-  useFirestoreConnect([
-    { collection: 'events', doc: eventId },
-    event ? { collection: 'categories', doc: event.categoryId } : undefined,
-  ]);
+  useFirestoreConnect(() => {
+    const array = [
+      {
+        collection: 'events',
+        doc: eventId,
+        storeAs: 'selectedEvent',
+      },
+    ];
+    if (event)
+      array.push({
+        collection: 'categories',
+        doc: event.categoryId,
+        storeAs: 'selectedEventCategory',
+      });
+    return array;
+  });
 
   function navigateToMap() {
     navigation.navigate('FullScreenMapView');
@@ -32,7 +45,7 @@ function EventDetails() {
     navigation.navigate('EditEventInfo', { event });
   }
 
-  return (
+  return event && category ? (
     <EventLandingPage
       event={event}
       category={category}
@@ -43,6 +56,8 @@ function EventDetails() {
         <StyledButton label={t('editInfo')} onPress={navigateToEventInfo} />
       </View>
     </EventLandingPage>
+  ) : (
+    <ActivityIndicator style={{ paddingTop: 50 }} />
   );
 }
 

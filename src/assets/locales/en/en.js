@@ -16,6 +16,7 @@ export default {
     'Once the event is created, you will be able to add products, promotions and sellers in the details section',
   done: 'Done',
   editInfo: 'Edit Info',
+  editPhoto: 'Edit Photo',
   email: 'E-Mail',
   error: 'Error',
   eventName: 'Event Name',

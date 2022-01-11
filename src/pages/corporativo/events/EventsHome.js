@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { t } from 'i18n-js';
 import React from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { ActivityIndicator, Title } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
@@ -52,35 +52,41 @@ function EventsHome() {
   ]);
 
   return events && categories ? (
-    <ScrollView contentContainerStyle={styles.contentContainer}>
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          paddingHorizontal: PagePaddingHorizontal,
-        }}
-      >
-        <Title>{t('myEvents')}</Title>
-        <StyledButton
-          icon={({ color }) => (
-            <Ionicons name="add-circle" size={26} color={color} />
-          )}
-          onPress={() => navigation.push('EditEventInfo')}
-        >
-          {t('addEvent')}
-        </StyledButton>
-      </View>
-      {(events || []).map(event => (
+    <FlatList
+      contentContainerStyle={styles.contentContainer}
+      data={events || []}
+      scrollEnabled={false}
+      keyExtractor={item => item.id}
+      renderItem={({ item: event }) => (
         <EventItem
           event={event}
           category={categories.find(
             category => category.id === event.categoryId
           )}
         />
-      ))}
-    </ScrollView>
+      )}
+      ListHeaderComponent={() => (
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            paddingHorizontal: PagePaddingHorizontal,
+          }}
+        >
+          <Title>{t('myEvents')}</Title>
+          <StyledButton
+            icon={({ color }) => (
+              <Ionicons name="add-circle" size={26} color={color} />
+            )}
+            onPress={() => navigation.push('EditEventInfo')}
+          >
+            {t('addEvent')}
+          </StyledButton>
+        </View>
+      )}
+    />
   ) : (
     <ActivityIndicator style={{ flex: 1 }} />
   );

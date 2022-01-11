@@ -23,6 +23,7 @@ export default function FormTextInput({
   multiline,
   keyboardType,
   disabled,
+  editable,
   valueGetter,
   ...props
 }) {
@@ -46,6 +47,7 @@ export default function FormTextInput({
         multiline={multiline}
         keyboardType={keyboardType}
         disabled={disabled}
+        editable={editable}
         {...props}
       />
       {!hideHelperText && (
@@ -73,6 +75,7 @@ FormTextInput.defaultProps = {
   multiline: false,
   keyboardType: undefined,
   disabled: false,
+  editable: true,
   valueGetter: undefined,
 };
 
@@ -94,5 +97,6 @@ FormTextInput.propTypes = {
   multiline: PropTypes.bool,
   keyboardType: PropTypes.string,
   disabled: PropTypes.bool,
+  editable: PropTypes.bool,
   valueGetter: PropTypes.func,
 };
