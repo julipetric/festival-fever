@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {
   TextInput,
@@ -203,18 +203,6 @@ function EditEventInfo() {
           control={control}
           label={t('contactEmail')}
         />
-        <View
-          style={{
-            alignItems: 'flex-start',
-            padding: 0,
-            margin: 0,
-          }}
-        >
-          <StyledButton
-            label={t('editPhoto')}
-            style={{ paddingHorizontal: 0, marginBottom: 15 }}
-          />
-        </View>
         {!event && <Caption>{t('createEventProductNotes')}</Caption>}
         {loading ? (
           <ActivityIndicator style={styles.button} size="large" />

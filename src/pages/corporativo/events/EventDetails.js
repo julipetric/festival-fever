@@ -50,7 +50,7 @@ function EventDetails() {
       event={event}
       category={category}
       navigateToMap={navigateToMap}
-      hideFavoriteButton
+      corporativoMode
     >
       <View style={{ alignItems: 'flex-start', paddingTop: 10 }}>
         <StyledButton label={t('editInfo')} onPress={navigateToEventInfo} />

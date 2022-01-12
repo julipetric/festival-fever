@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -20,6 +20,7 @@ import {
   TransparentBackdrop,
 } from '../../assets/Colors';
 import ImageHeader from './ImageHeader';
+import EditEventPhotoButton from '../corporativo/events/EditEventPhotoButton';
 
 const styles = StyleSheet.create({
   container: {
@@ -131,9 +132,13 @@ function EventLandingPage({
   event,
   category,
   navigateToMap,
-  hideFavoriteButton,
+  corporativoMode,
 }) {
   const [showImageFullscreen, setShowImageFullscreen] = useState(false);
+
+  const [image, setImage] = useState(event?.imageUrl);
+
+  useEffect(() => setImage(event?.imageUrl), [event]);
 
   return (
     <>
@@ -142,15 +147,15 @@ function EventLandingPage({
         contentContainerStyle={{ paddingBottom: 70 }}
       >
         <ImageHeader
-          image={event?.imageUrl}
+          image={image}
           openImage={() => setShowImageFullscreen(true)}
-          hideFavoriteButton={hideFavoriteButton}
+          hideFavoriteButton={corporativoMode}
         />
         <View style={styles.dataContainer}>
           <View style={styles.categoryPill}>
-            <Text style={styles.categoryText}>{category?.name}</Text>
+            <Text style={styles.categoryText}>{category.name}</Text>
           </View>
-          <Text style={styles.eventTitle}>{event?.name}</Text>
+          <Text style={styles.eventTitle}>{event.name}</Text>
           <DatePlaceRow event={event} navigateToMap={navigateToMap} />
           <View style={styles.divider} />
         </View>
@@ -165,11 +170,14 @@ function EventLandingPage({
         >
           <ZoomableView maxZoom={4} minZoom={1} initialZoom={1} bindToBorders>
             <Image
-              source={{ uri: event?.imageUrl }}
+              source={{ uri: image }}
               resizeMode="contain"
               style={{ width: '100%', height: '100%' }}
             />
           </ZoomableView>
+          {corporativoMode && (
+            <EditEventPhotoButton setCustomImage={setImage} />
+          )}
         </Modal>
       </Portal>
     </>
@@ -178,7 +186,9 @@ function EventLandingPage({
 
 EventLandingPage.defaultProps = {
   children: undefined,
-  hideFavoriteButton: false,
+  corporativoMode: false,
+  event: {},
+  category: {},
 };
 
 EventLandingPage.propTypes = {
@@ -186,7 +196,7 @@ EventLandingPage.propTypes = {
   event: PropTypes.object,
   category: PropTypes.object,
   navigateToMap: PropTypes.func.isRequired,
-  hideFavoriteButton: PropTypes.bool,
+  corporativoMode: PropTypes.bool,
 };
 
 export default EventLandingPage;
