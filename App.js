@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
+import 'firebase/storage';
 import InitialNavigator from './src/pages/common/InitialNavigator';
 import en from './src/assets/locales/en/en';
 import image from './src/assets/default_bg.png';

@@ -6,7 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import { Modal, Portal, Text } from 'react-native-paper';
+import { ActivityIndicator, Modal, Portal, Text } from 'react-native-paper';
 // eslint-disable-next-line import/no-unresolved
 import ZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
@@ -137,6 +137,7 @@ function EventLandingPage({
   const [showImageFullscreen, setShowImageFullscreen] = useState(false);
 
   const [image, setImage] = useState(event?.imageUrl);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   useEffect(() => setImage(event?.imageUrl), [event]);
 
@@ -168,15 +169,29 @@ function EventLandingPage({
           onDismiss={() => setShowImageFullscreen(false)}
           style={{ backgroundColor: TransparentBackdrop }}
         >
-          <ZoomableView maxZoom={4} minZoom={1} initialZoom={1} bindToBorders>
-            <Image
-              source={{ uri: image }}
-              resizeMode="contain"
-              style={{ width: '100%', height: '100%' }}
-            />
-          </ZoomableView>
-          {corporativoMode && (
-            <EditEventPhotoButton setCustomImage={setImage} />
+          {uploadingImage ? (
+            <ActivityIndicator size="large" />
+          ) : (
+            <>
+              <ZoomableView
+                maxZoom={4}
+                minZoom={1}
+                initialZoom={1}
+                bindToBorders
+              >
+                <Image
+                  source={{ uri: image }}
+                  resizeMode="contain"
+                  style={{ width: '100%', height: '100%' }}
+                />
+              </ZoomableView>
+              {corporativoMode && (
+                <EditEventPhotoButton
+                  setCustomImage={setImage}
+                  setUploadingImage={setUploadingImage}
+                />
+              )}
+            </>
           )}
         </Modal>
       </Portal>

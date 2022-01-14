@@ -1,8 +1,13 @@
 import { Feather } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet } from 'react-native';
 import { FAB } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
+import { useFirebase, useFirestore } from 'react-redux-firebase';
+import { useSelector } from 'react-redux';
+import { head } from 'lodash';
+import moment from 'moment';
+import PropTypes from 'prop-types';
 import { TransparentBackdrop2 } from '../../../assets/Colors';
 
 const styles = StyleSheet.create({
@@ -14,23 +19,55 @@ const styles = StyleSheet.create({
   },
 });
 
-function EditEventPhotoButton({ setCustomImage }) {
-  const [image, setImage] = useState(null);
+function EditEventPhotoButton({ setUploadingImage }) {
+  const firebase = useFirebase();
+  const firestore = useFirestore();
+
+  const { event } = useSelector(state => ({
+    event: head(state.firestore.ordered.selectedEvent),
+  }));
 
   async function onButtonPress() {
-    // No permissions request is necessary for launching the image library
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 1,
     });
 
-    console.log(result);
-    setCustomImage(result.uri);
+    const resultImage = await fetch(result.uri);
+    const blob = await resultImage.blob();
 
-    if (!result.cancelled) {
-      setImage(result.uri);
-    }
+    const fileExtension = result.uri.substring(result.uri.lastIndexOf('.') + 1);
+
+    const fileName = `${event.name.substring(0, 10)}-${
+      event.id
+    }-${moment().unix()}.${fileExtension}`;
+
+    setUploadingImage(true);
+
+    const uploadResult = await firebase.uploadFile(
+      'eventCovers',
+      blob,
+      undefined,
+      {
+        name: fileName,
+      }
+    );
+
+    const downloadUrl =
+      await uploadResult.uploadTaskSnapshot.ref.getDownloadURL();
+
+    const editedEvent = { ...event };
+    delete editedEvent.id;
+    editedEvent.imageUrl = downloadUrl;
+
+    const pathToDelete = firebase.storage().refFromURL(event.imageUrl);
+
+    await firestore.collection('events').doc(event.id).update(editedEvent);
+
+    await firebase.deleteFile(pathToDelete.fullPath);
+
+    setUploadingImage(false);
   }
 
   return (
@@ -41,5 +78,9 @@ function EditEventPhotoButton({ setCustomImage }) {
     />
   );
 }
+
+EditEventPhotoButton.propTypes = {
+  setUploadingImage: PropTypes.func.isRequired,
+};
 
 export default EditEventPhotoButton;

@@ -9,6 +9,7 @@ export const fbConfig = {
   projectId: 'ewents-festival-fever',
   messagingSenderId: '<FIREBASE_MESSAGING_SENDER_ID>',
   appId: '<FIREBASE_APP_ID>',
+  storageBucket: 'gs://ewents-festival-fever.appspot.com/',
 };
 
 const rrfConfig = {
