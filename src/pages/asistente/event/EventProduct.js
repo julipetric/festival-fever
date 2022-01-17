@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
 
 function EventProduct({ product }) {
   return (
-    <View style={styles.container}>
+    <View style={styles.container} key={product.title}>
       <View style={styles.itemContainer}>
         <Text>{product.title}</Text>
       </View>

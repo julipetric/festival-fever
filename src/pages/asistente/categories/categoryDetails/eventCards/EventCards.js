@@ -11,10 +11,10 @@ const windowWidth = Dimensions.get('window').width;
 const styles = StyleSheet.create({
   carouselContainer: { alignItems: 'center' },
 });
-function EventCards({ events, category }) {
+function EventCards({ events }) {
   const navigation = useNavigation();
   function navigate(event) {
-    navigation.navigate(t('eventDetails'), { event, category });
+    navigation.navigate(t('eventDetails'), { eventId: event.id });
   }
 
   return (
@@ -37,7 +37,6 @@ function EventCards({ events, category }) {
 
 EventCards.propTypes = {
   events: PropTypes.array.isRequired,
-  category: PropTypes.object.isRequired,
 };
 
 export default EventCards;

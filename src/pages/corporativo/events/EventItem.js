@@ -113,6 +113,7 @@ function EventItem({ event, category }) {
             source={{ uri: event.imageUrl }}
             style={[styles.image, { width: imageWidth, height: imageHeight }]}
             resizeMode="contain"
+            resizeMethod="scale"
             onLayout={e => {
               setImageWidth(e.nativeEvent.layout.width);
             }}

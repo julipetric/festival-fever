@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { ActivityIndicator } from 'react-native-paper';
 import { useFirestoreConnect } from 'react-redux-firebase';
 import { t } from 'i18n-js';
+import { head } from 'lodash';
 import CategoryDetailsHeader from './CategoryDetailsHeader';
 import { BackgroundGray } from '../../../../assets/Colors';
 import EventCards from './eventCards/EventCards';
@@ -31,17 +32,27 @@ const styles = StyleSheet.create({
 
 function CategoryDetails() {
   const route = useRoute();
-  const { category } = route.params;
+  const { categoryId } = route.params;
 
   const [cardsMode, setCardsMode] = useState(true);
   const [listMode, setListMode] = useState(false);
 
   useFirestoreConnect([
-    { collection: 'events', where: ['categoryId', '==', category.id] },
+    {
+      collection: 'events',
+      where: ['categoryId', '==', categoryId],
+      storeAs: 'categoryEvents',
+    },
+    {
+      collection: 'categories',
+      doc: categoryId,
+      storeAs: 'selectedCategory',
+    },
   ]);
 
-  const { events } = useSelector(state => ({
-    events: state.firestore.ordered.events,
+  const { events, category } = useSelector(state => ({
+    events: state.firestore.ordered.categoryEvents,
+    category: head(state.firestore.ordered.selectedCategory),
   }));
 
   const filters = [
@@ -54,60 +65,69 @@ function CategoryDetails() {
 
   return (
     <View style={styles.container}>
-      <CategoryDetailsHeader
-        name={category.name}
-        image={{ uri: category.imageUrl }}
-      />
-      {events ? (
+      {category ? (
         <>
-          <FilterBar
-            left={
-              <ScrollView style={styles.filtersScroll} horizontal>
-                {filters.map(filter => (
-                  <PillButton selected={filter.selected} text={filter.text} />
-                ))}
-              </ScrollView>
-            }
-            right={
-              <View
-                style={[commonStyles.rowSpaceBetween, { paddingBottom: 7 }]}
-              >
-                <PillButton
-                  selected={cardsMode}
-                  element={
-                    <MaterialCommunityIcons
-                      name="view-carousel"
-                      size={22}
-                      color="white"
-                    />
-                  }
-                  onPress={() => {
-                    setListMode(false);
-                    setCardsMode(true);
-                  }}
-                />
-                <PillButton
-                  selected={listMode}
-                  element={
-                    <FontAwesome5 name="th-list" size={16} color="white" />
-                  }
-                  onPress={() => {
-                    setCardsMode(false);
-                    setListMode(true);
-                  }}
-                />
-              </View>
-            }
-            text={
-              events.length === 1
-                ? `${events.length} ${t('event')}`
-                : `${events.length} ${t('events')}`
-            }
+          <CategoryDetailsHeader
+            name={category.name}
+            image={{ uri: category.imageUrl }}
           />
-          {cardsMode ? (
-            <EventCards events={events} category={category} />
+          {events ? (
+            <>
+              <FilterBar
+                left={
+                  <ScrollView style={styles.filtersScroll} horizontal>
+                    {filters.map(filter => (
+                      <PillButton
+                        selected={filter.selected}
+                        text={filter.text}
+                      />
+                    ))}
+                  </ScrollView>
+                }
+                right={
+                  <View
+                    style={[commonStyles.rowSpaceBetween, { paddingBottom: 7 }]}
+                  >
+                    <PillButton
+                      selected={cardsMode}
+                      element={
+                        <MaterialCommunityIcons
+                          name="view-carousel"
+                          size={22}
+                          color="white"
+                        />
+                      }
+                      onPress={() => {
+                        setListMode(false);
+                        setCardsMode(true);
+                      }}
+                    />
+                    <PillButton
+                      selected={listMode}
+                      element={
+                        <FontAwesome5 name="th-list" size={16} color="white" />
+                      }
+                      onPress={() => {
+                        setCardsMode(false);
+                        setListMode(true);
+                      }}
+                    />
+                  </View>
+                }
+                text={
+                  events.length === 1
+                    ? `${events.length} ${t('event')}`
+                    : `${events.length} ${t('events')}`
+                }
+              />
+              {cardsMode ? (
+                <EventCards events={events} />
+              ) : (
+                <EventsList events={events} />
+              )}
+            </>
           ) : (
-            <EventsList events={events} category={category} />
+            <ActivityIndicator size="large" />
           )}
         </>
       ) : (

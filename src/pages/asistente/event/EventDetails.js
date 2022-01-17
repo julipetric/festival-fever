@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View, Animated } from 'react-native';
-import { FAB, Text } from 'react-native-paper';
+import { ActivityIndicator, FAB, Text } from 'react-native-paper';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
 import { t } from 'i18n-js';
 import Accordion from 'react-native-collapsible/Accordion';
 import { useFirestore, useFirestoreConnect } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
-import { orderBy } from 'lodash';
+import { head, orderBy } from 'lodash';
 import { PinkPrimary, TransparentBackdrop } from '../../../assets/Colors';
 import EventProduct from './EventProduct';
 import EventLandingPage from '../../common/EventLandingPage';
@@ -63,31 +63,54 @@ const styles = StyleSheet.create({
 function EventDetails() {
   const route = useRoute();
   const navigation = useNavigation();
-  const { event, category } = route.params;
+  const { eventId } = route.params;
   const firestore = useFirestore();
 
-  const { ticketSegments, eventTickets } = useSelector(state => ({
-    ticketSegments: state.firestore.ordered.ticketSegments,
-    eventTickets: state.firestore.ordered.eventTickets,
-  }));
+  const { event, category, ticketSegments, eventTickets, fetchingData } =
+    useSelector(state => ({
+      event: head(state.firestore.ordered.selectedEvent),
+      category: head(state.firestore.ordered.selectedEventCategory),
+      ticketSegments: state.firestore.ordered.ticketSegments,
+      eventTickets: state.firestore.ordered.eventTickets,
+      fetchingData:
+        state.firestore.status.requesting.selectedEvent ||
+        state.firestore.status.requesting.ticketSegments ||
+        state.firestore.status.requesting.eventTickets,
+    }));
 
   const [priceTag, setPriceTag] = useState('-');
 
-  useFirestoreConnect([
-    { collection: 'ticketSegments', where: ['eventId', '==', event.id] },
-    {
-      collection: 'purchasables',
-      where:
-        ticketSegments && ticketSegments.length
-          ? [
-              firestore.FieldPath.documentId(),
-              'in',
-              ticketSegments.map(segment => segment.purchasableId),
-            ]
-          : undefined,
-      storeAs: 'eventTickets',
-    },
-  ]);
+  useFirestoreConnect(() => {
+    const array = [
+      {
+        collection: 'events',
+        doc: eventId,
+        storeAs: 'selectedEvent',
+      },
+    ];
+    if (event) {
+      array.push({
+        collection: 'categories',
+        doc: event.categoryId,
+        storeAs: 'selectedEventCategory',
+      });
+      array.push({
+        collection: 'ticketSegments',
+        where: ['eventId', '==', event.id],
+      });
+    }
+    if (ticketSegments && ticketSegments.length)
+      array.push({
+        collection: 'purchasables',
+        where: [
+          firestore.FieldPath.documentId(),
+          'in',
+          ticketSegments.map(segment => segment.purchasableId),
+        ],
+        storeAs: 'eventTickets',
+      });
+    return array;
+  });
 
   const [activeSections, setActiveSections] = useState([]);
 
@@ -152,39 +175,46 @@ function EventDetails() {
   }
 
   useEffect(() => {
-    if (eventTickets && eventTickets.length) {
-      let tag;
-      if (eventTickets.length > 1) {
-        const cheapest = orderBy(eventTickets, 'price');
-        tag = t('from').toLowerCase();
-        tag += ' $';
-        tag += cheapest[0].price;
-      } else {
-        tag = `$${eventTickets[0].price}`;
+    if (ticketSegments && ticketSegments.length) {
+      if (eventTickets && eventTickets.length) {
+        let tag;
+        if (eventTickets.length > 1) {
+          const cheapest = orderBy(eventTickets, 'price');
+          tag = t('from').toLowerCase();
+          tag += ' $';
+          tag += cheapest[0].price;
+        } else {
+          tag = `$${eventTickets[0].price}`;
+        }
+        setPriceTag(tag);
       }
-      setPriceTag(tag);
-    }
-  }, [eventTickets]);
+    } else setPriceTag(undefined);
+  }, [ticketSegments, eventTickets]);
 
   function navigateToMap() {
     navigation.navigate('FullScreenMapView');
   }
 
-  return (
+  function buyTickets() {
+    navigation.navigate(t('buyTickets'), { tickets: eventTickets });
+  }
+
+  return event && category && !fetchingData ? (
     <>
       <EventLandingPage
         event={event}
         category={category}
-        priceTag={priceTag}
         navigateToMap={navigateToMap}
       >
         <View style={{ paddingHorizontal: 15 }}>
-          <View style={styles.row}>
-            <Text style={styles.bodyText}>{t('ticketValue')}</Text>
-            <Text style={[styles.bodyText, { fontWeight: 'bold' }]}>
-              {priceTag}
-            </Text>
-          </View>
+          {priceTag && (
+            <View style={styles.row}>
+              <Text style={styles.bodyText}>{t('ticketValue')}</Text>
+              <Text style={[styles.bodyText, { fontWeight: 'bold' }]}>
+                {priceTag}
+              </Text>
+            </View>
+          )}
           <Accordion
             sections={SECTIONS}
             activeSections={activeSections}
@@ -193,6 +223,7 @@ function EventDetails() {
               animate(e.length);
             }}
             renderContent={renderContent}
+            keyExtractor={item => item.title}
             renderHeader={renderHeader}
             underlayColor={TransparentBackdrop}
             duration={400}
@@ -202,9 +233,11 @@ function EventDetails() {
       <FAB
         label={t('buyTickets')}
         style={styles.floatingButton}
-        // TODO: design Get Tickets page
+        onPress={buyTickets}
       />
     </>
+  ) : (
+    <ActivityIndicator size="large" />
   );
 }
 

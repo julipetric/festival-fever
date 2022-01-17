@@ -17,10 +17,10 @@ const styles = StyleSheet.create({
   scrollView: { width: '100%', marginTop: 8 },
 });
 
-function EventsList({ events, category }) {
+function EventsList({ events }) {
   const navigation = useNavigation();
   function navigate(event) {
-    navigation.navigate(t('eventDetails'), { event, category });
+    navigation.navigate(t('eventDetails'), { eventId: event.id });
   }
 
   return (
@@ -28,12 +28,7 @@ function EventsList({ events, category }) {
       <FlatList
         data={events}
         renderItem={({ item }) => (
-          <EventListItem
-            event={item}
-            category={category}
-            navigate={navigate}
-            hideCategory
-          />
+          <EventListItem event={item} navigate={navigate} hideCategory />
         )}
         style={styles.scrollView}
       />
@@ -43,7 +38,6 @@ function EventsList({ events, category }) {
 
 EventsList.propTypes = {
   events: PropTypes.array.isRequired,
-  category: PropTypes.object.isRequired,
 };
 
 export default EventsList;

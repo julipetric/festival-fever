@@ -97,12 +97,13 @@ function EventListItem({ event, category, hideCategory }) {
 }
 
 EventListItem.defaultProps = {
+  category: {},
   hideCategory: false,
 };
 
 EventListItem.propTypes = {
   event: PropTypes.object.isRequired,
-  category: PropTypes.object.isRequired,
+  category: PropTypes.object,
   hideCategory: PropTypes.bool,
 };
 

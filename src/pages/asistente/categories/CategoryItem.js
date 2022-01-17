@@ -27,7 +27,7 @@ function CategoryItem({ category }) {
   const navigation = useNavigation();
 
   function handleOnPress() {
-    navigation.push('CategoryDetails', { category });
+    navigation.push('CategoryDetails', { categoryId: category.id });
   }
 
   return (

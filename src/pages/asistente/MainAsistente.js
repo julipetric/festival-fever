@@ -2,13 +2,12 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { t } from 'i18n-js';
-import { PinkPrimary } from '../../assets/Colors';
 import HomeAsistente from './HomeAsistente';
 import MyAccount from '../common/MyAccount';
 import FestivalFeverHeader from '../components/Header/FestivalFeverHeader';
-import EventDetails from './event/EventDetails';
 import SearchScreen from './SearchScreen';
 import FullScreenMapView from '../common/FullScreenMapView';
+import EventDetailsMain from './event/EventDetailsMain';
 
 const Stack = createStackNavigator();
 
@@ -25,7 +24,6 @@ export default function MainAsistente() {
   return (
     <View style={styles.container}>
       <Stack.Navigator
-        activeColor={PinkPrimary}
         initialRouteName="HomeCorporativo"
         screenOptions={{ header: () => <FestivalFeverHeader /> }}
       >
@@ -34,7 +32,7 @@ export default function MainAsistente() {
         <Stack.Screen name={t('search')} component={SearchScreen} />
         <Stack.Screen
           name={t('eventDetails')}
-          component={EventDetails}
+          component={EventDetailsMain}
           options={{ headerShown: false }}
         />
         <Stack.Screen

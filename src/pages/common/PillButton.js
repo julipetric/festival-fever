@@ -27,6 +27,7 @@ function PillButton({ text, selected, onPress, element }) {
     <TouchableOpacity
       onPress={onPress}
       style={[styles.filterButton, { opacity: selected ? 1 : 0.3 }]}
+      key={text}
     >
       <View style={styles.content}>
         {text && <Text style={{ fontSize: 12 }}>{text}</Text>}
