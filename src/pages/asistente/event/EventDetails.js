@@ -196,7 +196,10 @@ function EventDetails() {
   }
 
   function buyTickets() {
-    navigation.navigate(t('buyTickets'), { tickets: eventTickets });
+    navigation.navigate(t('buyTickets'), {
+      tickets: eventTickets,
+      event,
+    });
   }
 
   return event && category && !fetchingData ? (
