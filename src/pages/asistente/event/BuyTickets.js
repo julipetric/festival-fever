@@ -1,8 +1,8 @@
-import { useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { t } from 'i18n-js';
 import React, { useState } from 'react';
 import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Subheading, Text, Title, Caption } from 'react-native-paper';
+import { Subheading, Text, Title, Caption, FAB } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { orderBy } from 'lodash';
 import { BackgroundGray, PinkPrimary } from '../../../assets/Colors';
@@ -39,6 +39,11 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     height: 1,
     marginBottom: 5,
+  },
+  floatingButton: {
+    position: 'absolute',
+    bottom: '2%',
+    alignSelf: 'center',
   },
 });
 
@@ -83,11 +88,15 @@ ScreenHeader.propTypes = {
 
 function OrderSummary({ items }) {
   let total = 0;
-  items.forEach(item => (total += item.ticket.price * item.quantity));
+  items.forEach(item => {
+    total += item.ticket.price * item.quantity;
+  });
   return (
     <View style={{ paddingVertical: 10, width: '100%' }}>
       <View style={styles.line} />
-      <Subheading style={{ color: PinkPrimary }}>Order Summary</Subheading>
+      <Subheading style={{ color: PinkPrimary }}>
+        {t('orderSummary')}
+      </Subheading>
       {items.length ? (
         <>
           {items.map(item => (
@@ -105,7 +114,9 @@ function OrderSummary({ items }) {
                   flexDirection: 'row',
                 }}
               >
-                <Caption style={{ marginRight: 10 }}>x{item.quantity}</Caption>
+                <Text style={{ marginRight: 8, fontSize: 13, opacity: 0.5 }}>
+                  x{item.quantity}
+                </Text>
                 <Text>${item.ticket.price * item.quantity}</Text>
               </View>
             </View>
@@ -139,6 +150,7 @@ OrderSummary.propTypes = {
 
 function BuyTickets() {
   const route = useRoute();
+  const navigation = useNavigation();
   const { tickets, event } = route.params;
 
   const [items, setItems] = useState([]);
@@ -155,17 +167,29 @@ function BuyTickets() {
     }
   }
 
+  function onContinue() {
+    navigation.navigate(t('confirmOrder'), { items });
+  }
+
   return (
-    <FlatList
-      data={orderBy(tickets, 'price')}
-      renderItem={({ item }) => (
-        <TicketItem item={item} onPress={() => onRowPress(item)} />
-      )}
-      keyExtractor={item => item.id}
-      contentContainerStyle={styles.container}
-      ListHeaderComponent={() => <ScreenHeader event={event} />}
-      ListFooterComponent={() => <OrderSummary items={items} />}
-    />
+    <>
+      <FlatList
+        data={orderBy(tickets, 'price')}
+        renderItem={({ item }) => (
+          <TicketItem item={item} onPress={() => onRowPress(item)} />
+        )}
+        keyExtractor={item => item.id}
+        contentContainerStyle={styles.container}
+        ListHeaderComponent={() => <ScreenHeader event={event} />}
+        ListFooterComponent={() => <OrderSummary items={items} />}
+      />
+      <FAB
+        label={t('continue')}
+        style={styles.floatingButton}
+        onPress={onContinue}
+        disabled={!items.length}
+      />
+    </>
   );
 }
 
