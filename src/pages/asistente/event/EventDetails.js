@@ -66,17 +66,22 @@ function EventDetails() {
   const { eventId } = route.params;
   const firestore = useFirestore();
 
-  const { event, category, ticketSegments, eventTickets, fetchingData } =
+  const { event, category, ticketSegments, eventTickets, fetchingData, demo } =
     useSelector(state => ({
       event: head(state.firestore.ordered.selectedEvent),
       category: head(state.firestore.ordered.selectedEventCategory),
       ticketSegments: state.firestore.ordered.ticketSegments,
       eventTickets: state.firestore.ordered.eventTickets,
+      demo: state.firestore.status,
       fetchingData:
         state.firestore.status.requesting.selectedEvent ||
         state.firestore.status.requesting.ticketSegments ||
-        state.firestore.status.requesting.eventTickets,
+        state.firestore.status.requesting.eventTickets ||
+        !state.firestore.status.requested.eventTickets ||
+        !state.firestore.status.requested.selectedEvent,
     }));
+
+  console.log(demo);
 
   const [priceTag, setPriceTag] = useState('-');
 

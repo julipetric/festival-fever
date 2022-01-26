@@ -45,36 +45,75 @@ const styles = StyleSheet.create({
 });
 
 function AmountLabel({ amount }) {
+  const inverseAmount = amount * -1;
   let sign;
-  if (amount < 0) sign = '-';
-  if (amount > 0) sign = '+';
+  if (inverseAmount < 0) sign = '-';
+  if (inverseAmount > 0) sign = '+';
   return (
     <View style={styles.amountContainer}>
       <Text
         style={[
           styles.amount,
-          { color: amount < 0 ? RedTransaction : GreenTransaction },
+          { color: inverseAmount < 0 ? RedTransaction : GreenTransaction },
         ]}
       >
-        {`${sign} $ ${Math.abs(amount).toFixed(0)}`}
+        {`${sign} $ ${Math.abs(inverseAmount).toFixed(0)}`}
       </Text>
       <Text
         style={[
           styles.amountCents,
-          { color: amount < 0 ? RedTransaction : GreenTransaction },
+          { color: inverseAmount < 0 ? RedTransaction : GreenTransaction },
         ]}
       >
-        {(amount - floor(amount)).toFixed(2).substring(2)}
+        {(inverseAmount - floor(inverseAmount)).toFixed(2).substring(2)}
       </Text>
     </View>
   );
 }
 
+function ItemRow({ item }) {
+  return (
+    <>
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end',
+        }}
+      >
+        <Text style={styles.description}>{item.name}</Text>
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'flex-end',
+          }}
+        >
+          <Text
+            style={{
+              marginRight: 8,
+              fontSize: 13,
+              opacity: 0.5,
+            }}
+          >
+            x{item.quantity}
+          </Text>
+          <Text>${item.ticket.price * item.quantity}</Text>
+        </View>
+      </View>
+    </>
+  );
+}
+
 function TransactionItem({ transaction }) {
+  console.log(transaction);
   return (
     <View style={styles.container} key={transaction.id}>
       <View>
-        <Text style={styles.description}>{transaction.description}</Text>
+        {/* {transaction.items.map(item => (
+          //<ItemRow item={item} />
+        ))} */}
         <Text style={styles.date}>{transaction.date}</Text>
       </View>
       <AmountLabel amount={transaction.amount} />

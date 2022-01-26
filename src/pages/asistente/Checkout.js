@@ -5,8 +5,9 @@ import { FlatList, StyleSheet, View } from 'react-native';
 import { ActivityIndicator, FAB, Text, Title } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { useFirebase } from 'react-redux-firebase';
-import { PinkPrimary } from '../../assets/Colors';
+import moment from 'moment';
+import { useFirebase, useFirestore } from 'react-redux-firebase';
+import { PinkPrimary, RedTransaction } from '../../assets/Colors';
 
 const styles = StyleSheet.create({
   container: {
@@ -29,7 +30,7 @@ const styles = StyleSheet.create({
 function ScreenHeader() {
   return (
     <View style={{ marginBottom: 10 }}>
-      <Title style={{ color: PinkPrimary }}>{t('confirmOrder')}</Title>
+      <Title style={{ color: PinkPrimary }}>{t('checkout')}</Title>
       <Text style={{ opacity: 0.6 }}>{t('confirmingOrder')}:</Text>
     </View>
   );
@@ -82,10 +83,18 @@ function ListFooter({ orderTotal, currentBalance }) {
         }}
       >
         <Text>{t('balanceAfterOperation')}</Text>
-        <Text style={{ fontWeight: 'bold' }}>
+        <Text
+          style={{
+            fontWeight: 'bold',
+            color: orderTotal > currentBalance ? RedTransaction : 'white',
+          }}
+        >
           ${currentBalance - orderTotal}
         </Text>
       </View>
+      <Text style={{ textAlign: 'right', flex: 1, color: RedTransaction }}>
+        {t('insufficientFunds')}
+      </Text>
     </>
   );
 }
@@ -135,11 +144,12 @@ OrderItem.propTypes = {
   item: PropTypes.object.isRequired,
 };
 
-function ConfirmOrder() {
+function Checkout() {
   const route = useRoute();
-  const { items } = route.params;
+  const { items, event } = route.params;
 
   const firebase = useFirebase();
+  const firestore = useFirestore();
 
   const [loading, setLoading] = useState(false);
 
@@ -155,7 +165,22 @@ function ConfirmOrder() {
   async function onConfirm() {
     const currentBalance = profile.balance;
     setLoading(true);
-    await firebase.updateProfile({ balance: currentBalance - total });
+
+    const order = {
+      userId: firebase.auth().currentUser.uid,
+      eventId: event.id,
+      items: items.map(item => ({
+        quantity: item.quantity,
+        purchasableId: item.ticket.id,
+      })),
+      status: 1,
+      amount: total,
+      timestamp: moment().unix(),
+    };
+    await Promise.all([
+      firebase.updateProfile({ balance: currentBalance - total }),
+      firestore.collection('orders').add(order),
+    ]);
     setLoading(false);
   }
 
@@ -178,10 +203,11 @@ function ConfirmOrder() {
           label={t('confirm')}
           style={styles.floatingButton}
           onPress={onConfirm}
+          disabled={total > profile.balance}
         />
       )}
     </>
   );
 }
 
-export default ConfirmOrder;
+export default Checkout;

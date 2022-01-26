@@ -4,7 +4,7 @@ import { t } from 'i18n-js';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { BackgroundGray } from '../../../assets/Colors';
-import ConfirmOrder from '../ConfirmOrder';
+import Checkout from '../Checkout';
 import BuyTickets from './BuyTickets';
 import EventDetails from './EventDetails';
 
@@ -36,7 +36,7 @@ function EventDetailsMain() {
           initialParams={{ eventId }}
         />
         <Stack.Screen name={t('buyTickets')} component={BuyTickets} />
-        <Stack.Screen name={t('confirmOrder')} component={ConfirmOrder} />
+        <Stack.Screen name={t('checkout')} component={Checkout} />
       </Stack.Navigator>
     </View>
   );

@@ -106,6 +106,7 @@ function OrderSummary({ items }) {
                 flexDirection: 'row',
                 justifyContent: 'space-between',
               }}
+              key={item.ticket.id}
             >
               <Text>{item.ticket.name}</Text>
               <View
@@ -168,7 +169,7 @@ function BuyTickets() {
   }
 
   function onContinue() {
-    navigation.navigate(t('confirmOrder'), { items });
+    navigation.navigate(t('checkout'), { items, event });
   }
 
   return (
@@ -184,7 +185,7 @@ function BuyTickets() {
         ListFooterComponent={() => <OrderSummary items={items} />}
       />
       <FAB
-        label={t('continue')}
+        label={t('checkout')}
         style={styles.floatingButton}
         onPress={onContinue}
         disabled={!items.length}
