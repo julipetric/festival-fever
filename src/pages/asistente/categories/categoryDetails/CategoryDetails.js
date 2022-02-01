@@ -127,11 +127,11 @@ function CategoryDetails() {
               )}
             </>
           ) : (
-            <ActivityIndicator size="large" />
+            <ActivityIndicator size="large" style={{ paddingTop: 30 }} />
           )}
         </>
       ) : (
-        <ActivityIndicator size="large" />
+        <ActivityIndicator size="large" style={{ paddingTop: 30 }} />
       )}
     </View>
   );

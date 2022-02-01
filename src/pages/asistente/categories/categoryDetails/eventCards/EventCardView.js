@@ -8,8 +8,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { IconButton } from 'react-native-paper';
-import { FontAwesome5, Feather } from '@expo/vector-icons';
-import MapView from 'react-native-maps';
+import { FontAwesome5, AntDesign } from '@expo/vector-icons';
 import { PinkPrimary } from '../../../../../assets/Colors';
 import { formatEventDateTime } from '../../../../../utils';
 
@@ -22,8 +21,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   imageContainer: {
-    flex: 1,
-    maxHeight: '50%',
+    flex: 2,
+    maxHeight: '70%',
     display: 'flex',
     justifyContent: 'space-between',
     flexDirection: 'row',
@@ -64,7 +63,7 @@ CircleButton.propTypes = {
   children: PropTypes.element.isRequired,
 };
 
-function EventCardView({ item, navigate }) {
+function EventCardView({ item, navigate, onFavAdded, isFavorite }) {
   const event = item;
 
   const { dateString, hoursString } = formatEventDateTime(event);
@@ -85,9 +84,16 @@ function EventCardView({ item, navigate }) {
           size={25}
         />
         <IconButton
-          icon={() => <Feather name="star" size={17} color="white" />}
+          icon={() => (
+            <AntDesign
+              name={isFavorite ? 'star' : 'staro'}
+              size={18}
+              color="white"
+            />
+          )}
           style={styles.circleIcon}
           size={25}
+          onPress={onFavAdded}
         />
       </ImageBackground>
       <View style={styles.contentContainer}>
@@ -105,7 +111,7 @@ function EventCardView({ item, navigate }) {
             <Text style={styles.eventTime}>{event.location.description}</Text>
             <Text style={styles.eventTime}>{event.location.address}</Text>
           </View>
-          <MapView style={styles.mapContainer} scrollEnabled={false} />
+          {/* <MapView style={styles.mapContainer} scrollEnabled={false} /> */}
         </View>
       </View>
     </TouchableOpacity>
@@ -115,6 +121,8 @@ function EventCardView({ item, navigate }) {
 EventCardView.propTypes = {
   item: PropTypes.object.isRequired,
   navigate: PropTypes.func.isRequired,
+  onFavAdded: PropTypes.func.isRequired,
+  isFavorite: PropTypes.bool.isRequired,
 };
 
 export default EventCardView;

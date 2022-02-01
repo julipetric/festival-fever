@@ -17,7 +17,7 @@ function CategoriesScreen() {
       renderItem={({ item }) => <CategoryItem category={item} />}
     />
   ) : (
-    <ActivityIndicator />
+    <ActivityIndicator style={{ paddingTop: 30 }} size="large" />
   );
 }
 

@@ -245,7 +245,7 @@ function EventDetails() {
       />
     </>
   ) : (
-    <ActivityIndicator size="large" />
+    <ActivityIndicator size="large" style={{ paddingTop: 30 }} />
   );
 }
 

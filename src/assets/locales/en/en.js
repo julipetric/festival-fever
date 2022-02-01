@@ -47,6 +47,7 @@ export default {
   myEvents: 'My Events',
   name: 'Name',
   nearby: 'Nearby',
+  noEventsAdded: 'No events added yet!',
   noItemsAddedToYourOrder: 'There are no items added to your order yet',
   of: 'of',
   orderSummary: 'Order Summary',
