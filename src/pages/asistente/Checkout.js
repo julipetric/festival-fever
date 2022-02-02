@@ -167,7 +167,7 @@ function Checkout() {
     setLoading(true);
 
     const order = {
-      userId: firebase.auth().currentUser.uid,
+      userId: firebase.auth()?.currentUser?.uid,
       eventId: event.id,
       items: items.map(item => ({
         quantity: item.quantity,

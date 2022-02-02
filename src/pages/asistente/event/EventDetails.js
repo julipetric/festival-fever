@@ -81,8 +81,6 @@ function EventDetails() {
         !state.firestore.status.requested.selectedEvent,
     }));
 
-  console.log(demo);
-
   const [priceTag, setPriceTag] = useState('-');
 
   useFirestoreConnect(() => {

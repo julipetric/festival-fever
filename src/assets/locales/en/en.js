@@ -1,5 +1,7 @@
 export default {
   addEvent: 'Add Event',
+  addedFunds: 'Added funds',
+  addFunds: 'Add funds to your account',
   address: 'Address',
   addressDescription: 'Address Description',
   accountTotal: 'Account Total',

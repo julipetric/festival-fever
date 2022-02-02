@@ -3,6 +3,8 @@ import { Text } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { StyleSheet, View } from 'react-native';
 import { floor } from 'lodash';
+import { t } from 'i18n-js';
+import moment from 'moment';
 import {
   DarkCardBackground,
   GreenTransaction,
@@ -107,14 +109,21 @@ function ItemRow({ item }) {
 }
 
 function TransactionItem({ transaction }) {
-  console.log(transaction);
   return (
     <View style={styles.container} key={transaction.id}>
       <View>
-        {/* {transaction.items.map(item => (
+        {transaction.status === 10 ? (
+          <Text style={styles.description}>{t('addedFunds')}</Text>
+        ) : (
+          <>
+            {/* {transaction.items.map(item => (
           //<ItemRow item={item} />
         ))} */}
-        <Text style={styles.date}>{transaction.date}</Text>
+          </>
+        )}
+        <Text style={styles.date}>
+          {moment.unix(transaction.timestamp).format('MM/DD/YYYY - HH:mm')}
+        </Text>
       </View>
       <AmountLabel amount={transaction.amount} />
     </View>
