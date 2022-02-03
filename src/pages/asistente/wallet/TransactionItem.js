@@ -2,7 +2,7 @@ import React from 'react';
 import { Text } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { StyleSheet, View } from 'react-native';
-import { floor } from 'lodash';
+import { floor, uniqueId } from 'lodash';
 import { t } from 'i18n-js';
 import moment from 'moment';
 import {
@@ -29,11 +29,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   date: {
-    fontSize: 14,
+    fontSize: 12,
+    opacity: 0.6,
   },
   amountContainer: {
     display: 'flex',
     flexDirection: 'row',
+    flex: 0,
   },
   amount: {
     fontSize: 24,
@@ -75,50 +77,54 @@ function AmountLabel({ amount }) {
 
 function ItemRow({ item }) {
   return (
-    <>
+    <View
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-end',
+        flex: 1,
+      }}
+      key={uniqueId()}
+    >
+      <Text style={styles.description}>{item?.purchasable?.name}</Text>
       <View
         style={{
           display: 'flex',
           flexDirection: 'row',
-          justifyContent: 'space-between',
           alignItems: 'flex-end',
         }}
       >
-        <Text style={styles.description}>{item.name}</Text>
-        <View
+        <Text
           style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'flex-end',
+            marginRight: 8,
+            fontSize: 13,
+            opacity: 0.5,
           }}
         >
-          <Text
-            style={{
-              marginRight: 8,
-              fontSize: 13,
-              opacity: 0.5,
-            }}
-          >
-            x{item.quantity}
-          </Text>
-          <Text>${item.ticket.price * item.quantity}</Text>
-        </View>
+          x{item.quantity}
+        </Text>
+        <Text>${item.purchasable?.price * item.quantity}</Text>
       </View>
-    </>
+    </View>
   );
 }
+
+ItemRow.propTypes = {
+  item: PropTypes.object.isRequired,
+};
 
 function TransactionItem({ transaction }) {
   return (
     <View style={styles.container} key={transaction.id}>
-      <View>
+      <View style={{ flex: 1, paddingRight: 20 }}>
         {transaction.status === 10 ? (
           <Text style={styles.description}>{t('addedFunds')}</Text>
         ) : (
           <>
-            {/* {transaction.items.map(item => (
-          //<ItemRow item={item} />
-        ))} */}
+            {transaction.items.map(item => (
+              <ItemRow item={item} />
+            ))}
           </>
         )}
         <Text style={styles.date}>

@@ -47,3 +47,27 @@ export function formatEventDateTime(event) {
   }
   return { dateString, hoursString };
 }
+
+export async function recalculateWallet(firestoreInstance, userId) {
+  const orders = [];
+  (
+    await firestoreInstance
+      .collection('orders')
+      .where('userId', '==', userId)
+      .get()
+  ).forEach(doc => orders.push(doc.data()));
+  let total = 0;
+  orders.forEach(order => {
+    total -= order.amount;
+  });
+  firestoreInstance.collection('users').doc(userId).update({ balance: total });
+}
+
+export async function deleteUserTransactions(firestoreInstance, userId) {
+  (
+    await firestoreInstance
+      .collection('orders')
+      .where('userId', '==', userId)
+      .get()
+  ).forEach(doc => doc.delete());
+}
