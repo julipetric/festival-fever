@@ -64,10 +64,17 @@ export async function recalculateWallet(firestoreInstance, userId) {
 }
 
 export async function deleteUserTransactions(firestoreInstance, userId) {
-  (
-    await firestoreInstance
-      .collection('orders')
-      .where('userId', '==', userId)
-      .get()
-  ).forEach(doc => doc.delete());
+  const batch = firestoreInstance.batch();
+
+  const { docs } = await firestoreInstance
+    .collection('orders')
+    .where('userId', '==', userId)
+    .get();
+
+  docs.forEach(doc => {
+    batch.delete(doc.ref);
+  });
+
+  await batch.commit();
+  await recalculateWallet(firestoreInstance, userId);
 }

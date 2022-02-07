@@ -5,9 +5,9 @@ import { AntDesign, Entypo, FontAwesome } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
 import { t } from 'i18n-js';
 import { PinkPrimary, TabBarBackground } from '../../assets/Colors';
-import WalletScreen from './wallet/WalletScreen';
 import FavoritesScreen from './favorites/FavoritesScreen';
 import CategoriesMain from './categories/CategoriesMain';
+import WalletNavigator from './wallet/WalletNavigator';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -56,7 +56,7 @@ function HomeAsistente() {
           />
           <Tab.Screen
             name={t('wallet')}
-            component={WalletScreen}
+            component={WalletNavigator}
             options={{
               // eslint-disable-next-line react/prop-types
               tabBarIcon: ({ color }) => (

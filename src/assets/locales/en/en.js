@@ -52,6 +52,7 @@ export default {
   noEventsAdded: 'No events added yet!',
   noItemsAddedToYourOrder: 'There are no items added to your order yet',
   of: 'of',
+  orders: 'Orders',
   orderSummary: 'Order Summary',
   orderTotal: 'Order Total',
   password: 'Password',

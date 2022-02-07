@@ -11,18 +11,14 @@ import {
   Title,
 } from 'react-native-paper';
 import { useSelector } from 'react-redux';
-import {
-  useFirebase,
-  useFirestore,
-  useFirestoreConnect,
-} from 'react-redux-firebase';
+import { useFirebase, useFirestore } from 'react-redux-firebase';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { Ionicons } from '@expo/vector-icons';
 import { DarkCardBackground } from '../../../assets/Colors';
 import StyledButton from '../../components/StyledButton';
 import TransactionItem from './TransactionItem';
-import { deleteUserTransactions, recalculateWallet } from '../../../utils';
+import { deleteUserTransactions } from '../../../utils';
 
 const styles = StyleSheet.create({
   container: {
@@ -143,10 +139,7 @@ Transactions.propTypes = {
   data: PropTypes.array.isRequired,
 };
 
-// eslint-disable-next-line no-unused-vars
-const PAGE_SIZE = 30;
-
-function WalletScreen() {
+function WalletTransactions() {
   const firebase = useFirebase();
   const firestore = useFirestore();
 
@@ -163,31 +156,6 @@ function WalletScreen() {
       balance: state.firebase.profile.balance,
     })
   );
-
-  useFirestoreConnect(() => {
-    const array = [
-      {
-        collection: 'orders',
-        where: ['userId', '==', firebase.auth()?.currentUser?.uid],
-        orderBy: ['timestamp', 'desc'],
-        // limit: PAGE_SIZE * (page + 1),
-        storeAs: 'userOrders',
-      },
-    ];
-    if (userOrders?.some(order => order.items?.length))
-      array.push({
-        collection: 'purchasables',
-        where: [
-          firestore.FieldPath.documentId(),
-          'in',
-          userOrders
-            .flatMap(item => item.items?.map(subItem => subItem.purchasableId))
-            .filter(e => e !== undefined),
-        ],
-        storeAs: 'userOrdersPurchasables',
-      });
-    return array;
-  });
 
   function addFundsPressed() {
     setShowAddFunds(true);
@@ -231,22 +199,24 @@ function WalletScreen() {
           balance={balance}
           updateWallet={updateWallet}
         />
-        {userOrders && userOrdersPurchasables && (
-          <Transactions
-            setPage={setPage}
-            data={userOrders.map(order =>
-              order.status === 10
-                ? order
-                : {
-                    ...cloneDeep(order),
-                    items: order.items.map(item => ({
-                      ...item,
-                      purchasable: userOrdersPurchasables[item.purchasableId],
-                    })),
-                  }
-            )}
-          />
-        )}
+        {userOrders &&
+          (!userOrders?.some(order => order.items?.length) ||
+            userOrdersPurchasables) && (
+            <Transactions
+              setPage={setPage}
+              data={userOrders.map(order =>
+                order.status === 10
+                  ? order
+                  : {
+                      ...cloneDeep(order),
+                      items: order.items.map(item => ({
+                        ...item,
+                        purchasable: userOrdersPurchasables[item.purchasableId],
+                      })),
+                    }
+              )}
+            />
+          )}
       </View>
       <Portal>
         <Modal
@@ -271,4 +241,4 @@ function WalletScreen() {
   );
 }
 
-export default WalletScreen;
+export default WalletTransactions;
