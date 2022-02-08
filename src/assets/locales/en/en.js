@@ -78,6 +78,7 @@ export default {
   total: 'Total',
   transactions: 'Transactions',
   username: 'Username',
+  viewQRForProduct: 'View QR for product:',
   wallet: 'Wallet',
   wrongUserPasswordCombination: 'You entered an incorret user or password',
 };

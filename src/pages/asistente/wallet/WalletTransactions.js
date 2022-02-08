@@ -1,5 +1,5 @@
 import { t } from 'i18n-js';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, uniqBy } from 'lodash';
 import React, { useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import {
@@ -204,17 +204,22 @@ function WalletTransactions() {
             userOrdersPurchasables) && (
             <Transactions
               setPage={setPage}
-              data={userOrders.map(order =>
-                order.status === 10
-                  ? order
-                  : {
-                      ...cloneDeep(order),
-                      items: order.items.map(item => ({
-                        ...item,
-                        purchasable: userOrdersPurchasables[item.purchasableId],
-                      })),
-                    }
-              )}
+              data={userOrders.map(order => {
+                if (order.status === 10) return order;
+                return {
+                  ...cloneDeep(order),
+                  items: uniqBy(order.items, 'purchasableId').map(item => ({
+                    ...item,
+                    quantity: order.items.filter(
+                      orderItem =>
+                        orderItem.purchasableId === item.purchasableId
+                    ).length,
+                    purchasable: userOrdersPurchasables
+                      ? userOrdersPurchasables[item?.purchasableId]
+                      : undefined,
+                  })),
+                };
+              })}
             />
           )}
       </View>

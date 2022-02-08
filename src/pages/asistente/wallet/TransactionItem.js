@@ -5,6 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import { floor, uniqueId } from 'lodash';
 import { t } from 'i18n-js';
 import moment from 'moment';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import {
   DarkCardBackground,
   GreenTransaction,
@@ -114,9 +115,14 @@ ItemRow.propTypes = {
   item: PropTypes.object.isRequired,
 };
 
-function TransactionItem({ transaction }) {
+function TransactionItem({ transaction, hideOrderTotal, onPress }) {
   return (
-    <View style={styles.container} key={transaction.id}>
+    <TouchableOpacity
+      style={styles.container}
+      key={transaction?.id}
+      onPress={onPress}
+      disabled={!onPress}
+    >
       <View style={{ flex: 1, paddingRight: 20 }}>
         {transaction.status === 10 ? (
           <Text style={styles.description}>{t('addedFunds')}</Text>
@@ -131,13 +137,20 @@ function TransactionItem({ transaction }) {
           {moment.unix(transaction.timestamp).format('MM/DD/YYYY - HH:mm')}
         </Text>
       </View>
-      <AmountLabel amount={transaction.amount} />
-    </View>
+      {!hideOrderTotal && <AmountLabel amount={transaction.amount} />}
+    </TouchableOpacity>
   );
 }
 
+TransactionItem.defaultProps = {
+  hideOrderTotal: false,
+  onPress: undefined,
+};
+
 TransactionItem.propTypes = {
   transaction: PropTypes.object.isRequired,
+  hideOrderTotal: PropTypes.bool,
+  onPress: PropTypes.func,
 };
 
 AmountLabel.propTypes = {

@@ -1,4 +1,8 @@
-import { useRoute } from '@react-navigation/native';
+import {
+  StackActions,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import { t } from 'i18n-js';
 import React, { useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
@@ -7,6 +11,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 import { useFirebase, useFirestore } from 'react-redux-firebase';
+import { uniqueId } from 'lodash';
 import { PinkPrimary, RedTransaction } from '../../assets/Colors';
 
 const styles = StyleSheet.create({
@@ -92,9 +97,11 @@ function ListFooter({ orderTotal, currentBalance }) {
           ${currentBalance - orderTotal}
         </Text>
       </View>
-      <Text style={{ textAlign: 'right', flex: 1, color: RedTransaction }}>
-        {t('insufficientFunds')}
-      </Text>
+      {orderTotal > currentBalance && (
+        <Text style={{ textAlign: 'right', flex: 1, color: RedTransaction }}>
+          {t('insufficientFunds')}
+        </Text>
+      )}
     </>
   );
 }
@@ -146,6 +153,7 @@ OrderItem.propTypes = {
 
 function Checkout() {
   const route = useRoute();
+  const navigation = useNavigation();
   const { items, event } = route.params;
 
   const firebase = useFirebase();
@@ -169,11 +177,16 @@ function Checkout() {
     const order = {
       userId: firebase.auth()?.currentUser?.uid,
       eventId: event.id,
-      items: items.map(item => ({
-        quantity: item.quantity,
-        purchasableId: item.ticket.id,
-      })),
-      status: 1,
+      items: items.flatMap(item => {
+        const array = [];
+        const itemObject = {
+          purchasableId: item.ticket.id,
+          status: 1,
+        };
+        for (let i = 0; i < item.quantity; i += 1)
+          array.push({ ...itemObject, orderItemId: uniqueId() });
+        return array;
+      }),
       amount: total,
       timestamp: moment().unix(),
     };
@@ -182,6 +195,8 @@ function Checkout() {
       firestore.collection('orders').add(order),
     ]);
     setLoading(false);
+    navigation.dispatch(StackActions.popToTop());
+    navigation.dispatch(StackActions.popToTop());
   }
 
   return (
