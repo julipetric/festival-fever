@@ -79,7 +79,7 @@ function AccountTotal({ addFundsPressed, balance, updateWallet }) {
           justifyContent: 'space-between',
         }}
       >
-        <Text style={styles.accountTotalLabel}>{t('accountTotal')}</Text>
+        <Text style={styles.accountTotalLabel}>{t('accountBalance')}</Text>
         <Ionicons
           name="md-reload-circle"
           size={24}

@@ -1,13 +1,16 @@
 import i18n, { t } from 'i18n-js';
 import moment from 'moment';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Alert, StyleSheet } from 'react-native';
-import { HelperText, TextInput } from 'react-native-paper';
+import { ActivityIndicator, HelperText, TextInput } from 'react-native-paper';
 import { DatePickerModal } from 'react-native-paper-dates';
 import { Feather } from '@expo/vector-icons';
-import { useFirebase } from 'react-redux-firebase';
+import { useFirebase, useFirestoreConnect } from 'react-redux-firebase';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { first } from 'lodash';
 import UserRegisterSchema from '../../schemas/UserRegisterSchema';
 import FormTextInput from '../components/FormTextInput';
 import StyledButton from '../components/StyledButton';
@@ -32,16 +35,29 @@ const styles = StyleSheet.create({
 });
 
 export default function Register() {
+  const navigation = useNavigation();
+
+  useFirestoreConnect({
+    collection: 'roles',
+    where: ['userTypeId', '==', 1],
+    storeAs: 'attendeeRole',
+  });
+
   const { control, handleSubmit, formState, getValues } = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
-    resolver: UserRegisterSchema,
+    resolver: useMemo(() => UserRegisterSchema(), []),
   });
+
+  const attendeeRole = useSelector(
+    state => state.firestore.ordered.attendeeRole
+  );
 
   const firebase = useFirebase();
 
   const [birthday, setBirthday] = useState(undefined);
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const onDismissDatePicker = useCallback(() => {
     setOpen(false);
@@ -52,24 +68,32 @@ export default function Register() {
     setBirthday(params.date);
   }
 
-  function registerFunction() {
+  async function registerFunction() {
+    setLoading(true);
     const { email, password, name, lastName } = getValues();
-    firebase
-      .createUser(
+    try {
+      await firebase.createUser(
         { email, password },
         {
           name,
           lastName,
           birthday: moment(birthday).format('LL'),
-          userTypeId: 1,
+          roles: [first(attendeeRole).id],
+          balance: 0,
         }
-      )
-      .catch(error => {
-        Alert.alert(t('error'), error);
+      );
+      setLoading(false);
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'MainAsistente' }],
       });
+    } catch (error) {
+      console.log(error);
+      Alert.alert(t('error'), error.error || error);
+    }
   }
 
-  return (
+  return attendeeRole ? (
     <>
       <KeyboardAwareScrollView
         style={{ flex: 1 }}
@@ -107,13 +131,15 @@ export default function Register() {
           placeholder={t('birthday')}
           value={moment(birthday).format('LL')}
           style={{ backgroundColor: BackgroundGray }}
-          editable={false}
+          onFocus={() => {
+            setOpen(true);
+          }}
+          caretHidden
           right={
             <TextInput.Icon
               icon={({ size, color }) => (
                 <Feather name="calendar" size={size} color={color} />
               )}
-              onPress={() => setOpen(true)}
             />
           }
         />
@@ -132,15 +158,18 @@ export default function Register() {
           control={control}
           label={t('repeatPassword')}
         />
-
-        <StyledButton
-          mode="contained"
-          style={styles.button}
-          onPress={handleSubmit(registerFunction)}
-          disabled={!formState.isValid}
-        >
-          {t('signUp')}
-        </StyledButton>
+        {loading ? (
+          <ActivityIndicator size="large" style={{ paddingTop: 40 }} />
+        ) : (
+          <StyledButton
+            mode="contained"
+            style={styles.button}
+            onPress={handleSubmit(registerFunction)}
+            disabled={!formState.isValid}
+          >
+            {t('signUp')}
+          </StyledButton>
+        )}
       </KeyboardAwareScrollView>
       <DatePickerModal
         locale={i18n.locale}
@@ -151,9 +180,12 @@ export default function Register() {
         onConfirm={onConfirmDatePicker}
         validRange={{
           endDate: new Date(),
+          startDate: new Date(1930, 1),
         }}
         label={t('birthday')}
       />
     </>
+  ) : (
+    <ActivityIndicator size="large" style={{ paddingTop: 30 }} />
   );
 }

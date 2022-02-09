@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text } from 'react-native-paper';
+import { Subheading, Text } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { StyleSheet, View } from 'react-native';
 import { floor, uniqueId } from 'lodash';
@@ -46,6 +46,9 @@ const styles = StyleSheet.create({
     marginLeft: 3,
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  eventName: {
+    fontSize: 16,
   },
 });
 
@@ -115,19 +118,28 @@ ItemRow.propTypes = {
   item: PropTypes.object.isRequired,
 };
 
-function TransactionItem({ transaction, hideOrderTotal, onPress }) {
+function TransactionItem({
+  transaction,
+  hideOrderTotal,
+  onPress,
+  event,
+  disabled,
+}) {
   return (
     <TouchableOpacity
       style={styles.container}
       key={transaction?.id}
       onPress={onPress}
-      disabled={!onPress}
+      disabled={!onPress || disabled}
     >
       <View style={{ flex: 1, paddingRight: 20 }}>
         {transaction.status === 10 ? (
           <Text style={styles.description}>{t('addedFunds')}</Text>
         ) : (
           <>
+            {event && (
+              <Subheading style={styles.eventName}>{event.name}</Subheading>
+            )}
             {transaction.items.map(item => (
               <ItemRow item={item} />
             ))}
@@ -145,12 +157,16 @@ function TransactionItem({ transaction, hideOrderTotal, onPress }) {
 TransactionItem.defaultProps = {
   hideOrderTotal: false,
   onPress: undefined,
+  event: undefined,
+  disabled: false,
 };
 
 TransactionItem.propTypes = {
   transaction: PropTypes.object.isRequired,
   hideOrderTotal: PropTypes.bool,
   onPress: PropTypes.func,
+  event: PropTypes.object,
+  disabled: PropTypes.bool,
 };
 
 AmountLabel.propTypes = {

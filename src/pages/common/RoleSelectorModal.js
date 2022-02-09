@@ -37,7 +37,7 @@ function RoleSelectorModal({ visible, closeModal, userRoles, onRoleSelected }) {
           data={userRoles}
           renderItem={({ item }) => (
             <StyledButton
-              label={item.name}
+              label={item.userTypeId === 1 ? t('attendee') : item.name}
               mode="text"
               onPress={() => onRoleSelected(item)}
             />

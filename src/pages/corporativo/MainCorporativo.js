@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { PinkPrimary } from '../../assets/Colors';
 import HomeCorporativo from './HomeCorporativo';
 import FullScreenMapView from '../common/FullScreenMapView';
+import QRScanner from './QRScanner';
 
 const Stack = createStackNavigator();
 
@@ -22,13 +23,21 @@ export default function MainCorporativo() {
       <Stack.Navigator
         activeColor={PinkPrimary}
         initialRouteName="HomeCorporativo"
-        screenOptions={{ headerMode: 'none' }}
+        screenOptions={{ headerShown: false }}
       >
         <Stack.Screen name="HomeCorporativo" component={HomeCorporativo} />
         <Stack.Screen
           name="FullScreenMapView"
           component={FullScreenMapView}
           initialParams={{ hideDoneButton: false }}
+        />
+        <Stack.Screen
+          name="QRScanner"
+          component={QRScanner}
+          options={{
+            headerShown: true,
+            title: 'QR Scanner',
+          }}
         />
       </Stack.Navigator>
     </View>

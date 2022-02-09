@@ -3,11 +3,6 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { useSelector } from 'react-redux';
-import {
-  useFirebase,
-  useFirestore,
-  useFirestoreConnect,
-} from 'react-redux-firebase';
 import PropTypes from 'prop-types';
 import { Ionicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -53,7 +48,7 @@ function AccountTotal({ balance, updateWallet }) {
           justifyContent: 'space-between',
         }}
       >
-        <Text style={styles.accountTotalLabel}>{t('accountTotal')}</Text>
+        <Text style={styles.accountTotalLabel}>{t('accountBalance')}</Text>
         {updateWallet && (
           <Ionicons
             name="md-reload-circle"
@@ -83,38 +78,11 @@ AccountTotal.propTypes = {
 };
 
 function WalletHome() {
-  const firebase = useFirebase();
-  const firestore = useFirestore();
   const navigation = useNavigation();
 
-  const { userOrders, balance } = useSelector(state => ({
-    userOrders: state.firestore.ordered.userOrders,
+  const { balance } = useSelector(state => ({
     balance: state.firebase.profile.balance,
   }));
-
-  useFirestoreConnect(() => {
-    const array = [
-      {
-        collection: 'orders',
-        where: ['userId', '==', firebase.auth()?.currentUser?.uid],
-        orderBy: ['timestamp', 'desc'],
-        storeAs: 'userOrders',
-      },
-    ];
-    if (userOrders?.some(order => order.items?.length))
-      array.push({
-        collection: 'purchasables',
-        where: [
-          firestore.FieldPath.documentId(),
-          'in',
-          userOrders
-            .flatMap(item => item.items?.map(subItem => subItem.purchasableId))
-            .filter(e => e !== undefined),
-        ],
-        storeAs: 'userOrdersPurchasables',
-      });
-    return array;
-  });
 
   return (
     <View style={styles.container}>

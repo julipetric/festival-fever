@@ -6,12 +6,13 @@ import {
   DrawerItem,
   DrawerItemList,
 } from '@react-navigation/drawer';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
 import { t } from 'i18n-js';
 import { useFirebase } from 'react-redux-firebase';
 import PropTypes from 'prop-types';
 import { useNavigation } from '@react-navigation/native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { PinkPrimary, TransparentBackdrop } from '../../assets/Colors';
 import MyEvents from './MyEvents';
 import MyAccount from '../common/MyAccount';
@@ -59,6 +60,21 @@ function HomeCorporativo() {
     navigation.navigate('AuthNavigator');
   }
 
+  function navigateToQRScanner() {
+    navigation.navigate('QRScanner');
+  }
+
+  function HeaderRight() {
+    return (
+      <TouchableOpacity
+        style={{ marginRight: 15 }}
+        onPress={navigateToQRScanner}
+      >
+        <Ionicons name="qr-code" color="white" size={24} />
+      </TouchableOpacity>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.mainLayout}>
@@ -69,7 +85,7 @@ function HomeCorporativo() {
             // eslint-disable-next-line react/jsx-props-no-spreading
             <CustomDrawerContent logout={logout} {...props} />
           )}
-          screenOptions={{ headerTintColor: 'white' }}
+          screenOptions={{ headerTintColor: 'white', headerRight: HeaderRight }}
         >
           <Drawer.Screen
             name={t('myEvents')}

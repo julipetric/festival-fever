@@ -46,6 +46,7 @@ export default function Login() {
     firebase.auth().currentUser !== undefined &&
       firebase.auth().currentUser !== null
   );
+
   const [roleSelectorVisible, setRoleSelectorVisible] = useState(false);
   const [userRoles, setUserRoles] = useState([]);
 

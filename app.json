@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "festival-fever-native",
-    "slug": "festival-fever-native",
+    "name": "Festival Fever",
+    "slug": "festival-fever",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -34,6 +34,7 @@
         "expo-image-picker",
         {}
       ]
-    ]
+    ],
+    "description": "Proyecto Final de Carrera\nJulian Petric, Laureano Lopez."
   }
 }

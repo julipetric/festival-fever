@@ -66,20 +66,30 @@ function EventDetails() {
   const { eventId } = route.params;
   const firestore = useFirestore();
 
-  const { event, category, ticketSegments, eventTickets, fetchingData, demo } =
-    useSelector(state => ({
-      event: head(state.firestore.ordered.selectedEvent),
-      category: head(state.firestore.ordered.selectedEventCategory),
-      ticketSegments: state.firestore.ordered.ticketSegments,
-      eventTickets: state.firestore.ordered.eventTickets,
-      demo: state.firestore.status,
-      fetchingData:
-        state.firestore.status.requesting.selectedEvent ||
-        state.firestore.status.requesting.ticketSegments ||
-        state.firestore.status.requesting.eventTickets ||
-        !state.firestore.status.requested.eventTickets ||
-        !state.firestore.status.requested.selectedEvent,
-    }));
+  const {
+    event,
+    category,
+    ticketSegments,
+    eventTickets,
+    requesting,
+    requested,
+  } = useSelector(state => ({
+    event: head(state.firestore.ordered.selectedEvent),
+    category: head(state.firestore.ordered.selectedEventCategory),
+    ticketSegments: state.firestore.ordered.ticketSegments,
+    eventTickets: state.firestore.ordered.eventTickets,
+    requesting: state.firestore.status.requesting,
+    requested: state.firestore.status.requested,
+  }));
+
+  const loadingData =
+    !requested.selectedEvent ||
+    requesting.selectedEvent ||
+    requesting.ticketSegments ||
+    requesting.eventTickets ||
+    !requested.selectedEventCategory ||
+    requesting.selectedEventCategory ||
+    (ticketSegments?.length && !requested.eventTickets);
 
   const [priceTag, setPriceTag] = useState('-');
 
@@ -102,7 +112,7 @@ function EventDetails() {
         where: ['eventId', '==', event.id],
       });
     }
-    if (ticketSegments && ticketSegments.length)
+    if (ticketSegments?.length)
       array.push({
         collection: 'purchasables',
         where: [
@@ -205,7 +215,7 @@ function EventDetails() {
     });
   }
 
-  return event && category && !fetchingData ? (
+  return event && category && !loadingData ? (
     <>
       <EventLandingPage
         event={event}
@@ -240,6 +250,7 @@ function EventDetails() {
         label={t('buyTickets')}
         style={styles.floatingButton}
         onPress={buyTickets}
+        disabled={!ticketSegments.length}
       />
     </>
   ) : (

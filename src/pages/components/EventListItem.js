@@ -16,7 +16,6 @@ const styles = StyleSheet.create({
     padding: 10,
     display: 'flex',
     flexDirection: 'row',
-    maxHeight: 150,
   },
   eventName: {
     color: 'black',
@@ -61,7 +60,7 @@ function EventListItem({ event, category, hideCategory }) {
 
   const navigation = useNavigation();
   function navigate() {
-    navigation.navigate(t('eventDetails'), { event, category });
+    navigation.navigate(t('eventDetails'), { eventId: event.id });
   }
 
   return (
