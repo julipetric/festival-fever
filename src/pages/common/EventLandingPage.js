@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
 function DatePlaceRow({ event, navigateToMap }) {
   let startDateString;
   let hoursString;
-  if (event.dates.length === 1 && event.dates[0].start === 'dummyDate') {
+  if (event.startDate === 'dummyDate') {
     startDateString = moment()
       .add(3, 'days')
       .format(`dddd D [${t('of')}] MMMM`);
@@ -77,11 +77,11 @@ function DatePlaceRow({ event, navigateToMap }) {
       .add(7, 'hours')
       .format(`HH:mm`)}`;
   } else {
-    startDateString = moment(event.dates[0].start).format(
+    startDateString = moment(event.startDate).format(
       `dddd D [${t('of')}] MMMM`
     );
-    hoursString = `${moment(event.dates[0].start).format(`HH:mm`)} - ${moment(
-      event.dates[0].end
+    hoursString = `${moment(event.startDate).format(`HH:mm`)} - ${moment(
+      event.endDate
     ).format(`HH:mm`)}`;
   }
 

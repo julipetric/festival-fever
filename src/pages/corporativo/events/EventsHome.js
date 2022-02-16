@@ -51,6 +51,8 @@ function EventsHome() {
     ordersQuery,
   ]);
 
+  console.log(events.length);
+
   return events && categories ? (
     <FlatList
       contentContainerStyle={styles.contentContainer}

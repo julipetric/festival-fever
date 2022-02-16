@@ -12,7 +12,7 @@ import {
 import i18n, { t } from 'i18n-js';
 import moment from 'moment';
 import { Feather, Ionicons } from '@expo/vector-icons';
-import { DatePickerModal } from 'react-native-paper-dates';
+import { DatePickerModal, TimePickerModal } from 'react-native-paper-dates';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useFirestore, useFirestoreConnect } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
@@ -62,13 +62,34 @@ function EditEventInfo() {
 
   const [loading, setLoading] = useState(false);
 
-  const [timeDate, setTimeDate] = useState(undefined);
-  const [timeDateOpen, setTimeDateOpen] = useState(false);
+  const [startDate, setStartDate] = useState(undefined);
+  const [endDate, setEndDate] = useState(undefined);
+  const [dateOpen, setDateOpen] = useState(false);
+  const [settingStartTime, setSettingStartTime] = useState(true);
+  const [timeOpen, setTimeOpen] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
 
-  function onConfirmTimeDate(params) {
-    setTimeDateOpen(false);
-    setTimeDate(params.date || params.dates);
+  function onConfirmDate(params) {
+    setStartDate(moment(params.date));
+    setDateOpen(false);
+    setTimeOpen(true);
+  }
+  function onConfirmTime(params) {
+    if (settingStartTime) {
+      setStartDate(startDate.hours(params.hours).minutes(params.minutes));
+      setSettingStartTime(false);
+    } else {
+      const end = moment(startDate).hours(params.hours).minutes(params.minutes);
+      if (
+        params.hours < startDate.hours() ||
+        (params.hours <= startDate.hours() &&
+          params.minutes < startDate.minutes())
+      )
+        end.add(1, 'day');
+      setEndDate(end);
+      setTimeOpen(false);
+      setSettingStartTime(true);
+    }
   }
 
   function onLocationSelected(location) {
@@ -83,7 +104,7 @@ function EditEventInfo() {
   async function onSave() {
     setLoading(true);
     try {
-      const saveEvent = formatEventForm(watch(), timeDate);
+      const saveEvent = formatEventForm(watch(), startDate, endDate);
       if (!event) await firestore.collection('events').add(saveEvent);
       else await firestore.collection('events').doc(event.id).update(saveEvent);
       onSaveSuccess();
@@ -144,14 +165,20 @@ function EditEventInfo() {
         <TextInput
           label={t('timeAndDate')}
           placeholder={t('timeAndDate')}
-          value={moment(timeDate).format('LL')}
+          value={
+            startDate && endDate
+              ? `${startDate?.format('MMM D, H:mm')}${
+                  endDate ? ` - ${endDate.format('H:mm')}` : ''
+                }`
+              : null
+          }
           editable={false}
           right={
             <TextInput.Icon
               icon={({ size, color }) => (
                 <Feather name="calendar" size={size} color={color} />
               )}
-              onPress={() => setTimeDateOpen(true)}
+              onPress={() => setDateOpen(true)}
             />
           }
           style={{ backgroundColor: BackgroundGray }}
@@ -219,15 +246,21 @@ function EditEventInfo() {
       </KeyboardAwareScrollView>
       <DatePickerModal
         locale={i18n.locale}
-        mode="multiple"
-        visible={timeDateOpen}
-        onDismiss={() => setTimeDateOpen(false)}
-        date={timeDate}
-        onConfirm={onConfirmTimeDate}
+        visible={dateOpen}
+        mode="single"
+        onDismiss={() => setDateOpen(false)}
+        onConfirm={onConfirmDate}
         validRange={{
           startDate: new Date(),
         }}
-        label={t('timeAndDate')}
+        label={t('date')}
+      />
+      <TimePickerModal
+        locale={i18n.locale}
+        visible={timeOpen}
+        onConfirm={onConfirmTime}
+        onDismiss={() => setTimeOpen(false)}
+        label={settingStartTime ? t('startTime') : t('endTime')}
       />
     </>
   );

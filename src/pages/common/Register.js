@@ -88,7 +88,6 @@ export default function Register() {
         routes: [{ name: 'MainAsistente' }],
       });
     } catch (error) {
-      console.log(error);
       Alert.alert(t('error'), error.error || error);
     }
   }

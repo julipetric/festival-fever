@@ -101,7 +101,7 @@ function EventCardView({ item, navigate, onFavAdded, isFavorite }) {
           style={{ display: 'flex', flex: 1, justifyContent: 'space-between' }}
         >
           <View style={styles.dataContainer}>
-            {event.dates.length === 1 && (
+            {event.startDate && event.endDate && (
               <View style={{ flexDirection: 'row' }}>
                 <Text style={styles.eventDate}>{dateString}</Text>
                 <Text style={styles.eventTime}>{hoursString}</Text>

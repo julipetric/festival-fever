@@ -62,12 +62,13 @@ function Orders() {
     requesting.userOrdersPurchasables ||
     requesting.userOrdersEvents ||
     !userOrders ||
-    !userOrdersPurchasables ||
-    !userOrdersEvents;
-
+    (userOrders.some(order => order.items) &&
+      (!userOrdersPurchasables || !userOrdersEvents));
   const activeOrders = userOrders?.filter(order =>
     order.items?.some(item => item.status === 1)
   );
+
+  console.log(userOrders);
 
   useFirestoreConnect(() => {
     const array = [];
