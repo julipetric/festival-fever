@@ -16,6 +16,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { PinkPrimary, TransparentBackdrop } from '../../assets/Colors';
 import MyEvents from './MyEvents';
 import MyAccount from '../common/MyAccount';
+import InactiveEvents from './InactiveEvents';
 
 const Drawer = createDrawerNavigator();
 
@@ -87,21 +88,11 @@ function HomeCorporativo() {
           )}
           screenOptions={{ headerTintColor: 'white', headerRight: HeaderRight }}
         >
+          <Drawer.Screen name={t('myEvents')} component={MyEvents} />
+          <Drawer.Screen name={t('myAccount')} component={MyAccount} />
           <Drawer.Screen
-            name={t('myEvents')}
-            component={MyEvents}
-            options={{
-              // eslint-disable-next-line react/prop-types
-              tabBarIcon: ({ color }) => (
-                <FontAwesome5 name="calendar-alt" size={23} color={color} />
-              ),
-              title: t('myEvents'),
-            }}
-          />
-          <Drawer.Screen
-            name="MyAccount"
-            component={MyAccount}
-            options={{ title: t('myAccount') }}
+            name={t('inactiveEvents')}
+            component={InactiveEvents}
           />
         </Drawer.Navigator>
       </View>

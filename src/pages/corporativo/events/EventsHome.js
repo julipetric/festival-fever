@@ -6,9 +6,12 @@ import { ActivityIndicator, Title } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import { useFirestoreConnect } from 'react-redux-firebase';
+import moment from 'moment';
 import StyledButton from '../../components/StyledButton';
 import { PagePaddingHorizontal } from '../../../assets/UIConstants';
 import EventItem from './EventItem';
+
+const FILTER_PAST_EVENTS = false;
 
 const styles = StyleSheet.create({
   contentContainer: {
@@ -28,7 +31,7 @@ function EventsHome() {
 
   const ticketSegmentsQuery = {
     collection: 'ticketSegments',
-    where: events
+    where: events?.length
       ? ['eventId', 'in', events.map(event => event.id)]
       : undefined,
   };
@@ -44,14 +47,20 @@ function EventsHome() {
       : undefined,
   };
 
+  const eventsWhere = [['active', '==', true]];
+
+  if (FILTER_PAST_EVENTS) eventsWhere.push(['endDate', '>=', moment().unix()]);
+
   useFirestoreConnect(() => [
-    { collection: 'events' },
+    {
+      collection: 'events',
+      where: eventsWhere,
+      orderBy: ['startDate', 'asc'],
+    },
     { collection: 'categories' },
     ticketSegmentsQuery,
     ordersQuery,
   ]);
-
-  console.log(events.length);
 
   return events && categories ? (
     <FlatList

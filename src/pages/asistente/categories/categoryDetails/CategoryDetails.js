@@ -115,9 +115,9 @@ function CategoryDetails() {
                   </View>
                 }
                 text={
-                  events.length === 1
-                    ? `${events.length} ${t('event')}`
-                    : `${events.length} ${t('events')}`
+                  events?.length === 1
+                    ? `${events?.length} ${t('event')}`
+                    : `${events?.length} ${t('events')}`
                 }
               />
               {cardsMode ? (

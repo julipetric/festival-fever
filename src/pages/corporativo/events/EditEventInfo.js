@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {
   TextInput,
@@ -8,6 +8,9 @@ import {
   Caption,
   ActivityIndicator,
   Menu,
+  ToggleButton,
+  Switch,
+  Text,
 } from 'react-native-paper';
 import i18n, { t } from 'i18n-js';
 import moment from 'moment';
@@ -18,7 +21,7 @@ import { useFirestore, useFirestoreConnect } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
 import StyledButton from '../../components/StyledButton';
 import FormTextInput from '../../components/FormTextInput';
-import { BackgroundGray } from '../../../assets/Colors';
+import { BackgroundGray, PinkPrimary } from '../../../assets/Colors';
 import { formatEventForm } from '../../../firebase/EventsHelper';
 
 const styles = StyleSheet.create({
@@ -48,17 +51,19 @@ function EditEventInfo() {
 
   const event = route?.params?.event;
 
-  const { control, handleSubmit, formState, watch, setValue } = useForm({
-    mode: 'onChange',
-    reValidateMode: 'onChange',
-    defaultValues: {
-      ...event,
-      category: event
-        ? categories.find(category => category.id === event.categoryId)
-        : undefined,
-      // location: JSON.parse(event.location)
-    },
-  });
+  const { control, handleSubmit, formState, watch, setValue, getValues } =
+    useForm({
+      mode: 'onChange',
+      reValidateMode: 'onChange',
+      defaultValues: {
+        ...event,
+        category: event
+          ? categories.find(category => category.id === event.categoryId)
+          : undefined,
+        active: event?.active !== undefined ? event.active : true,
+        // location: JSON.parse(event.location)
+      },
+    });
 
   const [loading, setLoading] = useState(false);
 
@@ -113,6 +118,8 @@ function EditEventInfo() {
       setLoading(false);
     }
   }
+
+  console.log(watch('active'));
 
   return (
     <>
@@ -230,6 +237,23 @@ function EditEventInfo() {
           control={control}
           label={t('contactEmail')}
         />
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            paddingBottom: 10,
+          }}
+        >
+          <Text style={{ fontWeight: 'bold', fontSize: 16 }}>
+            {t('active')}
+          </Text>
+          <Switch
+            value={watch('active')}
+            onValueChange={() => setValue('active', !getValues('active'))}
+          />
+        </View>
+
         {!event && <Caption>{t('createEventProductNotes')}</Caption>}
         {loading ? (
           <ActivityIndicator style={styles.button} size="large" />

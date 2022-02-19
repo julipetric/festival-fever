@@ -11,6 +11,7 @@ import { IconButton } from 'react-native-paper';
 import { Feather, FontAwesome5, Ionicons } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import { useNavigation } from '@react-navigation/native';
+import NoImage from '../../assets/no-image.png';
 
 const styles = StyleSheet.create({
   image: {
@@ -41,8 +42,8 @@ function ImageHeader({ image, openImage, hideFavoriteButton }) {
   return (
     <TouchableHighlight onPress={openImage}>
       <ImageBackground
-        source={{ uri: image }}
-        style={[styles.image, { height: imageHeight }]}
+        source={image ? { uri: image } : NoImage}
+        style={[styles.image, { height: image ? imageHeight : 300 }]}
       >
         <IconButton
           icon={({ size }) => (

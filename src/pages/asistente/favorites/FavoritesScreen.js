@@ -45,7 +45,7 @@ function FavoritesScreen() {
 
   // eslint-disable-next-line no-nested-ternary
   return favorites && events && categories ? (
-    events.length ? (
+    events?.length ? (
       <FlatList
         data={events}
         renderItem={({ item }) => (
