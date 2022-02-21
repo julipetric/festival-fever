@@ -4,9 +4,8 @@ import { FlatList, StyleSheet, View } from 'react-native';
 import { ActivityIndicator, Text, Title } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import { useFirestoreConnect } from 'react-redux-firebase';
-import moment from 'moment';
-import EventItem from './events/EventItem';
 import { PagePaddingHorizontal } from '../../assets/UIConstants';
+import EventListItem from '../components/EventListItem';
 
 const styles = StyleSheet.create({
   contentContainer: {
@@ -16,29 +15,10 @@ const styles = StyleSheet.create({
 });
 
 function InactiveEvents() {
-  const { inactiveEvents, categories, ticketSegments } = useSelector(state => ({
+  const { inactiveEvents, categories } = useSelector(state => ({
     inactiveEvents: state.firestore.ordered.inactiveEvents,
     categories: state.firestore.ordered.categories,
-    ticketSegments: state.firestore.ordered.ticketSegments,
   }));
-
-  const ticketSegmentsQuery = {
-    collection: 'ticketSegments',
-    where: inactiveEvents?.length
-      ? ['eventId', 'in', inactiveEvents.map(event => event.id)]
-      : undefined,
-  };
-
-  const ordersQuery = {
-    collection: 'orders',
-    where: ticketSegments
-      ? [
-          'purchasableId',
-          'in',
-          ticketSegments.map(segment => segment.purchasableId),
-        ]
-      : undefined,
-  };
 
   useFirestoreConnect(() => [
     {
@@ -51,8 +31,6 @@ function InactiveEvents() {
       storeAs: 'inactiveEvents',
     },
     { collection: 'categories' },
-    ticketSegmentsQuery,
-    ordersQuery,
   ]);
 
   return inactiveEvents && categories ? (
@@ -62,7 +40,7 @@ function InactiveEvents() {
       scrollEnabled={false}
       keyExtractor={item => item.id}
       renderItem={({ item: event }) => (
-        <EventItem
+        <EventListItem
           event={event}
           category={categories.find(
             category => category.id === event.categoryId

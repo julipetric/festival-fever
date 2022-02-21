@@ -41,7 +41,7 @@ function ScreenHeader() {
   );
 }
 
-function ListFooter({ orderTotal, currentBalance }) {
+function ListFooter({ orderTotal, currentBalance, loading }) {
   return (
     <>
       <View
@@ -79,28 +79,34 @@ function ListFooter({ orderTotal, currentBalance }) {
           { backgroundColor: 'white', marginVertical: 5, opacity: 0.5 },
         ]}
       />
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'flex-end',
-          justifyContent: 'space-between',
-        }}
-      >
-        <Text>{t('balanceAfterOperation')}</Text>
-        <Text
-          style={{
-            fontWeight: 'bold',
-            color: orderTotal > currentBalance ? RedTransaction : 'white',
-          }}
-        >
-          ${currentBalance - orderTotal}
-        </Text>
-      </View>
-      {orderTotal > currentBalance && (
-        <Text style={{ textAlign: 'right', flex: 1, color: RedTransaction }}>
-          {t('insufficientFunds')}
-        </Text>
+      {!loading && (
+        <>
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'flex-end',
+              justifyContent: 'space-between',
+            }}
+          >
+            <Text>{t('balanceAfterOperation')}</Text>
+            <Text
+              style={{
+                fontWeight: 'bold',
+                color: orderTotal > currentBalance ? RedTransaction : 'white',
+              }}
+            >
+              ${currentBalance - orderTotal}
+            </Text>
+          </View>
+          {orderTotal > currentBalance && (
+            <Text
+              style={{ textAlign: 'right', flex: 1, color: RedTransaction }}
+            >
+              {t('insufficientFunds')}
+            </Text>
+          )}
+        </>
       )}
     </>
   );
@@ -109,6 +115,7 @@ function ListFooter({ orderTotal, currentBalance }) {
 ListFooter.propTypes = {
   orderTotal: PropTypes.number.isRequired,
   currentBalance: PropTypes.number.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 function OrderItem({ item }) {
@@ -190,10 +197,25 @@ function Checkout() {
       amount: total,
       timestamp: moment().unix(),
     };
-    await Promise.all([
+
+    const promises = [
       firebase.updateProfile({ balance: currentBalance - total }),
       firestore.collection('orders').add(order),
-    ]);
+    ];
+
+    items.forEach(item =>
+      promises.push(
+        firestore
+          .collection('purchasables')
+          .doc(item.ticket?.id)
+          .update({
+            ...item.ticket,
+            sold: (item.ticket.sold || 0) + item.quantity,
+          })
+      )
+    );
+
+    await Promise.all(promises);
     setLoading(false);
     navigation.dispatch(StackActions.popToTop());
     navigation.dispatch(StackActions.popToTop());
@@ -207,7 +229,11 @@ function Checkout() {
         data={items}
         renderItem={({ item }) => <OrderItem item={item} />}
         ListFooterComponent={() => (
-          <ListFooter orderTotal={total} currentBalance={profile.balance} />
+          <ListFooter
+            orderTotal={total}
+            currentBalance={profile.balance}
+            loading={loading}
+          />
         )}
         keyExtractor={item => item.ticket.id}
       />

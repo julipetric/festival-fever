@@ -11,8 +11,6 @@ import { ActivityIndicator, Modal, Portal, Text } from 'react-native-paper';
 import ZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
-import moment from 'moment';
-import { t } from 'i18n-js';
 import {
   BackgroundGray,
   PinkPrimary,
@@ -21,6 +19,7 @@ import {
 } from '../../assets/Colors';
 import ImageHeader from './ImageHeader';
 import EditEventPhotoButton from '../corporativo/events/EditEventPhotoButton';
+import { formatEventDateTime } from '../../utils';
 
 const styles = StyleSheet.create({
   container: {
@@ -63,27 +62,7 @@ const styles = StyleSheet.create({
 });
 
 function DatePlaceRow({ event, navigateToMap }) {
-  let startDateString;
-  let hoursString;
-  if (event.startDate === 'dummyDate') {
-    startDateString = moment()
-      .add(3, 'days')
-      .format(`dddd D [${t('of')}] MMMM`);
-    hoursString = `${moment()
-      .add(3, 'days')
-      .add(2, 'hours')
-      .format(`HH:mm`)} - ${moment()
-      .add(3, 'days')
-      .add(7, 'hours')
-      .format(`HH:mm`)}`;
-  } else {
-    startDateString = moment(event.startDate).format(
-      `dddd D [${t('of')}] MMMM`
-    );
-    hoursString = `${moment(event.startDate).format(`HH:mm`)} - ${moment(
-      event.endDate
-    ).format(`HH:mm`)}`;
-  }
+  const { dateString, hoursString } = formatEventDateTime(event);
 
   return (
     <View
@@ -104,7 +83,7 @@ function DatePlaceRow({ event, navigateToMap }) {
             marginLeft: 10,
           }}
         >
-          <Text style={styles.text1}>{startDateString}</Text>
+          <Text style={styles.text1}>{dateString}</Text>
           <Text style={styles.text2}>{hoursString}</Text>
         </View>
       </View>
@@ -112,8 +91,8 @@ function DatePlaceRow({ event, navigateToMap }) {
         style={{ flexDirection: 'row', alignItems: 'center' }}
         onPress={navigateToMap}
       >
-        <MaterialIcons name="restaurant" size={24} color={PinkPrimary} />
-        <View style={{ marginLeft: 10 }}>
+        <MaterialIcons name="location-pin" size={26} color={PinkPrimary} />
+        <View style={{ marginLeft: 9 }}>
           <Text style={styles.text1}>{event?.location?.description}</Text>
           <Text style={styles.text2}>{event?.location?.address}</Text>
         </View>

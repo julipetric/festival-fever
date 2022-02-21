@@ -1,6 +1,4 @@
 /* eslint-disable import/prefer-default-export */
-
-import { t } from 'i18n-js';
 import moment from 'moment';
 
 export async function renameCollection(
@@ -25,24 +23,18 @@ export async function renameCollection(
 
 export function formatEventDateTime(event) {
   let dateString;
-  let hoursString;
-  if (event.startDate === 'dummyDate') {
-    dateString = moment()
-      .add(3, 'days')
-      .format(`dddd D [${t('of')}] MMMM`);
-    hoursString = `${moment()
-      .add(3, 'days')
-      .add(2, 'hours')
-      .format(`HH:mm`)} - ${moment()
-      .add(3, 'days')
-      .add(7, 'hours')
-      .format(`HH:mm`)}`;
-  } else {
-    dateString = moment(event.startDate).format(`dddd D [${t('of')}] MMMM`);
-    hoursString = `${moment(event.startDate).format(`HH:mm`)} - ${moment(
-      event.endDate
-    ).format(`HH:mm`)}`;
-  }
+  dateString = moment.unix(event.startDate).format('LLLL');
+  if (moment().year() === moment.unix(event.startDate).year())
+    dateString = dateString.substring(0, dateString.lastIndexOf(',') - 1);
+  else
+    dateString = dateString.substring(
+      0,
+      dateString.lastIndexOf(moment.unix(event.startDate).year()) +
+        `${moment.unix(event.startDate).year()}`.length
+    );
+  const hoursString = `${moment
+    .unix(event.startDate)
+    .format(`HH:mm`)} - ${moment.unix(event.endDate).format(`HH:mm`)}`;
   return { dateString, hoursString };
 }
 
@@ -75,4 +67,33 @@ export async function deleteUserTransactions(firestoreInstance, userId) {
 
   await batch.commit();
   await recalculateWallet(firestoreInstance, userId);
+}
+
+export async function deleteAllOrders(firestoreInstance) {
+  const batch = firestoreInstance.batch();
+
+  const { docs } = await firestoreInstance.collection('orders').get();
+
+  docs.forEach(doc => {
+    batch.delete(doc.ref);
+  });
+
+  await batch.commit();
+}
+
+export async function deleteAllEventTicketSegments(firestoreInstance, eventId) {
+  const batch = firestoreInstance.batch();
+  const { docs: segmentDocs } = await firestoreInstance
+    .collection('ticketSegments')
+    .where('eventId', '==', eventId)
+    .get();
+
+  segmentDocs.forEach(doc => {
+    batch.delete(
+      firestoreInstance.collection('purchasables').doc(doc.data().purchasableId)
+    );
+    batch.delete(doc.ref);
+  });
+
+  await batch.commit();
 }

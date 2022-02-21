@@ -55,25 +55,15 @@ function EventItem({ event, category }) {
   const { dateString, hoursString } = formatEventDateTime(event);
   const navigation = useNavigation();
 
-  const { ticketSegments: allTicketSegments, orders: allOrders } = useSelector(
-    state => ({
-      ticketSegments: state.firestore.ordered.ticketSegments,
-      orders: state.firestore.ordered.orders,
-    })
-  );
+  const { purchasables } = useSelector(state => ({
+    purchasables: state.firestore.ordered.ticketSegmentsPurchasables,
+  }));
 
-  const eventTicketSegments = allTicketSegments
-    ? allTicketSegments.filter(segment => segment.eventId === event.id)
-    : undefined;
-
-  const eventSales =
-    allOrders && allTicketSegments
-      ? allOrders.filter(order =>
-          eventTicketSegments
-            .map(segment => segment.purchasableId)
-            .includes(order.purchasableId)
-        ).length
-      : undefined;
+  let eventSales;
+  if (purchasables) eventSales = 0;
+  purchasables.forEach(purchasable => {
+    eventSales += purchasable.sold;
+  });
 
   const [imageHeight, setImageHeight] = useState(0);
   const [imageWidth, setImageWidth] = useState(0);

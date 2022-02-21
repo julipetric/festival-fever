@@ -68,8 +68,6 @@ function Orders() {
     order.items?.some(item => item.status === 1)
   );
 
-  console.log(userOrders);
-
   useFirestoreConnect(() => {
     const array = [];
 

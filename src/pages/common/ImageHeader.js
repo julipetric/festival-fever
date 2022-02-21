@@ -55,11 +55,11 @@ function ImageHeader({ image, openImage, hideFavoriteButton }) {
         />
         <View style={{ flexDirection: 'row' }}>
           <IconButton
-            icon={({ size }) => (
-              <FontAwesome5 name="share-alt" size={size} color="white" />
+            icon={() => (
+              <FontAwesome5 name="share-alt" size={20} color="white" />
             )}
             style={styles.circleIcon}
-            size={23}
+            size={25}
           />
           {!hideFavoriteButton && (
             <IconButton

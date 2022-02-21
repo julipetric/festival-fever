@@ -8,7 +8,6 @@ import {
   Caption,
   ActivityIndicator,
   Menu,
-  ToggleButton,
   Switch,
   Text,
 } from 'react-native-paper';
@@ -19,10 +18,12 @@ import { DatePickerModal, TimePickerModal } from 'react-native-paper-dates';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useFirestore, useFirestoreConnect } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
+import { head } from 'lodash';
 import StyledButton from '../../components/StyledButton';
 import FormTextInput from '../../components/FormTextInput';
-import { BackgroundGray, PinkPrimary } from '../../../assets/Colors';
+import { BackgroundGray } from '../../../assets/Colors';
 import { formatEventForm } from '../../../firebase/EventsHelper';
+import EventInfoSchema from '../../../schemas/EventInfoSchema';
 
 const styles = StyleSheet.create({
   container: {
@@ -37,38 +38,40 @@ const styles = StyleSheet.create({
 
 function EditEventInfo() {
   const navigation = useNavigation();
-  const route = useRoute();
-
   const firestore = useFirestore();
+  const route = useRoute();
+  const newEvent = route?.params?.newEvent;
 
-  useFirestoreConnect(() => [
-    { collection: 'categories', orderBy: ['order'] },
-    { collection: 'events' },
-  ]);
-  const { categories } = useSelector(state => ({
+  useFirestoreConnect(() => [{ collection: 'categories', orderBy: ['order'] }]);
+  const { categories, event } = useSelector(state => ({
     categories: state.firestore.ordered.categories,
+    event: head(state.firestore.ordered.selectedEvent),
   }));
-
-  const event = route?.params?.event;
-
   const { control, handleSubmit, formState, watch, setValue, getValues } =
     useForm({
       mode: 'onChange',
       reValidateMode: 'onChange',
-      defaultValues: {
-        ...event,
-        category: event
-          ? categories.find(category => category.id === event.categoryId)
-          : undefined,
-        active: event?.active !== undefined ? event.active : true,
-        // location: JSON.parse(event.location)
-      },
+      defaultValues: newEvent
+        ? undefined
+        : {
+            ...event,
+            category: event
+              ? categories.find(category => category.id === event.categoryId)
+              : undefined,
+            active: event?.active !== undefined ? event.active : true,
+            // location: JSON.parse(event.location)
+          },
+      resolver: EventInfoSchema,
     });
 
   const [loading, setLoading] = useState(false);
 
-  const [startDate, setStartDate] = useState(undefined);
-  const [endDate, setEndDate] = useState(undefined);
+  const [startDate, setStartDate] = useState(
+    event ? moment.unix(event.startDate) : undefined
+  );
+  const [endDate, setEndDate] = useState(
+    event ? moment.unix(event.endDate) : undefined
+  );
   const [dateOpen, setDateOpen] = useState(false);
   const [settingStartTime, setSettingStartTime] = useState(true);
   const [timeOpen, setTimeOpen] = useState(false);
@@ -103,7 +106,8 @@ function EditEventInfo() {
 
   function onSaveSuccess() {
     setLoading(false);
-    navigation.pop();
+    if (watch('active')) navigation.navigate(t('myEvents'));
+    else navigation.navigate(t('inactiveEvents'));
   }
 
   async function onSave() {
@@ -118,8 +122,6 @@ function EditEventInfo() {
       setLoading(false);
     }
   }
-
-  console.log(watch('active'));
 
   return (
     <>
@@ -175,7 +177,7 @@ function EditEventInfo() {
           value={
             startDate && endDate
               ? `${startDate?.format('MMM D, H:mm')}${
-                  endDate ? ` - ${endDate.format('H:mm')}` : ''
+                  endDate ? ` - ${endDate?.format('H:mm')}` : ''
                 }`
               : null
           }

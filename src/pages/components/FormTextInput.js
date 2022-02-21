@@ -25,6 +25,7 @@ export default function FormTextInput({
   disabled,
   editable,
   valueGetter,
+  left,
   ...props
 }) {
   const { field, fieldState } = useController({ control, defaultValue, name });
@@ -39,6 +40,7 @@ export default function FormTextInput({
         onChangeText={field.onChange}
         style={{ backgroundColor: BackgroundGray, ...style }}
         value={valueGetter ? valueGetter(field.value) : field.value}
+        left={left}
         placeholder={placeholder}
         autoFocus={autoFocus}
         autoCorrect={autoCorrect}
@@ -77,6 +79,7 @@ FormTextInput.defaultProps = {
   disabled: false,
   editable: true,
   valueGetter: undefined,
+  left: undefined,
 };
 
 FormTextInput.propTypes = {
@@ -99,4 +102,5 @@ FormTextInput.propTypes = {
   disabled: PropTypes.bool,
   editable: PropTypes.bool,
   valueGetter: PropTypes.func,
+  left: PropTypes.element,
 };

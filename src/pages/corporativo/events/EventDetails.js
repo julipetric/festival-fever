@@ -41,10 +41,6 @@ function EventDetails() {
     navigation.navigate('FullScreenMapView');
   }
 
-  function navigateToEventInfo() {
-    navigation.navigate('EditEventInfo', { event });
-  }
-
   return event && category ? (
     <EventLandingPage
       event={event}
@@ -53,7 +49,14 @@ function EventDetails() {
       corporativoMode
     >
       <View style={{ alignItems: 'flex-start', paddingTop: 10 }}>
-        <StyledButton label={t('editInfo')} onPress={navigateToEventInfo} />
+        <StyledButton
+          label={t('eventInfo')}
+          onPress={() => navigation.navigate(t('eventInfo'))}
+        />
+        <StyledButton
+          label={t('ticketSegments')}
+          onPress={() => navigation.navigate(t('ticketSegments'))}
+        />
       </View>
     </EventLandingPage>
   ) : (

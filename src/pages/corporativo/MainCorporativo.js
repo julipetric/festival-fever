@@ -1,10 +1,17 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { t } from 'i18n-js';
+import { AntDesign } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import { PinkPrimary } from '../../assets/Colors';
 import HomeCorporativo from './HomeCorporativo';
 import FullScreenMapView from '../common/FullScreenMapView';
 import QRScanner from './QRScanner';
+import EditEventInfo from './events/EditEventInfo';
+import EventDetails from './events/EventDetails';
+import TicketSegments from './ticketSegments/TicketSegments';
+import EditTicketSegment from './ticketSegments/EditTicketSegment';
 
 const Stack = createStackNavigator();
 
@@ -18,6 +25,8 @@ const styles = StyleSheet.create({
 });
 
 export default function MainCorporativo() {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       <Stack.Navigator
@@ -39,6 +48,32 @@ export default function MainCorporativo() {
             title: 'QR Scanner',
           }}
         />
+        <Stack.Screen
+          name={t('ticketSegments')}
+          component={TicketSegments}
+          options={{
+            headerShown: true,
+            headerRight: () => (
+              <TouchableOpacity
+                style={{ marginRight: 15 }}
+                onPress={() => navigation.push(t('ticketSegmentInfo'))}
+              >
+                <AntDesign name="pluscircle" size={24} color="white" />
+              </TouchableOpacity>
+            ),
+          }}
+        />
+        <Stack.Screen
+          name={t('ticketSegmentInfo')}
+          component={EditTicketSegment}
+          options={{ headerShown: true }}
+        />
+        <Stack.Screen
+          name={t('eventInfo')}
+          component={EditEventInfo}
+          options={{ headerShown: true }}
+        />
+        <Stack.Screen name={t('eventDetails')} component={EventDetails} />
       </Stack.Navigator>
     </View>
   );

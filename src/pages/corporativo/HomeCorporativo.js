@@ -9,14 +9,14 @@ import {
 import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
 import { t } from 'i18n-js';
-import { useFirebase } from 'react-redux-firebase';
+import { useFirebase, useFirestore } from 'react-redux-firebase';
 import PropTypes from 'prop-types';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { PinkPrimary, TransparentBackdrop } from '../../assets/Colors';
-import MyEvents from './MyEvents';
 import MyAccount from '../common/MyAccount';
 import InactiveEvents from './InactiveEvents';
+import MyEvents from './events/MyEvents';
 
 const Drawer = createDrawerNavigator();
 
@@ -55,6 +55,10 @@ CustomDrawerContent.propTypes = {
 function HomeCorporativo() {
   const firebase = useFirebase();
   const navigation = useNavigation();
+  // eslint-disable-next-line no-unused-vars
+  const firestore = useFirestore();
+  // eslint-disable-next-line no-unused-vars
+  const userId = firebase.auth()?.currentUser?.uid;
 
   async function logout() {
     await firebase.logout();
@@ -65,14 +69,27 @@ function HomeCorporativo() {
     navigation.navigate('QRScanner');
   }
 
+  const onDevPress = undefined;
+
   function HeaderRight() {
     return (
-      <TouchableOpacity
-        style={{ marginRight: 15 }}
-        onPress={navigateToQRScanner}
-      >
-        <Ionicons name="qr-code" color="white" size={24} />
-      </TouchableOpacity>
+      <View style={{ display: 'flex', flexDirection: 'row' }}>
+        <TouchableOpacity
+          style={{ marginRight: 15 }}
+          onPress={onDevPress || (() => {})}
+          containerStyle={{ opacity: onDevPress ? 1 : 0.5 }}
+          disabled={!onDevPress}
+        >
+          <FontAwesome5 name="dev" size={24} color="white" />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={{ marginRight: 15 }}
+          onPress={navigateToQRScanner}
+        >
+          <Ionicons name="qr-code" color="white" size={24} />
+        </TouchableOpacity>
+      </View>
     );
   }
 
@@ -89,11 +106,11 @@ function HomeCorporativo() {
           screenOptions={{ headerTintColor: 'white', headerRight: HeaderRight }}
         >
           <Drawer.Screen name={t('myEvents')} component={MyEvents} />
-          <Drawer.Screen name={t('myAccount')} component={MyAccount} />
           <Drawer.Screen
             name={t('inactiveEvents')}
             component={InactiveEvents}
           />
+          <Drawer.Screen name={t('myAccount')} component={MyAccount} />
         </Drawer.Navigator>
       </View>
       {/* eslint-disable-next-line react/style-prop-object */}

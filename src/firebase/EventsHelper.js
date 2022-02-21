@@ -1,7 +1,8 @@
 /* eslint-disable import/prefer-default-export */
 export function formatEventForm(data, startDate, endDate) {
-  const { name, category, location, contactPhone, contactEmail } = data;
+  const { name, category, location, contactPhone, contactEmail, active } = data;
   return {
+    active,
     name,
     categoryId: category.id,
     location,

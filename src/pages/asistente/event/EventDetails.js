@@ -250,7 +250,7 @@ function EventDetails() {
         label={t('buyTickets')}
         style={styles.floatingButton}
         onPress={buyTickets}
-        disabled={!ticketSegments.length}
+        disabled={!ticketSegments?.length}
       />
     </>
   ) : (
