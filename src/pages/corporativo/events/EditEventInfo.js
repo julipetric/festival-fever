@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -52,25 +52,24 @@ function EditEventInfo() {
       mode: 'onChange',
       reValidateMode: 'onChange',
       defaultValues: newEvent
-        ? undefined
+        ? { active: true }
         : {
             ...event,
             category: event
               ? categories.find(category => category.id === event.categoryId)
               : undefined,
             active: event?.active !== undefined ? event.active : true,
-            // location: JSON.parse(event.location)
           },
-      resolver: EventInfoSchema,
+      resolver: useMemo(() => EventInfoSchema(), []),
     });
 
   const [loading, setLoading] = useState(false);
 
   const [startDate, setStartDate] = useState(
-    event ? moment.unix(event.startDate) : undefined
+    !newEvent && event ? moment.unix(event.startDate) : undefined
   );
   const [endDate, setEndDate] = useState(
-    event ? moment.unix(event.endDate) : undefined
+    !newEvent && event ? moment.unix(event.endDate) : undefined
   );
   const [dateOpen, setDateOpen] = useState(false);
   const [settingStartTime, setSettingStartTime] = useState(true);
@@ -101,7 +100,7 @@ function EditEventInfo() {
   }
 
   function onLocationSelected(location) {
-    setValue('location', JSON.stringify(location));
+    setValue('location.coordinates', JSON.stringify(location));
   }
 
   function onSaveSuccess() {
@@ -114,7 +113,8 @@ function EditEventInfo() {
     setLoading(true);
     try {
       const saveEvent = formatEventForm(watch(), startDate, endDate);
-      if (!event) await firestore.collection('events').add(saveEvent);
+      if (newEvent || !event)
+        await firestore.collection('events').add(saveEvent);
       else await firestore.collection('events').doc(event.id).update(saveEvent);
       onSaveSuccess();
     } catch (e) {
@@ -196,7 +196,9 @@ function EditEventInfo() {
         <TextInput
           label={t('location')}
           placeholder={t('location')}
-          value={watch('location') ? t('seeSelectedLocation') : undefined}
+          value={
+            watch('location.coordinates') ? t('seeSelectedLocation') : undefined
+          }
           editable={false}
           right={
             <TextInput.Icon
@@ -206,7 +208,7 @@ function EditEventInfo() {
               onPress={() =>
                 navigation.push('FullScreenMapView', {
                   callback: onLocationSelected,
-                  defaultMarker: watch('location'),
+                  defaultMarker: watch('location.coordinates'),
                 })
               }
             />
@@ -256,7 +258,9 @@ function EditEventInfo() {
           />
         </View>
 
-        {!event && <Caption>{t('createEventProductNotes')}</Caption>}
+        {(newEvent || !event) && (
+          <Caption>{t('createEventProductNotes')}</Caption>
+        )}
         {loading ? (
           <ActivityIndicator style={styles.button} size="large" />
         ) : (

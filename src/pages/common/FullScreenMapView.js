@@ -23,8 +23,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const latitudeDelta = 0.0922;
-const longitudeDelta = 0.0421;
+const latitudeDelta = 0.04;
+const longitudeDelta = 0.025;
 
 function FullScreenMapView() {
   const { params } = useRoute();
@@ -34,7 +34,9 @@ function FullScreenMapView() {
   const [location, setLocation] = useState();
   const [errorMsg, setErrorMsg] = useState();
   const [markerCoordinates, setMarkerCoordinates] = useState(
-    params.defaultMarker ? JSON.parse(params.defaultMarker) : undefined
+    params.defaultMarker && JSON.parse(params.defaultMarker)
+      ? JSON.parse(params.defaultMarker)
+      : undefined
   );
 
   const navigation = useNavigation();
@@ -53,29 +55,21 @@ function FullScreenMapView() {
     })();
   }, []);
 
-  useEffect(() => {
-    if (markerCoordinates) {
-      mapRef.current.animateToRegion(
-        {
-          latitude: markerCoordinates.latitude,
-          longitude: markerCoordinates.longitude,
-          latitudeDelta,
-          longitudeDelta,
-        },
-        500
-      );
-    }
-    if (!markerCoordinates && location)
-      mapRef.current.animateToRegion(
-        {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-          latitudeDelta,
-          longitudeDelta,
-        },
-        500
-      );
-  }, [location, markerCoordinates]);
+  let initialRegion;
+  if (params.defaultMarker && JSON.parse(params.defaultMarker)) {
+    initialRegion = {
+      latitude: markerCoordinates.latitude,
+      longitude: markerCoordinates.longitude,
+      latitudeDelta,
+      longitudeDelta,
+    };
+  } else if (location)
+    initialRegion = {
+      latitude: location.coords.latitude,
+      longitude: location.coords.longitude,
+      latitudeDelta,
+      longitudeDelta,
+    };
 
   useEffect(() => {
     if (errorMsg) Alert.alert(t('error'), errorMsg);
@@ -91,6 +85,7 @@ function FullScreenMapView() {
           if (!hideDoneButton)
             setMarkerCoordinates(event.nativeEvent.coordinate);
         }}
+        initialRegion={initialRegion}
       >
         {markerCoordinates && (
           <Marker

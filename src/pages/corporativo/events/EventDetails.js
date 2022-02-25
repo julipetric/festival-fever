@@ -38,7 +38,10 @@ function EventDetails() {
   });
 
   function navigateToMap() {
-    navigation.navigate('FullScreenMapView');
+    navigation.navigate('FullScreenMapView', {
+      hideDoneButton: true,
+      defaultMarker: event.location?.coordinates,
+    });
   }
 
   return event && category ? (

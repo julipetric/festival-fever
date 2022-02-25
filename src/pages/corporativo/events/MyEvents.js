@@ -33,7 +33,6 @@ function MyEvents() {
         state.firestore.ordered.ticketSegmentsPurchasables,
     }));
 
-  console.log(ticketSegmentsPurchasables);
   const eventsWhere = ['active', '==', true];
 
   if (FILTER_PAST_EVENTS) eventsWhere.push(['endDate', '>=', moment().unix()]);
