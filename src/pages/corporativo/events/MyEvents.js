@@ -33,6 +33,10 @@ function MyEvents() {
         state.firestore.ordered.ticketSegmentsPurchasables,
     }));
 
+  const { userRole } = useSelector(state => ({
+    userRole: state.myStore.userRole,
+  }));
+
   const eventsWhere = ['active', '==', true];
 
   if (FILTER_PAST_EVENTS) eventsWhere.push(['endDate', '>=', moment().unix()]);
@@ -93,16 +97,18 @@ function MyEvents() {
           }}
         >
           <Title>{t('myEvents')}</Title>
-          <StyledButton
-            icon={({ color }) => (
-              <Ionicons name="add-circle" size={26} color={color} />
-            )}
-            onPress={() =>
-              navigation.navigate(t('eventInfo'), { newEvent: true })
-            }
-          >
-            {t('addEvent')}
-          </StyledButton>
+          {userRole?.userTypeId === 2 && (
+            <StyledButton
+              icon={({ color }) => (
+                <Ionicons name="add-circle" size={26} color={color} />
+              )}
+              onPress={() =>
+                navigation.navigate(t('eventInfo'), { newEvent: true })
+              }
+            >
+              {t('addEvent')}
+            </StyledButton>
+          )}
         </View>
       )}
     />

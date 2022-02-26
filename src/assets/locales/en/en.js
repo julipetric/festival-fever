@@ -69,6 +69,7 @@ export default {
   noItemsAddedToYourOrder: 'There are no items added to your order yet',
   noTicketSegments: 'No ticket segments',
   ok: 'Ok',
+  organizationUsers: 'Organization Users',
   orderSummary: 'Order Summary',
   orderTotal: 'Order Total',
   password: 'Password',

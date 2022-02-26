@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
 
 function RoleSelectorModal({ visible, closeModal, userRoles, onRoleSelected }) {
   const firebase = useFirebase();
+
   return (
     <Portal>
       <Modal

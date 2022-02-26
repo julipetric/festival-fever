@@ -5,12 +5,13 @@ import { useForm } from 'react-hook-form';
 import { useFirebase, useFirestoreConnect } from 'react-redux-firebase';
 import { useNavigation } from '@react-navigation/native';
 import { ActivityIndicator, Title } from 'react-native-paper';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import StyledButton from '../components/StyledButton';
 import FormTextInput from '../components/FormTextInput';
 import PasswordFormTextInput from '../components/PasswordFormTextInput';
 import FormCheckbox from '../components/FormCheckbox';
 import RoleSelectorModal from './RoleSelectorModal';
+import { setUserRole } from '../../redux/myStoreSlice';
 
 const styles = StyleSheet.create({
   container: {
@@ -34,6 +35,7 @@ export default function Login() {
 
   const firebase = useFirebase();
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   useFirestoreConnect(() => ['roles']);
 
@@ -81,12 +83,12 @@ export default function Login() {
   }, [navigation]);
 
   function onRoleSelected(role) {
+    dispatch(setUserRole(role));
     setRoleSelectorVisible(false);
-    if (role.userTypeId === 2) {
-      navigateCorporativo();
-    }
     if (role.userTypeId === 1) {
       navigateAsistente();
+    } else {
+      navigateCorporativo();
     }
   }
 
@@ -106,16 +108,10 @@ export default function Login() {
     if (userRoles.length) {
       if (userRoles.length > 1) {
         setRoleSelectorVisible(true);
+      } else if (userRoles.some(role => role.userTypeId === 1)) {
+        navigateAsistente();
       } else {
-        if (userRoles.some(role => role.userTypeId === 2)) {
-          navigateCorporativo();
-          return;
-        }
-        if (userRoles.some(role => role.userTypeId === 1)) {
-          navigateAsistente();
-          return;
-        }
-        setLoading(false);
+        navigateCorporativo();
       }
     }
   }, [navigateAsistente, navigateCorporativo, userRoles]);

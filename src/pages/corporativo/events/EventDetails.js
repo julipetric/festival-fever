@@ -20,6 +20,10 @@ function EventDetails() {
     category: head(state.firestore.ordered.selectedEventCategory),
   }));
 
+  const { userRole } = useSelector(state => ({
+    userRole: state.myStore.userRole,
+  }));
+
   useFirestoreConnect(() => {
     const array = [
       {
@@ -51,16 +55,22 @@ function EventDetails() {
       navigateToMap={navigateToMap}
       corporativoMode
     >
-      <View style={{ alignItems: 'flex-start', paddingTop: 10 }}>
-        <StyledButton
-          label={t('eventInfo')}
-          onPress={() => navigation.navigate(t('eventInfo'))}
-        />
-        <StyledButton
-          label={t('ticketSegments')}
-          onPress={() => navigation.navigate(t('ticketSegments'))}
-        />
-      </View>
+      {userRole.userTypeId === 2 && (
+        <View style={{ alignItems: 'flex-start', paddingTop: 10 }}>
+          <StyledButton
+            label={t('eventInfo')}
+            onPress={() => navigation.navigate(t('eventInfo'))}
+          />
+          <StyledButton
+            label={t('ticketSegments')}
+            onPress={() => navigation.navigate(t('ticketSegments'))}
+          />
+          <StyledButton
+            label={t('organizationUsers')}
+            onPress={() => navigation.navigate(t('ticketSegments'))}
+          />
+        </View>
+      )}
     </EventLandingPage>
   ) : (
     <ActivityIndicator style={{ paddingTop: 50 }} />
