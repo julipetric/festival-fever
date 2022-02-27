@@ -34,7 +34,7 @@ function MyEvents() {
     }));
 
   const { userRole } = useSelector(state => ({
-    userRole: state.myStore.userRole,
+    userRole: state.myStore?.userRole,
   }));
 
   const eventsWhere = ['active', '==', true];

@@ -6,11 +6,12 @@ import { useNavigation } from '@react-navigation/native';
 import { t } from 'i18n-js';
 import { PinkPrimary, PurplePill } from '../../assets/Colors';
 import { formatEventDateTime } from '../../utils';
+import { ListItemBorderRadius } from '../../assets/UIConstants';
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
-    borderRadius: 8,
+    borderRadius: ListItemBorderRadius,
     marginHorizontal: 20,
     marginVertical: 8,
     padding: 10,

@@ -6,6 +6,7 @@ import { Subheading, Text, Title, Caption, FAB } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { orderBy } from 'lodash';
 import { BackgroundGray, PinkPrimary } from '../../../assets/Colors';
+import { ListItemBorderRadius } from '../../../assets/UIConstants';
 
 const styles = StyleSheet.create({
   container: {
@@ -17,7 +18,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 7,
     paddingHorizontal: 10,
-    borderRadius: 5,
+    borderRadius: ListItemBorderRadius,
     marginBottom: 10,
   },
   ticketName: {

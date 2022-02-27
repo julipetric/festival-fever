@@ -4,12 +4,20 @@ const { createSlice } = require('@reduxjs/toolkit');
 const myStoreSlice = createSlice({
   name: 'myStore',
   initialState: {
+    attendeeRole: undefined,
     userRole: undefined,
+    userRoles: undefined,
     selectedEvent: undefined,
   },
   reducers: {
+    setAttendeeRole(state, action) {
+      state.attendeeRole = action.payload;
+    },
     setUserRole(state, action) {
       state.userRole = action.payload;
+    },
+    setUserRoles(state, action) {
+      state.userRoles = action.payload;
     },
     setSelectedEvent(state, action) {
       state.selectedEvent = action.payload;
@@ -17,5 +25,6 @@ const myStoreSlice = createSlice({
   },
 });
 
-export const { setUserRole, setSelectedEvent } = myStoreSlice.actions;
+export const { setAttendeeRole, setUserRole, setSelectedEvent, setUserRoles } =
+  myStoreSlice.actions;
 export default myStoreSlice.reducer;

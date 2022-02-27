@@ -3,15 +3,17 @@ import { Image, StyleSheet, TouchableHighlight, View } from 'react-native';
 import { ActivityIndicator, Text } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { t } from 'i18n-js';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { PinkPrimary, PurplePill } from '../../../assets/Colors';
 import { formatEventDateTime } from '../../../utils';
+import { ListItemBorderRadius } from '../../../assets/UIConstants';
+import { setSelectedEvent } from '../../../redux/myStoreSlice';
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
-    borderRadius: 8,
+    borderRadius: ListItemBorderRadius,
     marginHorizontal: 20,
     marginVertical: 8,
     padding: 10,
@@ -54,6 +56,7 @@ const styles = StyleSheet.create({
 function EventItem({ event, category }) {
   const { dateString, hoursString } = formatEventDateTime(event);
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const { purchasables } = useSelector(state => ({
     purchasables: state.firestore.ordered.ticketSegmentsPurchasables,
@@ -76,10 +79,8 @@ function EventItem({ event, category }) {
   }, [event, imageWidth]);
 
   function onEventPress() {
-    navigation.navigate(t('eventDetails'), {
-      eventId: event.id,
-      categoryId: category.id,
-    });
+    dispatch(setSelectedEvent({ ...event, category }));
+    navigation.navigate(t('eventDetails'));
   }
 
   return (

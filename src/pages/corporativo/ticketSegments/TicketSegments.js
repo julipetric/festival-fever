@@ -1,5 +1,4 @@
 import { t } from 'i18n-js';
-import { head } from 'lodash';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
@@ -23,7 +22,7 @@ function TicketSegments() {
 
   const { event, ticketSegments, eventTickets, requesting } = useSelector(
     state => ({
-      event: head(state.firestore.ordered.selectedEvent),
+      event: state.myStore.selectedEvent,
       ticketSegments: state.firestore.ordered.selectedEventTicketSegments,
       eventTickets: state.firestore.ordered.eventTickets,
       requesting: state.firestore.status.requesting,

@@ -12,7 +12,6 @@ import EditEventInfo from './events/EditEventInfo';
 import EventDetails from './events/EventDetails';
 import TicketSegments from './ticketSegments/TicketSegments';
 import EditTicketSegment from './ticketSegments/EditTicketSegment';
-import OrganizationUsers from './OrganizationUsers';
 
 const Stack = createStackNavigator();
 
@@ -75,10 +74,6 @@ export default function MainCorporativo() {
           options={{ headerShown: true }}
         />
         <Stack.Screen name={t('eventDetails')} component={EventDetails} />
-        <Stack.Screen
-          name={t('organizationUsers')}
-          component={OrganizationUsers}
-        />
       </Stack.Navigator>
     </View>
   );

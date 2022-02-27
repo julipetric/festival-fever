@@ -5,9 +5,9 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { ActivityIndicator, TextInput } from 'react-native-paper';
 import { t } from 'i18n-js';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { useFirestore } from 'react-redux-firebase';
+import { useFirebase, useFirestore } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
-import { head } from 'lodash';
+import moment from 'moment';
 import StyledButton from '../../components/StyledButton';
 import FormTextInput from '../../components/FormTextInput';
 import TicketSegmentSchema from '../../../schemas/TicketSegmentSchema';
@@ -26,12 +26,13 @@ const styles = StyleSheet.create({
 function EditTicketSegment() {
   const navigation = useNavigation();
   const firestore = useFirestore();
+  const firebase = useFirebase();
   const { params } = useRoute();
   const item = params?.item;
   const purchasable = params?.purchasable;
 
   const { event } = useSelector(state => ({
-    event: head(state.firestore.ordered.selectedEvent),
+    event: state.myStore.selectedEvent,
   }));
 
   const { control, handleSubmit, formState, watch } = useForm({
@@ -81,6 +82,14 @@ function EditTicketSegment() {
           .doc(item.purchasableId)
           .update(savePurchasable);
       }
+      const saveEvent = {
+        ...event,
+        lastEditBy: {
+          userId: firebase.auth()?.currentUser?.uid,
+          timestamp: moment().unix(),
+        },
+      };
+      await firestore.collection('events').doc(event.id).update(saveEvent);
       onSaveSuccess();
     } catch (e) {
       Alert.alert(t('error'), JSON.stringify(e));

@@ -11,12 +11,13 @@ import {
   GreenTransaction,
   RedTransaction,
 } from '../../../assets/Colors';
+import { ListItemBorderRadius } from '../../../assets/UIConstants';
 
 const styles = StyleSheet.create({
   container: {
     borderWidth: 2,
     borderColor: 'white',
-    borderRadius: 5,
+    borderRadius: ListItemBorderRadius,
     padding: 7,
     marginBottom: 10,
     display: 'flex',

@@ -1,45 +1,18 @@
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { t } from 'i18n-js';
-import { head } from 'lodash';
 import React from 'react';
 import { View } from 'react-native';
-import { ActivityIndicator } from 'react-native-paper';
 import { useSelector } from 'react-redux';
-import { useFirestoreConnect } from 'react-redux-firebase';
 import EventLandingPage from '../../common/EventLandingPage';
 import StyledButton from '../../components/StyledButton';
 
 function EventDetails() {
-  const route = useRoute();
   const navigation = useNavigation();
 
-  const { eventId } = route.params;
-
-  const { event, category } = useSelector(state => ({
-    event: head(state.firestore.ordered.selectedEvent),
-    category: head(state.firestore.ordered.selectedEventCategory),
+  const { event, userRole } = useSelector(state => ({
+    userRole: state.myStore?.userRole,
+    event: state.myStore?.selectedEvent,
   }));
-
-  const { userRole } = useSelector(state => ({
-    userRole: state.myStore.userRole,
-  }));
-
-  useFirestoreConnect(() => {
-    const array = [
-      {
-        collection: 'events',
-        doc: eventId,
-        storeAs: 'selectedEvent',
-      },
-    ];
-    if (event)
-      array.push({
-        collection: 'categories',
-        doc: event.categoryId,
-        storeAs: 'selectedEventCategory',
-      });
-    return array;
-  });
 
   function navigateToMap() {
     navigation.navigate('FullScreenMapView', {
@@ -48,14 +21,14 @@ function EventDetails() {
     });
   }
 
-  return event && category ? (
+  return (
     <EventLandingPage
       event={event}
-      category={category}
+      category={event.category}
       navigateToMap={navigateToMap}
       corporativoMode
     >
-      {userRole.userTypeId === 2 && (
+      {userRole?.userTypeId === 2 && (
         <View style={{ alignItems: 'flex-start', paddingTop: 10 }}>
           <StyledButton
             label={t('eventInfo')}
@@ -65,15 +38,9 @@ function EventDetails() {
             label={t('ticketSegments')}
             onPress={() => navigation.navigate(t('ticketSegments'))}
           />
-          <StyledButton
-            label={t('organizationUsers')}
-            onPress={() => navigation.navigate(t('ticketSegments'))}
-          />
         </View>
       )}
     </EventLandingPage>
-  ) : (
-    <ActivityIndicator style={{ paddingTop: 50 }} />
   );
 }
 

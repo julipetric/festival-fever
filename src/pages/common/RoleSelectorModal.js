@@ -38,7 +38,7 @@ function RoleSelectorModal({ visible, closeModal, userRoles, onRoleSelected }) {
           data={userRoles}
           renderItem={({ item }) => (
             <StyledButton
-              label={item.userTypeId === 1 ? t('attendee') : item.name}
+              label={item?.userTypeId === 1 ? t('attendee') : item.name}
               mode="text"
               onPress={() => onRoleSelected(item)}
             />
@@ -49,10 +49,12 @@ function RoleSelectorModal({ visible, closeModal, userRoles, onRoleSelected }) {
   );
 }
 
+RoleSelectorModal.defaultProps = { userRoles: [] };
+
 RoleSelectorModal.propTypes = {
   visible: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
-  userRoles: PropTypes.array.isRequired,
+  userRoles: PropTypes.array,
   onRoleSelected: PropTypes.func.isRequired,
 };
 

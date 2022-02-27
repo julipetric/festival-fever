@@ -6,11 +6,9 @@ import { Alert, StyleSheet } from 'react-native';
 import { ActivityIndicator, HelperText, TextInput } from 'react-native-paper';
 import { DatePickerModal } from 'react-native-paper-dates';
 import { Feather } from '@expo/vector-icons';
-import { useFirebase, useFirestoreConnect } from 'react-redux-firebase';
+import { useFirebase } from 'react-redux-firebase';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
-import { first } from 'lodash';
 import UserRegisterSchema from '../../schemas/UserRegisterSchema';
 import FormTextInput from '../components/FormTextInput';
 import StyledButton from '../components/StyledButton';
@@ -35,23 +33,13 @@ const styles = StyleSheet.create({
 });
 
 export default function Register() {
-  const navigation = useNavigation();
-
-  useFirestoreConnect({
-    collection: 'roles',
-    where: ['userTypeId', '==', 1],
-    storeAs: 'attendeeRole',
-  });
-
   const { control, handleSubmit, formState, getValues } = useForm({
-    mode: 'onChange',
+    mode: 'onSubmit',
     reValidateMode: 'onChange',
     resolver: useMemo(() => UserRegisterSchema(), []),
   });
 
-  const attendeeRole = useSelector(
-    state => state.firestore.ordered.attendeeRole
-  );
+  const attendeeRole = useSelector(state => state.myStore.attendeeRole);
 
   const firebase = useFirebase();
 
@@ -78,15 +66,12 @@ export default function Register() {
           name,
           lastName,
           birthday: moment(birthday).format('LL'),
-          roles: [first(attendeeRole).id],
+          roles: [attendeeRole.id],
           balance: 0,
+          email,
         }
       );
       setLoading(false);
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'MainAsistente' }],
-      });
     } catch (error) {
       Alert.alert(t('error'), error.error || error);
     }
@@ -164,7 +149,7 @@ export default function Register() {
             mode="contained"
             style={styles.button}
             onPress={handleSubmit(registerFunction)}
-            disabled={!formState.isValid}
+            disabled={formState.isSubmitted && !formState.isValid}
           >
             {t('signUp')}
           </StyledButton>

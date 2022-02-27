@@ -4,11 +4,11 @@ import { StyleSheet } from 'react-native';
 import { FAB } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import { useFirebase, useFirestore } from 'react-redux-firebase';
-import { useSelector } from 'react-redux';
-import { head } from 'lodash';
+import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { TransparentBackdrop2 } from '../../../assets/Colors';
+import { setSelectedEvent } from '../../../redux/myStoreSlice';
 
 const styles = StyleSheet.create({
   editIcon: {
@@ -22,9 +22,10 @@ const styles = StyleSheet.create({
 function EditEventPhotoButton({ setUploadingImage }) {
   const firebase = useFirebase();
   const firestore = useFirestore();
+  const dispatch = useDispatch();
 
   const { event } = useSelector(state => ({
-    event: head(state.firestore.ordered.selectedEvent),
+    event: state.myStore.selectedEvent,
   }));
 
   async function onButtonPress() {
@@ -57,15 +58,22 @@ function EditEventPhotoButton({ setUploadingImage }) {
     const downloadUrl =
       await uploadResult.uploadTaskSnapshot.ref.getDownloadURL();
 
-    const editedEvent = { ...event };
+    const editedEvent = {
+      ...event,
+      lastEditBy: {
+        userId: firebase.auth()?.currentUser?.uid,
+        timestamp: moment().unix(),
+      },
+    };
+    delete editedEvent.category;
     delete editedEvent.id;
     editedEvent.imageUrl = downloadUrl;
 
     const pathToDelete = firebase.storage().refFromURL(event.imageUrl);
 
     await firestore.collection('events').doc(event.id).update(editedEvent);
-
     await firebase.deleteFile(pathToDelete.fullPath);
+    dispatch(setSelectedEvent({ ...event, ...editedEvent }));
 
     setUploadingImage(false);
   }

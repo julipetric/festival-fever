@@ -6,11 +6,28 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import { ActivityIndicator, Modal, Portal, Text } from 'react-native-paper';
+import {
+  ActivityIndicator,
+  IconButton,
+  Modal,
+  Portal,
+  Text,
+} from 'react-native-paper';
 // eslint-disable-next-line import/no-unresolved
 import ZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
-import { Feather, MaterialIcons } from '@expo/vector-icons';
+import {
+  Feather,
+  FontAwesome5,
+  Ionicons,
+  MaterialIcons,
+} from '@expo/vector-icons';
 import PropTypes from 'prop-types';
+import { useNavigation } from '@react-navigation/native';
+import { useFirestore, useFirestoreConnect } from 'react-redux-firebase';
+import { useSelector } from 'react-redux';
+import { head } from 'lodash';
+import { t } from 'i18n-js';
+import moment from 'moment';
 import {
   BackgroundGray,
   PinkPrimary,
@@ -59,6 +76,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     marginTop: 15,
   },
+  circleIcon: { backgroundColor: 'rgba(0,0,0,0.3)', padding: 3 },
 });
 
 function DatePlaceRow({ event, navigateToMap }) {
@@ -114,13 +132,37 @@ function EventLandingPage({
   corporativoMode,
 }) {
   const [showImageFullscreen, setShowImageFullscreen] = useState(false);
+  const navigation = useNavigation();
+  const firestore = useFirestore();
 
   const [image, setImage] = useState(event?.imageUrl);
   const [uploadingImage, setUploadingImage] = useState(false);
 
   useEffect(() => setImage(event?.imageUrl), [event]);
 
-  return (
+  const { userRole, requesting, eventLastEditUser } = useSelector(state => ({
+    userRole: state.myStore?.userRole,
+    requesting: state.firestore.status.requesting.eventLastEditUser,
+    eventLastEditUser: head(state.firestore.ordered.eventLastEditUser),
+  }));
+
+  useFirestoreConnect(() => {
+    if (userRole?.userTypeId === 2)
+      return {
+        collection: 'users',
+        where: [
+          firestore.FieldPath.documentId(),
+          '==',
+          event?.lastEditBy?.userId,
+        ],
+        storeAs: 'eventLastEditUser',
+      };
+    return undefined;
+  });
+
+  return userRole?.userTypeId === 2 && (requesting || !eventLastEditUser) ? (
+    <ActivityIndicator size="large" style={{ paddingTop: 30 }} />
+  ) : (
     <>
       <ScrollView
         style={styles.container}
@@ -129,7 +171,6 @@ function EventLandingPage({
         <ImageHeader
           image={image}
           openImage={() => setShowImageFullscreen(true)}
-          hideFavoriteButton={corporativoMode}
         />
         <View style={styles.dataContainer}>
           <View style={styles.categoryPill}>
@@ -137,6 +178,14 @@ function EventLandingPage({
           </View>
           <Text style={styles.eventTitle}>{event.name}</Text>
           <DatePlaceRow event={event} navigateToMap={navigateToMap} />
+          {userRole?.userTypeId === 2 && (
+            <Text style={{ paddingTop: 10, opacity: 0.6 }}>
+              {t('lastEditBy')}: {eventLastEditUser?.name}{' '}
+              {eventLastEditUser?.lastName}
+              {' - '}
+              {moment.unix(event?.lastEditBy?.timestamp).format('lll')}
+            </Text>
+          )}
           <View style={styles.divider} />
         </View>
         {children}
@@ -174,6 +223,35 @@ function EventLandingPage({
           )}
         </Modal>
       </Portal>
+      <IconButton
+        icon={({ size }) => (
+          <Ionicons name="arrow-back" size={size} color="white" />
+        )}
+        style={[styles.circleIcon, { position: 'absolute', top: 5, left: 5 }]}
+        size={25}
+        onPress={() => navigation.goBack()}
+      />
+      <View
+        style={[
+          { flexDirection: 'row' },
+          { position: 'absolute', top: 5, right: 10 },
+        ]}
+      >
+        <IconButton
+          icon={() => <FontAwesome5 name="share-alt" size={20} color="white" />}
+          style={styles.circleIcon}
+          size={25}
+        />
+        {!corporativoMode && (
+          <IconButton
+            icon={({ size }) => (
+              <Feather name="star" size={size} color="white" />
+            )}
+            style={styles.circleIcon}
+            size={25}
+          />
+        )}
+      </View>
     </>
   );
 }

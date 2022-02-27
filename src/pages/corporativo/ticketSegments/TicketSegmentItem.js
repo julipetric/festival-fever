@@ -4,13 +4,14 @@ import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Switch, Text } from 'react-native-paper';
 import { t } from 'i18n-js';
 import { useNavigation } from '@react-navigation/native';
+import { ListItemBorderRadius } from '../../../assets/UIConstants';
 
 const styles = StyleSheet.create({
   itemContainer: {
     padding: 10,
     paddingHorizontal: 15,
     backgroundColor: 'white',
-    borderRadius: 10,
+    borderRadius: ListItemBorderRadius,
     marginBottom: 20,
   },
   itemName: { fontSize: 16, color: 'black', fontWeight: 'bold' },

@@ -1,14 +1,35 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { useFirestore } from 'react-redux-firebase';
+import { useDispatch, useSelector } from 'react-redux';
+import { first } from 'lodash';
 import MainCorporativo from '../corporativo/MainCorporativo';
 import MainAsistente from '../asistente/MainAsistente';
 import AuthNavigator from './AuthNavigator';
 import theme from '../../assets/theme';
+import { setAttendeeRole } from '../../redux/myStoreSlice';
 
 const Stack = createStackNavigator();
 
 export default function InitialNavigator() {
+  const firestore = useFirestore();
+  const dispatch = useDispatch();
+
+  const attendeeRole = useSelector(state => state.myStore.attendeeRole);
+
+  useEffect(() => {
+    async function fetchRole() {
+      const { docs: query } = await firestore
+        .collection('roles')
+        .where('userTypeId', '==', 1)
+        .get();
+      const role = { ...first(query).data(), id: first(query).id };
+      dispatch(setAttendeeRole(role));
+    }
+    if (!attendeeRole) fetchRole();
+  }, [attendeeRole, dispatch, firestore]);
+
   return (
     <NavigationContainer theme={theme}>
       <Stack.Navigator

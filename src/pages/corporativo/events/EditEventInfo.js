@@ -16,14 +16,18 @@ import moment from 'moment';
 import { Feather, Ionicons } from '@expo/vector-icons';
 import { DatePickerModal, TimePickerModal } from 'react-native-paper-dates';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { useFirestore, useFirestoreConnect } from 'react-redux-firebase';
-import { useSelector } from 'react-redux';
-import { head } from 'lodash';
+import {
+  useFirebase,
+  useFirestore,
+  useFirestoreConnect,
+} from 'react-redux-firebase';
+import { useDispatch, useSelector } from 'react-redux';
 import StyledButton from '../../components/StyledButton';
 import FormTextInput from '../../components/FormTextInput';
 import { BackgroundGray } from '../../../assets/Colors';
 import { formatEventForm } from '../../../firebase/EventsHelper';
 import EventInfoSchema from '../../../schemas/EventInfoSchema';
+import { setSelectedEvent } from '../../../redux/myStoreSlice';
 
 const styles = StyleSheet.create({
   container: {
@@ -41,11 +45,13 @@ function EditEventInfo() {
   const firestore = useFirestore();
   const route = useRoute();
   const newEvent = route?.params?.newEvent;
+  const dispatch = useDispatch();
+  const firebase = useFirebase();
 
   useFirestoreConnect(() => [{ collection: 'categories', orderBy: ['order'] }]);
   const { categories, event } = useSelector(state => ({
     categories: state.firestore.ordered.categories,
-    event: head(state.firestore.ordered.selectedEvent),
+    event: state.myStore.selectedEvent,
   }));
   const { control, handleSubmit, formState, watch, setValue, getValues } =
     useForm({
@@ -113,9 +119,14 @@ function EditEventInfo() {
     setLoading(true);
     try {
       const saveEvent = formatEventForm(watch(), startDate, endDate);
+      saveEvent.lastEditBy = {
+        userId: firebase.auth()?.currentUser?.uid,
+        timestamp: moment().unix(),
+      };
       if (newEvent || !event)
         await firestore.collection('events').add(saveEvent);
       else await firestore.collection('events').doc(event.id).update(saveEvent);
+      dispatch(setSelectedEvent({ ...saveEvent, category: event.category }));
       onSaveSuccess();
     } catch (e) {
       Alert.alert(t('error'), JSON.stringify(e));

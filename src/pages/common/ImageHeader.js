@@ -5,12 +5,8 @@ import {
   ImageBackground,
   StyleSheet,
   TouchableHighlight,
-  View,
 } from 'react-native';
-import { IconButton } from 'react-native-paper';
-import { Feather, FontAwesome5, Ionicons } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
-import { useNavigation } from '@react-navigation/native';
 import NoImage from '../../assets/no-image.png';
 
 const styles = StyleSheet.create({
@@ -22,12 +18,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 20,
   },
-  circleIcon: { backgroundColor: 'rgba(0,0,0,0.3)', padding: 3 },
 });
 
-function ImageHeader({ image, openImage, hideFavoriteButton }) {
-  const navigation = useNavigation();
-
+function ImageHeader({ image, openImage }) {
   const screenWidth = Dimensions.get('window').width;
 
   const [imageHeight, setImageHeight] = useState(0);
@@ -44,46 +37,14 @@ function ImageHeader({ image, openImage, hideFavoriteButton }) {
       <ImageBackground
         source={image ? { uri: image } : NoImage}
         style={[styles.image, { height: image ? imageHeight : 300 }]}
-      >
-        <IconButton
-          icon={({ size }) => (
-            <Ionicons name="arrow-back" size={size} color="white" />
-          )}
-          style={styles.circleIcon}
-          size={25}
-          onPress={() => navigation.goBack()}
-        />
-        <View style={{ flexDirection: 'row' }}>
-          <IconButton
-            icon={() => (
-              <FontAwesome5 name="share-alt" size={20} color="white" />
-            )}
-            style={styles.circleIcon}
-            size={25}
-          />
-          {!hideFavoriteButton && (
-            <IconButton
-              icon={({ size }) => (
-                <Feather name="star" size={size} color="white" />
-              )}
-              style={styles.circleIcon}
-              size={25}
-            />
-          )}
-        </View>
-      </ImageBackground>
+      />
     </TouchableHighlight>
   );
 }
 
-ImageHeader.defaultProps = {
-  hideFavoriteButton: false,
-};
-
 ImageHeader.propTypes = {
   image: PropTypes.string.isRequired,
   openImage: PropTypes.func.isRequired,
-  hideFavoriteButton: PropTypes.bool,
 };
 
 export default ImageHeader;

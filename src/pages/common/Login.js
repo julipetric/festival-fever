@@ -2,7 +2,11 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { t } from 'i18n-js';
 import { useForm } from 'react-hook-form';
-import { useFirebase, useFirestoreConnect } from 'react-redux-firebase';
+import {
+  useFirebase,
+  useFirestore,
+  useFirestoreConnect,
+} from 'react-redux-firebase';
 import { useNavigation } from '@react-navigation/native';
 import { ActivityIndicator, Title } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,7 +15,7 @@ import FormTextInput from '../components/FormTextInput';
 import PasswordFormTextInput from '../components/PasswordFormTextInput';
 import FormCheckbox from '../components/FormCheckbox';
 import RoleSelectorModal from './RoleSelectorModal';
-import { setUserRole } from '../../redux/myStoreSlice';
+import { setUserRole, setUserRoles } from '../../redux/myStoreSlice';
 
 const styles = StyleSheet.create({
   container: {
@@ -34,23 +38,33 @@ export default function Login() {
   const { control, handleSubmit, getValues } = useForm();
 
   const firebase = useFirebase();
+  const firestore = useFirestore();
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
-  useFirestoreConnect(() => ['roles']);
+  const currentUser = firebase.auth()?.currentUser;
 
-  const { profile, roles } = useSelector(state => ({
+  const { profile, userRoles, storeRoles } = useSelector(state => ({
     profile: state.firebase.profile,
-    roles: state.firestore.ordered.roles,
+    userRoles: state.firestore.ordered.userRoles,
+    storeRoles: state.myStore.userRoles,
   }));
 
+  useFirestoreConnect(() => {
+    if (currentUser && profile?.roles?.length)
+      return {
+        collection: 'roles',
+        where: [firestore.FieldPath.documentId(), 'in', profile?.roles],
+        storeAs: 'userRoles',
+      };
+    return undefined;
+  });
+
   const [loading, setLoading] = useState(
-    firebase.auth().currentUser !== undefined &&
-      firebase.auth().currentUser !== null
+    currentUser !== undefined && currentUser !== null
   );
 
   const [roleSelectorVisible, setRoleSelectorVisible] = useState(false);
-  const [userRoles, setUserRoles] = useState([]);
 
   async function loginFunction() {
     setLoading(true);
@@ -85,7 +99,7 @@ export default function Login() {
   function onRoleSelected(role) {
     dispatch(setUserRole(role));
     setRoleSelectorVisible(false);
-    if (role.userTypeId === 1) {
+    if (role?.userTypeId === 1) {
       navigateAsistente();
     } else {
       navigateCorporativo();
@@ -93,28 +107,26 @@ export default function Login() {
   }
 
   useEffect(() => {
-    if (navigation) {
-      if (profile && roles && profile.roles) {
-        setUserRoles(
-          roles.filter(role =>
-            profile.roles.some(userRoleId => userRoleId === role.id)
-          )
-        );
-      }
-    }
-  }, [firebase, navigation, profile, roles]);
+    dispatch(setUserRoles(userRoles));
+  }, [dispatch, userRoles]);
 
   useEffect(() => {
-    if (userRoles.length) {
-      if (userRoles.length > 1) {
+    if (currentUser && storeRoles) {
+      if (storeRoles.length > 1) {
         setRoleSelectorVisible(true);
-      } else if (userRoles.some(role => role.userTypeId === 1)) {
+      } else if (storeRoles.some(role => role?.userTypeId === 1)) {
         navigateAsistente();
       } else {
         navigateCorporativo();
       }
     }
-  }, [navigateAsistente, navigateCorporativo, userRoles]);
+  }, [
+    currentUser,
+    navigateAsistente,
+    navigateCorporativo,
+    storeRoles,
+    userRoles,
+  ]);
 
   function handleRegister() {
     navigation.push(t('register'));

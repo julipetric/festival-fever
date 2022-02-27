@@ -13,10 +13,12 @@ import { useFirebase, useFirestore } from 'react-redux-firebase';
 import PropTypes from 'prop-types';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useSelector } from 'react-redux';
 import { PinkPrimary, TransparentBackdrop } from '../../assets/Colors';
 import MyAccount from '../common/MyAccount';
 import InactiveEvents from './InactiveEvents';
 import MyEvents from './events/MyEvents';
+import MyOrganization from './MyOrganization/MyOrganization';
 
 const Drawer = createDrawerNavigator();
 
@@ -59,6 +61,10 @@ function HomeCorporativo() {
   const firestore = useFirestore();
   // eslint-disable-next-line no-unused-vars
   const userId = firebase.auth()?.currentUser?.uid;
+
+  const { userRole } = useSelector(state => ({
+    userRole: state.myStore?.userRole,
+  }));
 
   async function logout() {
     await firebase.logout();
@@ -106,11 +112,19 @@ function HomeCorporativo() {
           screenOptions={{ headerTintColor: 'white', headerRight: HeaderRight }}
         >
           <Drawer.Screen name={t('myEvents')} component={MyEvents} />
-          <Drawer.Screen
-            name={t('inactiveEvents')}
-            component={InactiveEvents}
-          />
+          {userRole?.userTypeId === 2 ? (
+            <Drawer.Screen
+              name={t('inactiveEvents')}
+              component={InactiveEvents}
+            />
+          ) : undefined}
           <Drawer.Screen name={t('myAccount')} component={MyAccount} />
+          {userRole?.userTypeId === 2 ? (
+            <Drawer.Screen
+              name={t('myOrganization')}
+              component={MyOrganization}
+            />
+          ) : undefined}
         </Drawer.Navigator>
       </View>
       {/* eslint-disable-next-line react/style-prop-object */}
