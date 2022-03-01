@@ -36,7 +36,7 @@ function EditTicketSegment() {
   }));
 
   const { control, handleSubmit, formState, watch } = useForm({
-    mode: 'onChange',
+    mode: 'onSubmit',
     reValidateMode: 'onChange',
     defaultValues: {
       ...item,
@@ -97,7 +97,7 @@ function EditTicketSegment() {
     }
   }
 
-  const disabled = purchasable.sold > 0;
+  const disabled = purchasable?.sold > 0;
 
   return (
     <>
@@ -136,6 +136,7 @@ function EditTicketSegment() {
           label={t('stock')}
           keyboardType="decimal-pad"
         />
+
         {loading ? (
           <ActivityIndicator style={styles.button} size="large" />
         ) : (
@@ -143,7 +144,7 @@ function EditTicketSegment() {
             mode="contained"
             style={styles.button}
             onPress={handleSubmit(onSave)}
-            disabled={!formState.isValid}
+            disabled={formState.isSubmitted && !formState.isValid}
           >
             {t('save')}
           </StyledButton>

@@ -18,7 +18,7 @@ import { PinkPrimary, TransparentBackdrop } from '../../assets/Colors';
 import MyAccount from '../common/MyAccount';
 import InactiveEvents from './InactiveEvents';
 import MyEvents from './events/MyEvents';
-import MyOrganization from './MyOrganization/MyOrganization';
+import MyOrganization from './myOrganization/MyOrganization';
 
 const Drawer = createDrawerNavigator();
 

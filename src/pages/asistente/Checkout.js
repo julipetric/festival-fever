@@ -203,17 +203,19 @@ function Checkout() {
       firestore.collection('orders').add(order),
     ];
 
-    items.forEach(item =>
+    items.forEach(item => {
+      const ticket = { ...item.ticket };
+      delete ticket.id;
       promises.push(
         firestore
           .collection('purchasables')
           .doc(item.ticket?.id)
           .update({
-            ...item.ticket,
+            ...ticket,
             sold: (item.ticket.sold || 0) + item.quantity,
           })
-      )
-    );
+      );
+    });
 
     await Promise.all(promises);
     setLoading(false);

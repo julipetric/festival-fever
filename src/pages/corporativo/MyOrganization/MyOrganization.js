@@ -168,8 +168,6 @@ function MyOrganization() {
     }
   }, [organizationUsers, status.requested.organizationUsers]);
 
-  console.log(status);
-
   useFirestoreConnect(() => {
     const array = [
       {

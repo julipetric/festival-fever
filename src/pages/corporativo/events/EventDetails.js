@@ -29,7 +29,9 @@ function EventDetails() {
       corporativoMode
     >
       {userRole?.userTypeId === 2 && (
-        <View style={{ alignItems: 'flex-start', paddingTop: 10 }}>
+        <View
+          style={{ flexDirection: 'row', paddingTop: 10, flexWrap: 'wrap' }}
+        >
           <StyledButton
             label={t('eventInfo')}
             onPress={() => navigation.navigate(t('eventInfo'))}
@@ -37,6 +39,10 @@ function EventDetails() {
           <StyledButton
             label={t('ticketSegments')}
             onPress={() => navigation.navigate(t('ticketSegments'))}
+          />
+          <StyledButton
+            label={t('products')}
+            onPress={() => navigation.navigate(t('products'))}
           />
         </View>
       )}

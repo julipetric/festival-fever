@@ -69,10 +69,13 @@ function EditEventPhotoButton({ setUploadingImage }) {
     delete editedEvent.id;
     editedEvent.imageUrl = downloadUrl;
 
-    const pathToDelete = firebase.storage().refFromURL(event.imageUrl);
+    if (event.imageUrl) {
+      const pathToDelete = firebase.storage().refFromURL(event.imageUrl);
+      await firebase.deleteFile(pathToDelete.fullPath);
+    }
 
     await firestore.collection('events').doc(event.id).update(editedEvent);
-    await firebase.deleteFile(pathToDelete.fullPath);
+
     dispatch(setSelectedEvent({ ...event, ...editedEvent }));
 
     setUploadingImage(false);
