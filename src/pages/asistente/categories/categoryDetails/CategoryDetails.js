@@ -121,9 +121,9 @@ function CategoryDetails() {
                 }
               />
               {cardsMode ? (
-                <EventCards events={events} />
+                <EventCards events={events.map(e => ({ ...e, category }))} />
               ) : (
-                <EventsList events={events} />
+                <EventsList events={events.map(e => ({ ...e, category }))} />
               )}
             </>
           ) : (

@@ -4,10 +4,11 @@ import Carousel from 'react-native-snap-carousel';
 import PropTypes from 'prop-types';
 import { useNavigation } from '@react-navigation/native';
 import { t } from 'i18n-js';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { remove } from 'lodash';
 import { useFirebase } from 'react-redux-firebase';
 import EventCardView from './EventCardView';
+import { setSelectedEvent } from '../../../../../redux/myStoreSlice';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -16,9 +17,11 @@ const styles = StyleSheet.create({
 });
 function EventCards({ events }) {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const firebase = useFirebase();
   function navigate(event) {
-    navigation.navigate(t('eventDetails'), { eventId: event.id });
+    dispatch(setSelectedEvent(event));
+    navigation.navigate(t('eventDetails'));
   }
 
   const { profile } = useSelector(state => ({

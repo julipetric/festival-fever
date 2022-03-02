@@ -1,12 +1,19 @@
+import { useNavigation } from '@react-navigation/native';
 import { t } from 'i18n-js';
-import React from 'react';
+import { isEqual } from 'lodash';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import { ActivityIndicator, Text } from 'react-native-paper';
-import { useSelector } from 'react-redux';
-import { useFirestore, useFirestoreConnect } from 'react-redux-firebase';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  useFirebase,
+  useFirestore,
+  useFirestoreConnect,
+} from 'react-redux-firebase';
 import { TransparentBackdrop } from '../../../assets/Colors';
 import { PagePaddingHorizontal } from '../../../assets/UIConstants';
+import { setSelectedEvent } from '../../../redux/myStoreSlice';
 import TicketSegmentItem from './TicketSegmentItem';
 
 const styles = StyleSheet.create({
@@ -19,6 +26,9 @@ const styles = StyleSheet.create({
 
 function TicketSegments() {
   const firestore = useFirestore();
+  const firebase = useFirebase();
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const { event, ticketSegments, eventTickets, requesting } = useSelector(
     state => ({
@@ -28,6 +38,8 @@ function TicketSegments() {
       requesting: state.firestore.status.requesting,
     })
   );
+
+  const [modifiedEvent, setModifiedEvent] = useState({ ...event });
 
   useFirestoreConnect(() => {
     const array = [
@@ -50,7 +62,32 @@ function TicketSegments() {
     return array;
   });
 
+  useEffect(() => {
+    navigation.addListener('beforeRemove', () => {
+      if (!isEqual(modifiedEvent, event)) {
+        dispatch(setSelectedEvent(modifiedEvent));
+      }
+    });
+  }, [dispatch, event, modifiedEvent, navigation]);
+
   const loading = requesting.eventTickets;
+
+  async function setItemActive(item, value) {
+    const saveItem = { ...item, active: value };
+    delete saveItem.id;
+    const saveEvent = { ...event };
+    delete saveEvent.category;
+    delete saveEvent.id;
+    saveEvent.lastEditBy = {
+      userId: firebase.auth()?.currentUser?.uid,
+      timestamp: modifiedEvent().unix(),
+    };
+    await Promise.all([
+      firestore.collection('purchasables').doc(item.id).update(saveItem),
+      firestore.collection('events').doc(event.id).update(saveEvent),
+    ]);
+    setModifiedEvent({ ...event, ...saveEvent });
+  }
 
   return ticketSegments &&
     !loading &&
@@ -66,7 +103,12 @@ function TicketSegments() {
         <TicketSegmentItem
           item={item}
           purchasable={eventTickets?.find(e => e.id === item.purchasableId)}
-          setItemActive={() => {}}
+          setItemActive={value =>
+            setItemActive(
+              eventTickets?.find(e => e.id === item.purchasableId),
+              value
+            )
+          }
         />
       )}
     />

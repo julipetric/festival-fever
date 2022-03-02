@@ -20,7 +20,7 @@ function EventProduct({ product }) {
   return (
     <View style={styles.container} key={product.title}>
       <View style={styles.itemContainer}>
-        <Text>{product.title}</Text>
+        <Text style={{ color: 'black' }}>{product.name}</Text>
       </View>
     </View>
   );

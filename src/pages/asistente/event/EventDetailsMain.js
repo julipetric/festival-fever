@@ -1,4 +1,3 @@
-import { useRoute } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { t } from 'i18n-js';
 import React from 'react';
@@ -21,20 +20,13 @@ const styles = StyleSheet.create({
 });
 
 function EventDetailsMain() {
-  const route = useRoute();
-  const { eventId } = route.params;
-
   return (
     <View style={styles.container}>
       <Stack.Navigator
         initialRouteName="EventDetailsHome"
         screenOptions={{ headerShown: false }}
       >
-        <Stack.Screen
-          name="EventDetailsHome"
-          component={EventDetails}
-          initialParams={{ eventId }}
-        />
+        <Stack.Screen name="EventDetailsHome" component={EventDetails} />
         <Stack.Screen name={t('buyTickets')} component={BuyTickets} />
         <Stack.Screen name={t('checkout')} component={Checkout} />
       </Stack.Navigator>

@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View, Animated } from 'react-native';
 import { ActivityIndicator, FAB, Text } from 'react-native-paper';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
 import { t } from 'i18n-js';
 import Accordion from 'react-native-collapsible/Accordion';
-import { useFirestore, useFirestoreConnect } from 'react-redux-firebase';
+import { useFirestore } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
-import { head, orderBy } from 'lodash';
+import { orderBy } from 'lodash';
 import { PinkPrimary, TransparentBackdrop } from '../../../assets/Colors';
 import EventProduct from './EventProduct';
 import EventLandingPage from '../../common/EventLandingPage';
@@ -61,84 +61,71 @@ const styles = StyleSheet.create({
 });
 
 function EventDetails() {
-  const route = useRoute();
   const navigation = useNavigation();
-  const { eventId } = route.params;
   const firestore = useFirestore();
 
-  const {
-    event,
-    category,
-    ticketSegments,
-    eventTickets,
-    requesting,
-    requested,
-  } = useSelector(state => ({
-    event: head(state.firestore.ordered.selectedEvent),
-    category: head(state.firestore.ordered.selectedEventCategory),
-    ticketSegments: state.firestore.ordered.ticketSegments,
-    eventTickets: state.firestore.ordered.eventTickets,
-    requesting: state.firestore.status.requesting,
-    requested: state.firestore.status.requested,
+  const { event } = useSelector(state => ({
+    event: state.myStore.selectedEvent,
   }));
-
-  const loadingData =
-    !requested.selectedEvent ||
-    requesting.selectedEvent ||
-    requesting.ticketSegments ||
-    requesting.eventTickets ||
-    !requested.selectedEventCategory ||
-    requesting.selectedEventCategory ||
-    (ticketSegments?.length && !requested.eventTickets);
 
   const [priceTag, setPriceTag] = useState('-');
 
-  useFirestoreConnect(() => {
-    const array = [
-      {
-        collection: 'events',
-        doc: eventId,
-        storeAs: 'selectedEvent',
-      },
-    ];
-    if (event) {
-      array.push({
-        collection: 'categories',
-        doc: event.categoryId,
-        storeAs: 'selectedEventCategory',
-      });
-      array.push({
-        collection: 'ticketSegments',
-        where: ['eventId', '==', event.id],
-      });
+  const [ticketSegments, setTicketSegments] = useState();
+  const [eventTickets, setEventTickets] = useState();
+  const [products, setProducts] = useState();
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    async function fetchTickets() {
+      const segments = [];
+      const tickets = [];
+      (
+        await firestore
+          .collection('ticketSegments')
+          .where('eventId', '==', event.id)
+          .get()
+      ).forEach(doc => segments.push(doc.data()));
+      if (segments.length)
+        (
+          await firestore
+            .collection('purchasables')
+            .where(
+              firestore.FieldPath.documentId(),
+              'in',
+              segments.map(segment => segment.purchasableId)
+            )
+            .get()
+        ).forEach(doc => tickets.push(doc.data()));
+      setTicketSegments(segments);
+      setEventTickets(tickets);
     }
-    if (ticketSegments?.length)
-      array.push({
-        collection: 'purchasables',
-        where: [
-          firestore.FieldPath.documentId(),
-          'in',
-          ticketSegments.map(segment => segment.purchasableId),
-        ],
-        storeAs: 'eventTickets',
-      });
-    return array;
-  });
+
+    async function fetchProducts() {
+      const array = [];
+      if (event?.products?.length)
+        (
+          await firestore
+            .collection('purchasables')
+            .where(firestore.FieldPath.documentId(), 'in', event.products)
+            .get()
+        ).forEach(doc => array.push(doc.data()));
+      setProducts(array);
+    }
+
+    async function fetchEventData() {
+      setLoading(true);
+      await Promise.all([fetchTickets(), fetchProducts()]);
+      setLoading(false);
+    }
+    fetchEventData();
+  }, [event.id, event.products, firestore]);
 
   const [activeSections, setActiveSections] = useState([]);
 
   const SECTIONS = [
     {
-      title: 'Products',
-      content: [
-        { title: 'title', description: 'description' },
-        { title: 'title', description: 'description' },
-        { title: 'title', description: 'description' },
-        { title: 'title', description: 'description' },
-        { title: 'title', description: 'description' },
-        { title: 'title', description: 'description' },
-        { title: 'title', description: 'description' },
-      ],
+      title: t('products'),
+      content: products,
     },
   ];
 
@@ -148,7 +135,9 @@ function EventDetails() {
         <View style={styles.counter}>
           <View style={styles.line} />
           <Text style={styles.productsCount}>
-            {t('showingNumberProducts', { number: section.content.length })}
+            {section.content.length === 1
+              ? t('showingOneProduct')
+              : t('showingNumberProducts')}
           </Text>
           <View style={styles.line} />
         </View>
@@ -215,11 +204,11 @@ function EventDetails() {
     });
   }
 
-  return event && category && !loadingData ? (
+  return event && products && !loading ? (
     <>
       <EventLandingPage
         event={event}
-        category={category}
+        category={event.category}
         navigateToMap={navigateToMap}
       >
         <View style={{ paddingHorizontal: 15 }}>
@@ -231,19 +220,23 @@ function EventDetails() {
               </Text>
             </View>
           )}
-          <Accordion
-            sections={SECTIONS}
-            activeSections={activeSections}
-            onChange={e => {
-              setActiveSections(e);
-              animate(e.length);
-            }}
-            renderContent={renderContent}
-            keyExtractor={item => item.title}
-            renderHeader={renderHeader}
-            underlayColor={TransparentBackdrop}
-            duration={400}
-          />
+          {products?.length ? (
+            <Accordion
+              sections={SECTIONS}
+              activeSections={activeSections}
+              onChange={e => {
+                setActiveSections(e);
+                animate(e.length);
+              }}
+              renderContent={renderContent}
+              keyExtractor={item => item.title}
+              renderHeader={renderHeader}
+              underlayColor={TransparentBackdrop}
+              duration={400}
+            />
+          ) : (
+            <></>
+          )}
         </View>
       </EventLandingPage>
       <FAB

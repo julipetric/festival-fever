@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
 });
 
 function TicketSegmentItem({ item, purchasable, setItemActive }) {
-  const [active, setActive] = useState(false);
+  const [active, setActive] = useState(purchasable?.active || false);
   const navigation = useNavigation();
 
   function toggleItem(newValue) {

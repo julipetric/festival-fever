@@ -18,7 +18,7 @@ function ProductItem({ item, onPress, setItemActive }) {
   const [imageWidth, setImageWidth] = useState(0);
 
   const [imageHeight, setImageHeight] = useState(0);
-  const [active, setActive] = useState(false);
+  const [active, setActive] = useState(item?.active || false);
 
   useEffect(() => {
     if (item?.imageUrl)

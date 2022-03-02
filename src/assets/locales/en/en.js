@@ -94,7 +94,7 @@ export default {
   searchUser: 'Search User',
   seeSelectedLocation: 'See Selected Location',
   selectRole: 'Select Role',
-  selectTimeForDay: 'Select time for day {{day}}',
+  showingOneProduct: 'Showing 1 product',
   showingNumberProducts: 'Showing {{number}} products',
   signUp: 'Sign Up',
   sold: 'Sold',
