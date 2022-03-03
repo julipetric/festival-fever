@@ -13,6 +13,8 @@ import moment from 'moment';
 import { useFirebase, useFirestore } from 'react-redux-firebase';
 import { uniqueId } from 'lodash';
 import { PinkPrimary, RedTransaction } from '../../assets/Colors';
+import StyledButton from '../components/StyledButton';
+import AddFundsModal from './wallet/AddFundsModal';
 
 const styles = StyleSheet.create({
   container: {
@@ -41,7 +43,7 @@ function ScreenHeader() {
   );
 }
 
-function ListFooter({ orderTotal, currentBalance, loading }) {
+function ListFooter({ orderTotal, currentBalance, loading, addFundsPressed }) {
   return (
     <>
       <View
@@ -100,11 +102,17 @@ function ListFooter({ orderTotal, currentBalance, loading }) {
             </Text>
           </View>
           {orderTotal > currentBalance && (
-            <Text
-              style={{ textAlign: 'right', flex: 1, color: RedTransaction }}
-            >
-              {t('insufficientFunds')}
-            </Text>
+            <View style={{ flex: 1 }}>
+              <Text style={{ color: RedTransaction, textAlign: 'right' }}>
+                {t('insufficientFunds')}
+              </Text>
+              <StyledButton
+                label={t('addFunds')}
+                style={{ paddingHorizontal: 0, marginTop: 10 }}
+                mode="contained"
+                onPress={addFundsPressed}
+              />
+            </View>
           )}
         </>
       )}
@@ -116,6 +124,7 @@ ListFooter.propTypes = {
   orderTotal: PropTypes.number.isRequired,
   currentBalance: PropTypes.number.isRequired,
   loading: PropTypes.bool.isRequired,
+  addFundsPressed: PropTypes.func.isRequired,
 };
 
 function OrderItem({ item }) {
@@ -129,7 +138,7 @@ function OrderItem({ item }) {
           alignItems: 'flex-end',
         }}
       >
-        <Text style={styles.itemName}>{item.ticket.name}</Text>
+        <Text style={styles.itemName}>{item.item.name}</Text>
         <View
           style={{
             display: 'flex',
@@ -146,10 +155,10 @@ function OrderItem({ item }) {
           >
             x{item.quantity}
           </Text>
-          <Text>${item.ticket.price * item.quantity}</Text>
+          <Text>${item.item.price * item.quantity}</Text>
         </View>
       </View>
-      <Text style={styles.itemDescription}>{item.ticket.description}</Text>
+      <Text style={styles.itemDescription}>{item.item.description}</Text>
     </>
   );
 }
@@ -161,20 +170,23 @@ OrderItem.propTypes = {
 function Checkout() {
   const route = useRoute();
   const navigation = useNavigation();
-  const { items, event } = route.params;
+  const { items } = route.params;
 
   const firebase = useFirebase();
   const firestore = useFirestore();
 
   const [loading, setLoading] = useState(false);
+  const [showAddFunds, setShowAddFunds] = useState(false);
+  const [fundsInput, setFundsInput] = useState();
 
-  const { profile } = useSelector(state => ({
+  const { profile, event } = useSelector(state => ({
     profile: state.firebase.profile,
+    event: state.myStore.selectedEvent,
   }));
 
   let total = 0;
   items.forEach(item => {
-    total += item.ticket.price * item.quantity;
+    total += item.item.price * item.quantity;
   });
 
   async function onConfirm() {
@@ -187,7 +199,7 @@ function Checkout() {
       items: items.flatMap(item => {
         const array = [];
         const itemObject = {
-          purchasableId: item.ticket.id,
+          purchasableId: item.item.id,
           status: 1,
         };
         for (let i = 0; i < item.quantity; i += 1)
@@ -203,16 +215,16 @@ function Checkout() {
       firestore.collection('orders').add(order),
     ];
 
-    items.forEach(item => {
-      const ticket = { ...item.ticket };
-      delete ticket.id;
+    items.forEach(e => {
+      const item = { ...e.item };
+      delete item.id;
       promises.push(
         firestore
           .collection('purchasables')
-          .doc(item.ticket?.id)
+          .doc(e.item?.id)
           .update({
-            ...ticket,
-            sold: (item.ticket.sold || 0) + item.quantity,
+            ...item,
+            sold: (item.sold || 0) + e.quantity,
           })
       );
     });
@@ -223,6 +235,32 @@ function Checkout() {
     navigation.dispatch(StackActions.popToTop());
   }
 
+  function addFundsPressed() {
+    setShowAddFunds(true);
+  }
+
+  async function onConfirmFundsPressed() {
+    setLoading(true);
+    setShowAddFunds(false);
+    setFundsInput();
+
+    const order = {
+      userId: firebase.auth()?.currentUser?.uid,
+      status: 10,
+      amount: -Number(fundsInput),
+      timestamp: moment().unix(),
+    };
+
+    const newBalance = Number(profile.balance) + Number(fundsInput);
+
+    await Promise.all([
+      firestore.collection('orders').add(order),
+      firebase.updateProfile({ balance: newBalance }),
+    ]);
+
+    setLoading(false);
+  }
+
   return (
     <>
       <FlatList
@@ -230,14 +268,19 @@ function Checkout() {
         contentContainerStyle={styles.container}
         data={items}
         renderItem={({ item }) => <OrderItem item={item} />}
-        ListFooterComponent={() => (
-          <ListFooter
-            orderTotal={total}
-            currentBalance={profile.balance}
-            loading={loading}
-          />
-        )}
-        keyExtractor={item => item.ticket.id}
+        ListFooterComponent={() =>
+          loading ? (
+            <ActivityIndicator style={styles.floatingButton} />
+          ) : (
+            <ListFooter
+              orderTotal={total}
+              currentBalance={profile.balance}
+              loading={loading}
+              addFundsPressed={addFundsPressed}
+            />
+          )
+        }
+        keyExtractor={item => item.item.id}
       />
       {loading ? (
         <ActivityIndicator style={styles.floatingButton} />
@@ -249,6 +292,13 @@ function Checkout() {
           disabled={total > profile.balance}
         />
       )}
+      <AddFundsModal
+        visible={showAddFunds}
+        setVisible={setShowAddFunds}
+        input={fundsInput}
+        setInput={setFundsInput}
+        onConfirm={onConfirmFundsPressed}
+      />
     </>
   );
 }

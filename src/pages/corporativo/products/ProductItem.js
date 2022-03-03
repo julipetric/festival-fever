@@ -11,10 +11,11 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: ListItemBorderRadius,
     flexDirection: 'row',
+    marginBottom: 15,
   },
 });
 
-function ProductItem({ item, onPress, setItemActive }) {
+function ProductItem({ item, onPress, setItemActive, hideOptions }) {
   const [imageWidth, setImageWidth] = useState(0);
 
   const [imageHeight, setImageHeight] = useState(0);
@@ -56,30 +57,47 @@ function ProductItem({ item, onPress, setItemActive }) {
   }
 
   return (
-    <TouchableOpacity onPress={onPress} style={styles.productContainer}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={styles.productContainer}
+      key={item.id}
+    >
       <View style={{ flex: 7, justifyContent: 'space-between' }}>
         <View>
           <Text style={{ color: 'black', fontSize: 16 }}>{item.name}</Text>
-          {item.stock !== '' && (
+          <Text style={{ color: 'black', fontSize: 16 }}>
+            ${Number(item.price).toFixed(2)}
+          </Text>
+          {item.description !== '' && (
+            <Text style={{ color: 'black', fontSize: 14, opacity: 0.6 }}>
+              {item.description}
+            </Text>
+          )}
+          {!hideOptions && item.stock !== '' && (
             <Text style={{ color: 'black', opacity: 0.7, fontSize: 16 }}>
               Stock: {item.stock}
             </Text>
           )}
-          {item.sold !== undefined && (
+          {!hideOptions && item.sold !== undefined && (
             <Text style={{ color: 'black', opacity: 0.7, fontSize: 16 }}>
               {t('sold')}: {item.sold}
             </Text>
           )}
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}
-        >
-          <Text style={{ color: 'black', paddingRight: 5 }}>{t('active')}</Text>
-          <Switch value={active} onValueChange={() => toggleItem(!active)} />
-        </View>
+        {!hideOptions && (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
+          >
+            <Text style={{ color: 'black', paddingRight: 5 }}>
+              {t('active')}
+            </Text>
+
+            <Switch value={active} onValueChange={() => toggleItem(!active)} />
+          </View>
+        )}
       </View>
       {item.imageUrl && (
         <Image
@@ -88,6 +106,7 @@ function ProductItem({ item, onPress, setItemActive }) {
             flex: 3,
             height: imageHeight,
             width: imageWidth,
+            maxHeight: setItemActive ? undefined : 100,
           }}
           resizeMode="contain"
           onLayout={e => {
@@ -99,10 +118,16 @@ function ProductItem({ item, onPress, setItemActive }) {
   );
 }
 
+ProductItem.defaultProps = {
+  setItemActive: undefined,
+  hideOptions: false,
+};
+
 ProductItem.propTypes = {
   item: PropTypes.object.isRequired,
   onPress: PropTypes.func.isRequired,
-  setItemActive: PropTypes.func.isRequired,
+  setItemActive: PropTypes.func,
+  hideOptions: PropTypes.bool,
 };
 
 export default ProductItem;

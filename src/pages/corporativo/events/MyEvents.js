@@ -113,7 +113,7 @@ function MyEvents() {
       )}
     />
   ) : (
-    <ActivityIndicator style={{ flex: 1 }} />
+    <ActivityIndicator style={{ flex: 1 }} size="large" />
   );
 }
 

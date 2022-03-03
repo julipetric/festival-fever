@@ -8,6 +8,8 @@ import {
 import { Text } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
+import { setSelectedCategory } from '../../../redux/myStoreSlice';
 
 const styles = StyleSheet.create({
   itemBackground: {
@@ -25,8 +27,9 @@ const styles = StyleSheet.create({
 
 function CategoryItem({ category }) {
   const navigation = useNavigation();
-
+  const dispatch = useDispatch();
   function handleOnPress() {
+    dispatch(setSelectedCategory(category));
     navigation.push('CategoryDetails', { categoryId: category.id });
   }
 

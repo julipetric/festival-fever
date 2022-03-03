@@ -4,7 +4,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { BackgroundGray } from '../../../assets/Colors';
 import Checkout from '../Checkout';
-import BuyTickets from './BuyTickets';
+import Cart from './Cart';
 import EventDetails from './EventDetails';
 
 const Stack = createStackNavigator();
@@ -27,7 +27,7 @@ function EventDetailsMain() {
         screenOptions={{ headerShown: false }}
       >
         <Stack.Screen name="EventDetailsHome" component={EventDetails} />
-        <Stack.Screen name={t('buyTickets')} component={BuyTickets} />
+        <Stack.Screen name={t('cart')} component={Cart} />
         <Stack.Screen name={t('checkout')} component={Checkout} />
       </Stack.Navigator>
     </View>

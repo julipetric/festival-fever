@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ActivityIndicator } from 'react-native-paper';
 import { useFirestoreConnect } from 'react-redux-firebase';
 import { t } from 'i18n-js';
-import { head } from 'lodash';
 import CategoryDetailsHeader from './CategoryDetailsHeader';
 import { BackgroundGray } from '../../../../assets/Colors';
 import EventCards from './eventCards/EventCards';
@@ -14,6 +13,7 @@ import PillButton from '../../../common/PillButton';
 import commonStyles from '../../../../assets/commonStyles';
 import FilterBar from '../../../components/FilterBar';
 import EventsList from './EventsList';
+import { setSelectedCategory } from '../../../../redux/myStoreSlice';
 
 const styles = StyleSheet.create({
   container: {
@@ -31,29 +31,29 @@ const styles = StyleSheet.create({
 });
 
 function CategoryDetails() {
-  const route = useRoute();
-  const { categoryId } = route.params;
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const [cardsMode, setCardsMode] = useState(true);
   const [listMode, setListMode] = useState(false);
 
-  useFirestoreConnect([
-    {
-      collection: 'events',
-      where: ['categoryId', '==', categoryId],
-      storeAs: 'categoryEvents',
-    },
-    {
-      collection: 'categories',
-      doc: categoryId,
-      storeAs: 'selectedCategory',
-    },
-  ]);
-
-  const { events, category } = useSelector(state => ({
+  const { events, category, status } = useSelector(state => ({
     events: state.firestore.ordered.categoryEvents,
-    category: head(state.firestore.ordered.selectedCategory),
+    category: state.myStore.selectedCategory,
+    status: state.firestore.status,
   }));
+
+  useFirestoreConnect(() => {
+    if (category)
+      return [
+        {
+          collection: 'events',
+          where: ['categoryId', '==', category?.id],
+          storeAs: 'categoryEvents',
+        },
+      ];
+    return [];
+  });
 
   const filters = [
     { text: t('all'), id: 'filter', selected: true },
@@ -63,6 +63,12 @@ function CategoryDetails() {
     { text: t('thisWeek'), id: 'filter' },
   ];
 
+  useEffect(() => {
+    navigation.addListener('beforeRemove', () => {
+      dispatch(setSelectedCategory(undefined));
+    });
+  }, [dispatch, navigation]);
+
   return (
     <View style={styles.container}>
       {category ? (
@@ -71,7 +77,10 @@ function CategoryDetails() {
             name={category.name}
             image={{ uri: category.imageUrl }}
           />
-          {events ? (
+          {events &&
+          !(
+            status.requesting.categoryEvents || !status.requested.categoryEvents
+          ) ? (
             <>
               <FilterBar
                 left={

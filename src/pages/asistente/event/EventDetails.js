@@ -1,16 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View, Animated } from 'react-native';
-import { ActivityIndicator, FAB, Text } from 'react-native-paper';
+import { ActivityIndicator, FAB, Snackbar, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
 import { t } from 'i18n-js';
 import Accordion from 'react-native-collapsible/Accordion';
 import { useFirestore } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
-import { orderBy } from 'lodash';
+import { first, orderBy, sumBy } from 'lodash';
 import { PinkPrimary, TransparentBackdrop } from '../../../assets/Colors';
-import EventProduct from './EventProduct';
 import EventLandingPage from '../../common/EventLandingPage';
+import ProductItem from '../../corporativo/products/ProductItem';
 
 const styles = StyleSheet.create({
   floatingButton: {
@@ -24,14 +24,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     flex: 1,
-    marginVertical: 15,
+    paddingVertical: 5,
   },
   counter: {
     display: 'flex',
     flexDirection: 'row',
     flexGrow: 1,
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: 5,
   },
   line: {
     backgroundColor: PinkPrimary,
@@ -40,12 +40,6 @@ const styles = StyleSheet.create({
   },
   productsCount: {
     paddingHorizontal: 10,
-  },
-  grid: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   },
   row: {
     display: 'flex',
@@ -57,6 +51,9 @@ const styles = StyleSheet.create({
   },
   bodyText: {
     fontSize: 16,
+  },
+  headerText: {
+    fontWeight: 'bold',
   },
 });
 
@@ -74,6 +71,9 @@ function EventDetails() {
   const [eventTickets, setEventTickets] = useState();
   const [products, setProducts] = useState();
   const [loading, setLoading] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
+  const [activeSections, setActiveSections] = useState([]);
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
 
   useEffect(() => {
     async function fetchTickets() {
@@ -94,8 +94,9 @@ function EventDetails() {
               'in',
               segments.map(segment => segment.purchasableId)
             )
+            .where('active', '==', true)
             .get()
-        ).forEach(doc => tickets.push(doc.data()));
+        ).forEach(doc => tickets.push({ ...doc.data(), id: doc.id }));
       setTicketSegments(segments);
       setEventTickets(tickets);
     }
@@ -107,8 +108,9 @@ function EventDetails() {
           await firestore
             .collection('purchasables')
             .where(firestore.FieldPath.documentId(), 'in', event.products)
+            .where('active', '==', true)
             .get()
-        ).forEach(doc => array.push(doc.data()));
+        ).forEach(doc => array.push({ ...doc.data(), id: doc.id }));
       setProducts(array);
     }
 
@@ -120,14 +122,32 @@ function EventDetails() {
     fetchEventData();
   }, [event.id, event.products, firestore]);
 
-  const [activeSections, setActiveSections] = useState([]);
-
   const SECTIONS = [
+    {
+      title: t('tickets'),
+      content: eventTickets,
+    },
     {
       title: t('products'),
       content: products,
     },
-  ];
+  ].filter(e => e.content?.length);
+
+  function onRowPress(item) {
+    if (item.stock && item.sold && item.sold >= item.stock)
+      setSnackbarVisible(true);
+    else {
+      const newArray = [...cartItems];
+      const index = cartItems.findIndex(e => e.item.id === item.id);
+      if (index > -1) {
+        newArray[index].quantity += 1;
+        setCartItems(newArray);
+      } else {
+        newArray.push({ item, quantity: 1 });
+        setCartItems(newArray);
+      }
+    }
+  }
 
   function renderContent(section) {
     return (
@@ -136,14 +156,18 @@ function EventDetails() {
           <View style={styles.line} />
           <Text style={styles.productsCount}>
             {section.content.length === 1
-              ? t('showingOneProduct')
-              : t('showingNumberProducts')}
+              ? t('showingOneItem')
+              : t('showingNumberItems', { number: section.content.length })}
           </Text>
           <View style={styles.line} />
         </View>
-        <View style={styles.grid}>
+        <View>
           {section.content.map(item => (
-            <EventProduct product={item} />
+            <ProductItem
+              item={item}
+              hideOptions
+              onPress={() => onRowPress(item)}
+            />
           ))}
         </View>
       </>
@@ -179,15 +203,9 @@ function EventDetails() {
   useEffect(() => {
     if (ticketSegments && ticketSegments.length) {
       if (eventTickets && eventTickets.length) {
-        let tag;
-        if (eventTickets.length > 1) {
-          const cheapest = orderBy(eventTickets, 'price');
-          tag = t('from').toLowerCase();
-          tag += ' $';
-          tag += cheapest[0].price;
-        } else {
-          tag = `$${eventTickets[0].price}`;
-        }
+        const tag = `${t('from').toLowerCase()}: $${
+          first(orderBy(eventTickets, 'price')).price
+        }`;
         setPriceTag(tag);
       }
     } else setPriceTag(undefined);
@@ -195,13 +213,6 @@ function EventDetails() {
 
   function navigateToMap() {
     navigation.navigate('FullScreenMapView');
-  }
-
-  function buyTickets() {
-    navigation.navigate(t('buyTickets'), {
-      tickets: eventTickets,
-      event,
-    });
   }
 
   return event && products && !loading ? (
@@ -213,14 +224,14 @@ function EventDetails() {
       >
         <View style={{ paddingHorizontal: 15 }}>
           {priceTag && (
-            <View style={styles.row}>
+            <View style={[styles.row, { marginBottom: 5 }]}>
               <Text style={styles.bodyText}>{t('ticketValue')}</Text>
               <Text style={[styles.bodyText, { fontWeight: 'bold' }]}>
                 {priceTag}
               </Text>
             </View>
           )}
-          {products?.length ? (
+          {SECTIONS?.length ? (
             <Accordion
               sections={SECTIONS}
               activeSections={activeSections}
@@ -239,12 +250,23 @@ function EventDetails() {
           )}
         </View>
       </EventLandingPage>
-      <FAB
-        label={t('buyTickets')}
-        style={styles.floatingButton}
-        onPress={buyTickets}
-        disabled={!ticketSegments?.length}
-      />
+      {cartItems?.length ? (
+        <FAB
+          icon={() => <AntDesign name="shoppingcart" size={24} color="white" />}
+          label={`${t('cart')} (${sumBy(cartItems, 'quantity')})`}
+          style={styles.floatingButton}
+          onPress={() => navigation.navigate(t('cart'), { cartItems })}
+          disabled={!ticketSegments?.length}
+        />
+      ) : undefined}
+      <Snackbar
+        visible={snackbarVisible}
+        onDismiss={() => setSnackbarVisible(false)}
+        duration={600}
+        style={{ opacity: 0.8 }}
+      >
+        {t('noMoreStock')}
+      </Snackbar>
     </>
   ) : (
     <ActivityIndicator size="large" style={{ paddingTop: 30 }} />

@@ -30,12 +30,12 @@ function TicketSegments() {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  const { event, ticketSegments, eventTickets, requesting } = useSelector(
+  const { event, ticketSegments, eventTickets, status } = useSelector(
     state => ({
       event: state.myStore.selectedEvent,
       ticketSegments: state.firestore.ordered.selectedEventTicketSegments,
       eventTickets: state.firestore.ordered.eventTickets,
-      requesting: state.firestore.status.requesting,
+      status: state.firestore.status,
     })
   );
 
@@ -70,7 +70,10 @@ function TicketSegments() {
     });
   }, [dispatch, event, modifiedEvent, navigation]);
 
-  const loading = requesting.eventTickets;
+  const loading =
+    status.requesting.eventTickets ||
+    !status.requested.eventTickets ||
+    ticketSegments?.length !== eventTickets?.length;
 
   async function setItemActive(item, value) {
     const saveItem = { ...item, active: value };
@@ -89,9 +92,7 @@ function TicketSegments() {
     setModifiedEvent({ ...event, ...saveEvent });
   }
 
-  return ticketSegments &&
-    !loading &&
-    (!ticketSegments?.length || eventTickets) ? (
+  return ticketSegments && !loading ? (
     <FlatList
       style={{ backgroundColor: TransparentBackdrop }}
       contentContainerStyle={styles.contentContainer}

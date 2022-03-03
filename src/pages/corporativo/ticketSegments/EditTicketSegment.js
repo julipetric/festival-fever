@@ -45,8 +45,8 @@ function EditTicketSegment() {
       ...purchasable,
     },
     resolver: useMemo(
-      () => TicketSegmentSchema(purchasable.sold || 0),
-      [purchasable.sold]
+      () => TicketSegmentSchema(purchasable?.sold || 0),
+      [purchasable]
     ),
   });
 

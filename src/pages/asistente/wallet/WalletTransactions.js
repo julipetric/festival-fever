@@ -15,10 +15,10 @@ import { useFirebase, useFirestore } from 'react-redux-firebase';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { Ionicons } from '@expo/vector-icons';
-import { DarkCardBackground } from '../../../assets/Colors';
 import StyledButton from '../../components/StyledButton';
 import TransactionItem from './TransactionItem';
 import { deleteUserTransactions } from '../../../utils';
+import AddFundsModal from './AddFundsModal';
 
 const styles = StyleSheet.create({
   container: {
@@ -57,15 +57,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 5,
-  },
-  modalContainer: {
-    backgroundColor: 'white',
-    padding: 10,
-    margin: 30,
-  },
-  modalTitle: {
-    color: DarkCardBackground,
-    textTransform: 'uppercase',
   },
 });
 
@@ -223,25 +214,13 @@ function WalletTransactions() {
             />
           )}
       </View>
-      <Portal>
-        <Modal
-          visible={showAddFunds}
-          onDismiss={() => {
-            setShowAddFunds(false);
-          }}
-          contentContainerStyle={styles.modalContainer}
-        >
-          <Title style={styles.modalTitle}>{t('addFunds')}</Title>
-          <TextInput
-            autoFocus
-            keyboardType="decimal-pad"
-            style={{ backgroundColor: 'rgb(150,150,150)' }}
-            value={fundsInput}
-            onChangeText={text => setFundsInput(text)}
-          />
-          <StyledButton label={t('confirm')} onPress={onConfirmPressed} />
-        </Modal>
-      </Portal>
+      <AddFundsModal
+        visible={showAddFunds}
+        setVisible={setShowAddFunds}
+        input={fundsInput}
+        setInput={setFundsInput}
+        onConfirm={onConfirmPressed}
+      />
     </>
   );
 }

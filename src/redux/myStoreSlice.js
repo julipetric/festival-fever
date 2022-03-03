@@ -8,6 +8,7 @@ const myStoreSlice = createSlice({
     userRole: undefined,
     userRoles: undefined,
     selectedEvent: undefined,
+    selectedCategory: undefined,
   },
   reducers: {
     setAttendeeRole(state, action) {
@@ -22,9 +23,17 @@ const myStoreSlice = createSlice({
     setSelectedEvent(state, action) {
       state.selectedEvent = action.payload;
     },
+    setSelectedCategory(state, action) {
+      state.selectedCategory = action.payload;
+    },
   },
 });
 
-export const { setAttendeeRole, setUserRole, setSelectedEvent, setUserRoles } =
-  myStoreSlice.actions;
+export const {
+  setAttendeeRole,
+  setUserRole,
+  setSelectedEvent,
+  setUserRoles,
+  setSelectedCategory,
+} = myStoreSlice.actions;
 export default myStoreSlice.reducer;
