@@ -5,6 +5,7 @@ import { t } from 'i18n-js';
 import MyAccountMain from './MyAccountMain';
 import { PinkPrimary } from '../../../assets/Colors';
 import PersonalInformation from './PersonalInformation';
+import WalletTransactions from '../../asistente/wallet/WalletTransactions';
 
 const Stack = createStackNavigator();
 
@@ -34,6 +35,7 @@ export default function MyAccount() {
         name={t('personalInformation')}
         component={PersonalInformation}
       />
+      <Stack.Screen name={t('transactions')} component={WalletTransactions} />
     </Stack.Navigator>
   );
 }

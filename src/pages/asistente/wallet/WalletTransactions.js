@@ -2,14 +2,7 @@ import { t } from 'i18n-js';
 import { cloneDeep, uniqBy } from 'lodash';
 import React, { useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
-import {
-  ActivityIndicator,
-  Modal,
-  Portal,
-  Text,
-  TextInput,
-  Title,
-} from 'react-native-paper';
+import { ActivityIndicator, Text } from 'react-native-paper';
 import { useSelector } from 'react-redux';
 import { useFirebase, useFirestore } from 'react-redux-firebase';
 import PropTypes from 'prop-types';

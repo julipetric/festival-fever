@@ -48,9 +48,7 @@ function PersonalInformation() {
     defaultValues: profile,
   });
 
-  function onSubmit(values) {
-    console.log(values.name);
-  }
+  function onSubmit() {}
 
   return (
     <ScrollView style={styles.scroll}>

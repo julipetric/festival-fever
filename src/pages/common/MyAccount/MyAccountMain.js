@@ -102,7 +102,7 @@ function MyAccountMain() {
       <Text style={styles.infoText}>{t('accountSettings')}</Text>
       <View>
         <ListItem
-          text="Datos personales"
+          text={t('personalInformation')}
           onPress={() => navigation.navigate(t('personalInformation'))}
           right={
             <MaterialCommunityIcons
@@ -113,17 +113,7 @@ function MyAccountMain() {
           }
         />
         <ListItem
-          text="Ubicación"
-          right={
-            <MaterialCommunityIcons
-              name="map-marker-outline"
-              size={24}
-              color="white"
-            />
-          }
-        />
-        <ListItem
-          text="Pagos y cobros"
+          text={t('transactions')}
           right={
             <MaterialCommunityIcons
               name="cash-multiple"
@@ -131,12 +121,13 @@ function MyAccountMain() {
               color="white"
             />
           }
+          onPress={() => navigation.navigate(t('transactions'))}
         />
       </View>
       <Text style={styles.infoText}>{t('help')}</Text>
       <View>
         <ListItem
-          text="Tengo un problema"
+          text={t('help')}
           right={
             <MaterialCommunityIcons
               name="alert-outline"
@@ -146,7 +137,7 @@ function MyAccountMain() {
           }
         />
         <ListItem
-          text="Términos de servicio"
+          text={t('termsAndConditions')}
           right={
             <MaterialCommunityIcons
               name="file-document-outline"

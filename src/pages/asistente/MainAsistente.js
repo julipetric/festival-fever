@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { t } from 'i18n-js';
 import HomeAsistente from './HomeAsistente';
 import MyAccount from '../common/myAccount/MyAccount';
-import FestivalFeverHeader from '../components/Header/FestivalFeverHeader';
+import FestivalFeverHeader from '../components/FestivalFeverHeader';
 import SearchScreen from './SearchScreen';
 import FullScreenMapView from '../common/FullScreenMapView';
 import EventDetailsMain from './event/EventDetailsMain';

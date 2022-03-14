@@ -15,10 +15,10 @@ import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useSelector } from 'react-redux';
 import { PinkPrimary, TransparentBackdrop } from '../../assets/Colors';
-import MyAccount from '../common/myAccount/MyAccount';
 import InactiveEvents from './InactiveEvents';
 import MyEvents from './events/MyEvents';
-import MyOrganization from './MyOrganization/MyOrganization';
+import MyOrganization from './myOrganization/MyOrganization';
+import PersonalInformation from '../common/myAccount/PersonalInformation';
 
 const Drawer = createDrawerNavigator();
 
@@ -41,11 +41,9 @@ function CustomDrawerContent({ logout, ...props }) {
     <DrawerContentScrollView {...props}>
       {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <DrawerItemList {...props} />
-      <DrawerItem
-        label={t('logout')}
-        onPress={logout}
-        style={{ paddingTop: 10 }}
-      />
+      <DrawerItem label={t('help')} onPress={logout} />
+      <DrawerItem label={t('termsAndConditions')} onPress={logout} />
+      <DrawerItem label={t('logout')} onPress={logout} />
     </DrawerContentScrollView>
   );
 }
@@ -118,13 +116,17 @@ function HomeCorporativo() {
               component={InactiveEvents}
             />
           ) : undefined}
-          <Drawer.Screen name={t('myAccount')} component={MyAccount} />
           {userRole?.userTypeId === 2 ? (
             <Drawer.Screen
               name={t('myOrganization')}
               component={MyOrganization}
             />
           ) : undefined}
+          <Drawer.Screen
+            name={t('personalInformation')}
+            component={PersonalInformation}
+            options={{}}
+          />
         </Drawer.Navigator>
       </View>
       {/* eslint-disable-next-line react/style-prop-object */}

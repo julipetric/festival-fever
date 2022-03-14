@@ -10,7 +10,7 @@ import {
   useNavigationState,
 } from '@react-navigation/native';
 import { t } from 'i18n-js';
-import { GradientEnd, GradientStart } from '../../../assets/Colors';
+import { GradientEnd, GradientStart } from '../../assets/Colors';
 
 const styles = StyleSheet.create({
   container: {
