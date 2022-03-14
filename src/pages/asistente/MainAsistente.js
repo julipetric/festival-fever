@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { t } from 'i18n-js';
 import HomeAsistente from './HomeAsistente';
-import MyAccount from '../common/MyAccount';
+import MyAccount from '../common/myAccount/MyAccount';
 import FestivalFeverHeader from '../components/Header/FestivalFeverHeader';
 import SearchScreen from './SearchScreen';
 import FullScreenMapView from '../common/FullScreenMapView';
@@ -28,7 +28,11 @@ export default function MainAsistente() {
         screenOptions={{ header: () => <FestivalFeverHeader /> }}
       >
         <Stack.Screen name="HomeAsistente" component={HomeAsistente} />
-        <Stack.Screen name={t('myAccount')} component={MyAccount} />
+        <Stack.Screen
+          name={t('myAccount')}
+          component={MyAccount}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen name={t('search')} component={SearchScreen} />
         <Stack.Screen
           name={t('eventDetails')}

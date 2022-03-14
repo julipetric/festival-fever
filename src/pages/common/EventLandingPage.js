@@ -16,6 +16,7 @@ import {
 // eslint-disable-next-line import/no-unresolved
 import ZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
 import {
+  AntDesign,
   Feather,
   FontAwesome5,
   Ionicons,
@@ -130,6 +131,8 @@ function EventLandingPage({
   category,
   navigateToMap,
   corporativoMode,
+  isFavorite,
+  onFavPress,
 }) {
   const [showImageFullscreen, setShowImageFullscreen] = useState(false);
   const navigation = useNavigation();
@@ -244,8 +247,13 @@ function EventLandingPage({
         />
         {!corporativoMode && (
           <IconButton
+            onPress={onFavPress}
             icon={({ size }) => (
-              <Feather name="star" size={size} color="white" />
+              <AntDesign
+                name={isFavorite ? 'star' : 'staro'}
+                size={size}
+                color="white"
+              />
             )}
             style={styles.circleIcon}
             size={25}
@@ -261,6 +269,8 @@ EventLandingPage.defaultProps = {
   corporativoMode: false,
   event: {},
   category: {},
+  isFavorite: false,
+  onFavPress: () => {},
 };
 
 EventLandingPage.propTypes = {
@@ -269,6 +279,8 @@ EventLandingPage.propTypes = {
   category: PropTypes.object,
   navigateToMap: PropTypes.func.isRequired,
   corporativoMode: PropTypes.bool,
+  isFavorite: PropTypes.bool,
+  onFavPress: PropTypes.func,
 };
 
 export default EventLandingPage;
