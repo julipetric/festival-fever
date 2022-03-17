@@ -18,8 +18,10 @@ const styles = StyleSheet.create({
     zIndex: -1,
   },
   button: {
-    top: '180%',
+    bottom: 20,
     zIndex: 100,
+    position: 'absolute',
+    alignSelf: 'center',
   },
 });
 
@@ -98,15 +100,16 @@ function FullScreenMapView() {
         )}
       </MapView>
       {!hideDoneButton && markerCoordinates && (
-        <StyledButton
-          label={t('done')}
-          style={styles.button}
-          mode="contained"
-          onPress={() => {
-            params.callback(markerCoordinates);
-            navigation.pop();
-          }}
-        />
+        <View style={styles.button}>
+          <StyledButton
+            label={t('done')}
+            mode="contained"
+            onPress={() => {
+              params.callback(markerCoordinates);
+              navigation.pop();
+            }}
+          />
+        </View>
       )}
     </View>
   );

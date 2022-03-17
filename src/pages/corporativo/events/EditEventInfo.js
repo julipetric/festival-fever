@@ -87,7 +87,9 @@ function EditEventInfo() {
     setDateOpen(false);
     setTimeOpen(true);
   }
-  function onConfirmTime(params) {
+  function onConfirmTime(e) {
+    const params = e;
+    if (params.hours === 12 || params.hours === 24) params.hours -= 12;
     if (settingStartTime) {
       setStartDate(startDate.hours(params.hours).minutes(params.minutes));
       setSettingStartTime(false);
@@ -111,6 +113,7 @@ function EditEventInfo() {
 
   function onSaveSuccess() {
     setLoading(false);
+    console.log(watch('active'));
     if (watch('active')) navigation.navigate(t('myEvents'));
     else navigation.navigate(t('inactiveEvents'));
   }
@@ -251,6 +254,9 @@ function EditEventInfo() {
           textContentType="emailAddress"
           control={control}
           label={t('contactEmail')}
+          autoCapitalize="none"
+          autoCompleteType="email"
+          keyboardType="email-address"
         />
         <View
           style={{
@@ -295,6 +301,7 @@ function EditEventInfo() {
           startDate: new Date(),
         }}
         label={t('date')}
+        date={startDate?.toDate()}
       />
       <TimePickerModal
         locale={i18n.locale}

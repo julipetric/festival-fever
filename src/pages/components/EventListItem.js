@@ -4,9 +4,11 @@ import { Text } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { useNavigation } from '@react-navigation/native';
 import { t } from 'i18n-js';
+import { useDispatch } from 'react-redux';
 import { PinkPrimary, PurplePill } from '../../assets/Colors';
 import { formatEventDateTime } from '../../utils';
 import { ListItemBorderRadius } from '../../assets/UIConstants';
+import { setSelectedEvent } from '../../redux/myStoreSlice';
 
 const styles = StyleSheet.create({
   container: {
@@ -49,6 +51,8 @@ const styles = StyleSheet.create({
 function EventListItem({ event, category, hideCategory }) {
   const { dateString, hoursString } = formatEventDateTime(event);
 
+  const dispatch = useDispatch();
+
   const [imageWidth, setImageWidth] = useState(0);
   const [imageHeight, setImageHeight] = useState(0);
 
@@ -61,7 +65,8 @@ function EventListItem({ event, category, hideCategory }) {
 
   const navigation = useNavigation();
   function navigate() {
-    navigation.navigate(t('eventDetails'), { eventId: event.id });
+    dispatch(setSelectedEvent(event));
+    navigation.navigate(t('eventDetails'));
   }
 
   return (

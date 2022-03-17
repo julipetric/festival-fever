@@ -7,6 +7,7 @@ import { t } from 'i18n-js';
 import { useDispatch, useSelector } from 'react-redux';
 import { remove } from 'lodash';
 import { useFirebase } from 'react-redux-firebase';
+import { Title } from 'react-native-paper';
 import EventCardView from './EventCardView';
 import { setSelectedEvent } from '../../../../../redux/myStoreSlice';
 
@@ -41,7 +42,7 @@ function EventCards({ events }) {
     [favorites, firebase]
   );
 
-  return (
+  return events?.length > 0 ? (
     <Carousel
       horizontal
       data={events}
@@ -61,6 +62,8 @@ function EventCards({ events }) {
       enableMomentum
       contentContainerCustomStyle={styles.carouselContainer}
     />
+  ) : (
+    <Title>{t('noEvents')}</Title>
   );
 }
 

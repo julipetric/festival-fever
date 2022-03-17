@@ -3,6 +3,7 @@ import { FlatList, StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { useNavigation } from '@react-navigation/native';
 import { t } from 'i18n-js';
+import { Title } from 'react-native-paper';
 import EventListItem from '../../../components/EventListItem';
 import { BackgroundGray } from '../../../../assets/Colors';
 
@@ -25,13 +26,17 @@ function EventsList({ events }) {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={events}
-        renderItem={({ item }) => (
-          <EventListItem event={item} navigate={navigate} hideCategory />
-        )}
-        style={styles.scrollView}
-      />
+      {events?.length > 0 ? (
+        <FlatList
+          data={events}
+          renderItem={({ item }) => (
+            <EventListItem event={item} navigate={navigate} hideCategory />
+          )}
+          style={styles.scrollView}
+        />
+      ) : (
+        <Title>{t('noEvents')}</Title>
+      )}
     </View>
   );
 }

@@ -73,6 +73,7 @@ export default {
   myOrganization: 'My Organization',
   name: 'Name',
   nearby: 'Nearby',
+  noEvents: 'No events',
   noEventsAdded: 'No events added yet!',
   noMoreUnitsAvailable: 'No more units available',
   noInactiveEvents: 'No inactive events',

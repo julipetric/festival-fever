@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { Text } from 'react-native-paper';
+import { uniqueId } from 'lodash';
 import { PinkPrimary } from '../../assets/Colors';
 
 const styles = StyleSheet.create({
@@ -24,17 +25,18 @@ const styles = StyleSheet.create({
 
 function PillButton({ text, selected, onPress, element }) {
   return (
-    <TouchableOpacity
-      onPress={onPress}
+    <View
       style={[styles.filterButton, { opacity: selected ? 1 : 0.3 }]}
-      key={text}
+      key={text || uniqueId()}
     >
-      <View style={styles.content}>
-        {text && <Text style={{ fontSize: 12 }}>{text}</Text>}
-        {element && text && <View style={{ width: 5 }} />}
-        {element}
-      </View>
-    </TouchableOpacity>
+      <TouchableOpacity onPress={onPress}>
+        <View style={styles.content}>
+          {text && <Text style={{ fontSize: 12 }}>{text}</Text>}
+          {element && text && <View style={{ width: 5 }} />}
+          {element}
+        </View>
+      </TouchableOpacity>
+    </View>
   );
 }
 
