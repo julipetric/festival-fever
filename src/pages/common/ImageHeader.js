@@ -26,10 +26,12 @@ function ImageHeader({ image, openImage }) {
   const [imageHeight, setImageHeight] = useState(0);
 
   useEffect(() => {
-    Image.getSize(image, (width, height) => {
-      const ratio = screenWidth / width;
-      setImageHeight(height * ratio);
-    });
+    if (image) {
+      Image.getSize(image, (width, height) => {
+        const ratio = screenWidth / width;
+        setImageHeight(height * ratio);
+      });
+    }
   }, [image, screenWidth]);
 
   return (
@@ -42,8 +44,12 @@ function ImageHeader({ image, openImage }) {
   );
 }
 
+ImageHeader.defaultProps = {
+  image: undefined,
+};
+
 ImageHeader.propTypes = {
-  image: PropTypes.string.isRequired,
+  image: PropTypes.string,
   openImage: PropTypes.func.isRequired,
 };
 

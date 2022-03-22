@@ -113,7 +113,6 @@ function EditEventInfo() {
 
   function onSaveSuccess() {
     setLoading(false);
-    console.log(watch('active'));
     if (watch('active')) navigation.navigate(t('myEvents'));
     else navigation.navigate(t('inactiveEvents'));
   }

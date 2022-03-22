@@ -4,7 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { useDispatch } from 'react-redux';
 import Login from './Login';
 import Register from './Register';
-import { setUserRole, setUserRoles } from '../../redux/myStoreSlice';
+import { reset } from '../../redux/myStoreSlice';
 
 const Stack = createStackNavigator();
 
@@ -16,13 +16,6 @@ function screenOptions() {
 }
 
 export default function AuthNavigator() {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(setUserRole(undefined));
-    dispatch(setUserRoles(undefined));
-  });
-
   return (
     <Stack.Navigator
       initialRouteName={t('login')}

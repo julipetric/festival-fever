@@ -262,7 +262,7 @@ function Checkout() {
   }
 
   return (
-    <>
+    <View style={{ height: '100%' }}>
       <FlatList
         ListHeaderComponent={ScreenHeader}
         contentContainerStyle={styles.container}
@@ -270,7 +270,7 @@ function Checkout() {
         renderItem={({ item }) => <OrderItem item={item} />}
         ListFooterComponent={() =>
           loading ? (
-            <ActivityIndicator style={styles.floatingButton} />
+            <ActivityIndicator style={{ paddingTop: 10 }} />
           ) : (
             <ListFooter
               orderTotal={total}
@@ -282,9 +282,7 @@ function Checkout() {
         }
         keyExtractor={item => item.item.id}
       />
-      {loading ? (
-        <ActivityIndicator style={styles.floatingButton} />
-      ) : (
+      {loading && (
         <FAB
           label={t('confirm')}
           style={styles.floatingButton}
@@ -299,7 +297,7 @@ function Checkout() {
         setInput={setFundsInput}
         onConfirm={onConfirmFundsPressed}
       />
-    </>
+    </View>
   );
 }
 

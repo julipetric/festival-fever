@@ -72,8 +72,8 @@ function MyEvents() {
 
   return events &&
     categories &&
-    ticketSegments &&
-    ticketSegmentsPurchasables ? (
+    (!events?.length || ticketSegments) &&
+    (!ticketSegments?.length || ticketSegmentsPurchasables) ? (
     <FlatList
       contentContainerStyle={styles.contentContainer}
       data={events || []}

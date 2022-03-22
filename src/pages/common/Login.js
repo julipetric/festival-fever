@@ -77,6 +77,7 @@ export default function Login() {
         password: getValues().password,
       });
     } catch (e) {
+      console.log(e);
       setLoading(false);
       Alert.alert(t('error'), t('wrongUserPasswordCombination'));
     }
@@ -159,6 +160,7 @@ export default function Login() {
           autoFocus
           autoCompleteType="username"
           disabled={loading}
+          keyboardType="email-address"
         />
 
         <PasswordFormTextInput

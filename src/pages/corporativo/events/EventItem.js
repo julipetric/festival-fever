@@ -58,24 +58,34 @@ function EventItem({ event, category }) {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
-  const { purchasables } = useSelector(state => ({
+  const { purchasables, ticketSegments } = useSelector(state => ({
     purchasables: state.firestore.ordered.ticketSegmentsPurchasables,
+    ticketSegments: state.firestore.ordered.eventsTicketSegments,
   }));
 
   let eventSales;
   if (purchasables) eventSales = 0;
-  purchasables.forEach(purchasable => {
-    eventSales += purchasable.sold;
-  });
+  purchasables
+    .filter(e =>
+      ticketSegments
+        .filter(segment => segment.eventId === event.id)
+        .map(segment => segment.purchasableId)
+        .includes(e.id)
+    )
+    .forEach(purchasable => {
+      eventSales += purchasable.sold;
+    });
 
   const [imageHeight, setImageHeight] = useState(0);
   const [imageWidth, setImageWidth] = useState(0);
 
   useEffect(() => {
-    Image.getSize(event.imageUrl, (width, height) => {
-      const ratio = imageWidth / width;
-      setImageHeight(height * ratio);
-    });
+    if (event.imageUrl) {
+      Image.getSize(event.imageUrl, (width, height) => {
+        const ratio = imageWidth / width;
+        setImageHeight(height * ratio);
+      });
+    }
   }, [event, imageWidth]);
 
   function onEventPress() {
@@ -91,35 +101,23 @@ function EventItem({ event, category }) {
         </View>
         <Text style={styles.eventDate}>{`${dateString} ${hoursString}`}</Text>
         <Text style={styles.eventName}>{event?.name}</Text>
-        <Text style={styles.location}>{event.location.description}</Text>
         <View
           style={{
             display: 'flex',
             flexDirection: 'row',
-            alignItems: 'flex-start',
-            paddingTop: 10,
+            alignItems: 'space-between',
           }}
         >
-          <Image
-            source={{ uri: event.imageUrl }}
-            style={[styles.image, { width: imageWidth, height: imageHeight }]}
-            resizeMode="contain"
-            resizeMethod="scale"
-            onLayout={e => {
-              setImageWidth(e.nativeEvent.layout.width);
-            }}
-          />
-          <View
-            style={{
-              flex: 6,
-              paddingLeft: 10,
-            }}
-          >
+          <Text style={[styles.location, { flex: 1 }]}>
+            {event.location.description}
+          </Text>
+          {!event.imageUrl && (
             <View
               style={{
                 flexDirection: 'row',
                 display: 'flex',
                 alignItems: 'center',
+                flex: 0,
               }}
             >
               <Text style={styles.location}>{t('ticketsSold')}: </Text>
@@ -135,8 +133,57 @@ function EventItem({ event, category }) {
                 />
               )}
             </View>
-          </View>
+          )}
         </View>
+        {event.imageUrl && (
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'flex-start',
+              justifyContent: 'space-between',
+              paddingTop: 10,
+            }}
+          >
+            <Image
+              source={{ uri: event.imageUrl }}
+              style={[styles.image, { width: imageWidth, height: imageHeight }]}
+              resizeMode="contain"
+              resizeMethod="scale"
+              onLayout={e => {
+                setImageWidth(e.nativeEvent.layout.width);
+              }}
+            />
+            <View
+              style={{
+                flex: 6,
+                paddingLeft: 10,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: 'row',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-end',
+                }}
+              >
+                <Text style={styles.location}>{t('ticketsSold')}: </Text>
+                {eventSales !== undefined ? (
+                  <Text style={[styles.location, { opacity: 1 }]}>
+                    {eventSales}
+                  </Text>
+                ) : (
+                  <ActivityIndicator
+                    color={PinkPrimary}
+                    size={14}
+                    style={{ paddingLeft: 10 }}
+                  />
+                )}
+              </View>
+            </View>
+          </View>
+        )}
       </View>
     </TouchableHighlight>
   );

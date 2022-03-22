@@ -97,3 +97,45 @@ export async function deleteAllEventTicketSegments(firestoreInstance, eventId) {
 
   await batch.commit();
 }
+
+export async function cleanTicketSegments(firestoreInstance) {
+  const eventIds = [];
+  const purchasableIds = [];
+  const ticketSegments = [];
+  const [
+    { docs: events },
+    { docs: purchasables },
+    { docs: ticketSegmentDocs },
+  ] = await Promise.all([
+    firestoreInstance.collection('events').get(),
+    firestoreInstance.collection('purchasables').get(),
+    firestoreInstance.collection('ticketSegments').get(),
+  ]);
+
+  events.forEach(doc => {
+    eventIds.push(doc.id);
+  });
+
+  purchasables.forEach(doc => {
+    purchasableIds.push(doc.id);
+  });
+
+  ticketSegmentDocs.forEach(doc => {
+    ticketSegments.push({ ...doc.data(), id: doc.id });
+  });
+
+  const segmentsToDelete = ticketSegments.filter(
+    e =>
+      !purchasableIds.includes(e.purchasableId) || !eventIds.includes(e.eventId)
+  );
+
+  const batch = firestoreInstance.batch();
+
+  segmentsToDelete
+    .map(e => e.id)
+    .forEach(e => {
+      batch.delete(firestoreInstance.collection('ticketSegments').doc(e));
+    });
+
+  await batch.commit();
+}

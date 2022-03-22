@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
   itemName: { fontSize: 16, color: 'black', fontWeight: 'bold' },
 });
 
-function TicketSegmentItem({ item, purchasable, setItemActive }) {
+function TicketSegmentItem({ item, purchasable, setItemActive, setAnchor }) {
   const [active, setActive] = useState(purchasable?.active || false);
   const navigation = useNavigation();
 
@@ -54,6 +54,15 @@ function TicketSegmentItem({ item, purchasable, setItemActive }) {
         style={styles.itemContainer}
         onPress={() =>
           navigation.navigate(t('ticketSegmentInfo'), { item, purchasable })
+        }
+        onLongPress={event =>
+          setAnchor({
+            position: {
+              x: event.nativeEvent.pageX,
+              y: event.nativeEvent.pageY,
+            },
+            item,
+          })
         }
       >
         <View
@@ -94,10 +103,15 @@ function TicketSegmentItem({ item, purchasable, setItemActive }) {
   );
 }
 
+TicketSegmentItem.defaultProps = {
+  setAnchor: () => {},
+};
+
 TicketSegmentItem.propTypes = {
   item: PropTypes.object.isRequired,
   purchasable: PropTypes.object.isRequired,
   setItemActive: PropTypes.func.isRequired,
+  setAnchor: PropTypes.func,
 };
 
 export default TicketSegmentItem;

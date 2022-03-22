@@ -196,9 +196,11 @@ function EventDetails() {
   function renderHeader(section) {
     return (
       <View style={styles.collapsibleHeader}>
-        <Text style={styles.headerText}>{section.title}</Text>
+        <Text style={[styles.headerText, { color: PinkPrimary }]}>
+          {section.title}
+        </Text>
         <Animated.View style={{ rotation: animatedRotation }}>
-          <AntDesign name="caretdown" size={12} color="white" />
+          <AntDesign name="caretdown" size={12} color={PinkPrimary} />
         </Animated.View>
       </View>
     );

@@ -29,11 +29,13 @@ import { useSelector } from 'react-redux';
 import { head } from 'lodash';
 import { t } from 'i18n-js';
 import moment from 'moment';
+import NoImage from '../../assets/no-image.png';
 import {
   BackgroundGray,
   PinkPrimary,
   PurplePill,
   TransparentBackdrop,
+  TransparentBackdrop2,
 } from '../../assets/Colors';
 import ImageHeader from './ImageHeader';
 import EditEventPhotoButton from '../corporativo/events/EditEventPhotoButton';
@@ -198,7 +200,9 @@ function EventLandingPage({
           visible={showImageFullscreen}
           contentContainerStyle={{ height: '100%', width: '100%' }}
           onDismiss={() => setShowImageFullscreen(false)}
-          style={{ backgroundColor: TransparentBackdrop }}
+          style={{
+            backgroundColor: image ? TransparentBackdrop : TransparentBackdrop2,
+          }}
         >
           {uploadingImage ? (
             <ActivityIndicator size="large" />
@@ -211,7 +215,7 @@ function EventLandingPage({
                 bindToBorders
               >
                 <Image
-                  source={{ uri: image }}
+                  source={image ? { uri: image } : NoImage}
                   resizeMode="contain"
                   style={{ width: '100%', height: '100%' }}
                 />

@@ -9,6 +9,8 @@ const myStoreSlice = createSlice({
     userRoles: undefined,
     selectedEvent: undefined,
     selectedCategory: undefined,
+    productClipboard: undefined,
+    ticketClipboard: undefined,
   },
   reducers: {
     setAttendeeRole(state, action) {
@@ -26,6 +28,17 @@ const myStoreSlice = createSlice({
     setSelectedCategory(state, action) {
       state.selectedCategory = action.payload;
     },
+    setProductClipboard(state, action) {
+      state.productClipboard = action.payload;
+    },
+    setTicketClipboard(state, action) {
+      state.ticketClipboard = action.payload;
+    },
+    reset(state) {
+      const tempVars = { attendeeRole: state.attendeeRole };
+      state = myStoreSlice.initialState;
+      state = { ...state, ...tempVars };
+    },
   },
 });
 
@@ -35,5 +48,8 @@ export const {
   setSelectedEvent,
   setUserRoles,
   setSelectedCategory,
+  setProductClipboard,
+  setTicketClipboard,
+  reset,
 } = myStoreSlice.actions;
 export default myStoreSlice.reducer;

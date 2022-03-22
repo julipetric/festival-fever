@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function ProductItem({ item, onPress, setItemActive, hideOptions }) {
+function ProductItem({ item, onPress, setItemActive, hideOptions, setAnchor }) {
   const [imageWidth, setImageWidth] = useState(0);
 
   const [imageHeight, setImageHeight] = useState(0);
@@ -59,6 +59,15 @@ function ProductItem({ item, onPress, setItemActive, hideOptions }) {
   return (
     <TouchableOpacity
       onPress={onPress}
+      onLongPress={event =>
+        setAnchor({
+          position: {
+            x: event.nativeEvent.pageX,
+            y: event.nativeEvent.pageY,
+          },
+          item,
+        })
+      }
       style={styles.productContainer}
       key={item.id}
     >
@@ -121,6 +130,7 @@ function ProductItem({ item, onPress, setItemActive, hideOptions }) {
 ProductItem.defaultProps = {
   setItemActive: undefined,
   hideOptions: false,
+  setAnchor: () => {},
 };
 
 ProductItem.propTypes = {
@@ -128,6 +138,7 @@ ProductItem.propTypes = {
   onPress: PropTypes.func.isRequired,
   setItemActive: PropTypes.func,
   hideOptions: PropTypes.bool,
+  setAnchor: PropTypes.func,
 };
 
 export default ProductItem;
