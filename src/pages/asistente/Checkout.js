@@ -282,7 +282,7 @@ function Checkout() {
         }
         keyExtractor={item => item.item.id}
       />
-      {loading && (
+      {!loading && (
         <FAB
           label={t('confirm')}
           style={styles.floatingButton}

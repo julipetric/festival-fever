@@ -98,6 +98,7 @@ function UserItem({ item: user, setSelectedUser, disabled, currentRoles }) {
       style={[styles.userItemContainer, { opacity: disabled ? 0.5 : 1 }]}
       onPress={() => setSelectedUser(user)}
       disabled={disabled}
+      key={user.id}
     >
       <View
         style={{

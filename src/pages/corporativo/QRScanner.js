@@ -1,9 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import LottieView from 'lottie-react-native';
 import { ActivityIndicator, Modal, Portal, Text } from 'react-native-paper';
 import { useFirestore } from 'react-redux-firebase';
+import { t } from 'i18n-js';
+import CheckMarkAnimation from '../../assets/check-mark-success.json';
+import StyledButton from '../components/StyledButton';
 import { PinkPrimary } from '../../assets/Colors';
 
 const styles = StyleSheet.create({
@@ -39,9 +43,7 @@ function QRScanner() {
       const editedItems = [...orderItems];
       editedItems.find(e => e.orderItemId === order.orderItemId).status = 5;
       await docReference.update({ items: editedItems });
-      setScanned();
       setLoading(false);
-      navigation.goBack();
     }
   }
 
@@ -65,7 +67,50 @@ function QRScanner() {
           onDismiss={() => setScanned()}
         >
           {loading && <ActivityIndicator color={PinkPrimary} />}
-          <Text style={{ color: 'black' }}>{scanned}</Text>
+          {!loading && (
+            <View
+              style={{
+                padding: 20,
+                backgroundColor: 'white',
+                paddingBottom: 10,
+                paddingRight: 10,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 16,
+                  paddingRight: 10,
+                  color: 'black',
+                  textTransform: 'uppercase',
+                }}
+              >
+                {t('codeSuccessfullyRedeemed')}
+              </Text>
+
+              <LottieView
+                source={CheckMarkAnimation}
+                autoPlay
+                loop={false}
+                style={{
+                  height: 125,
+                  width: 125,
+                  alignSelf: 'center',
+                }}
+                autoSize
+                resizeMode="cover"
+              />
+              <View style={{ alignItems: 'flex-end' }}>
+                <StyledButton
+                  label={t('ok')}
+                  style={{ padding: 0, margin: 0 }}
+                  onPress={() => {
+                    setScanned();
+                    navigation.goBack();
+                  }}
+                />
+              </View>
+            </View>
+          )}
         </Modal>
       </Portal>
     </>

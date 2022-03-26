@@ -210,7 +210,7 @@ function EventDetails() {
     if (ticketSegments && ticketSegments.length) {
       if (eventTickets && eventTickets.length) {
         const tag = `${t('from').toLowerCase()}: $${
-          first(orderBy(eventTickets, 'price')).price
+          first(orderBy(eventTickets, 'price', 'desc')).price
         }`;
         setPriceTag(tag);
       }

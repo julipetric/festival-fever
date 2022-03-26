@@ -1,6 +1,7 @@
 import { t } from 'i18n-js';
 import { cloneDeep, orderBy, uniq, uniqBy } from 'lodash';
 import React, { useEffect, useState } from 'react';
+import LottieView from 'lottie-react-native';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {
@@ -17,6 +18,7 @@ import {
   useFirestore,
   useFirestoreConnect,
 } from 'react-redux-firebase';
+import CheckMarkAnimation from '../../../assets/check-mark-success.json';
 import { DarkCardBackground, PinkPrimary } from '../../../assets/Colors';
 import StyledButton from '../../components/StyledButton';
 import TransactionItem from './TransactionItem';
@@ -227,10 +229,24 @@ function Orders() {
                     fontSize: 16,
                     paddingRight: 10,
                     color: 'black',
+                    textTransform: 'uppercase',
                   }}
                 >
                   {t('codeSuccessfullyRedeemed')}
                 </Text>
+
+                <LottieView
+                  source={CheckMarkAnimation}
+                  autoPlay
+                  loop={false}
+                  style={{
+                    height: 125,
+                    width: 125,
+                    alignSelf: 'center',
+                  }}
+                  autoSize
+                  resizeMode="cover"
+                />
                 <View style={{ alignItems: 'flex-end' }}>
                   <StyledButton
                     label={t('ok')}
@@ -238,6 +254,7 @@ function Orders() {
                     onPress={() => {
                       setShowQR();
                       setSuccessMessage();
+                      setViewQRModal(undefined);
                     }}
                   />
                 </View>
