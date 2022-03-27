@@ -1,9 +1,15 @@
 import { useNavigation } from '@react-navigation/native';
 import { t } from 'i18n-js';
-import { isEqual, uniq } from 'lodash';
+import { uniq } from 'lodash';
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  Alert,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { ActivityIndicator, Menu, Subheading } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFirebase, useFirestore } from 'react-redux-firebase';
@@ -44,16 +50,7 @@ function EventProducts() {
 
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([]);
-  const [modifiedEvent, setModifiedEvent] = useState({ ...event });
   const [anchor, setAnchor] = useState();
-
-  useEffect(() => {
-    navigation.addListener('beforeRemove', () => {
-      if (!isEqual(modifiedEvent, event)) {
-        dispatch(setSelectedEvent(modifiedEvent));
-      }
-    });
-  }, [dispatch, event, modifiedEvent, navigation]);
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
@@ -93,7 +90,7 @@ function EventProducts() {
       firestore.collection('purchasables').doc(item.id).update(saveItem),
       firestore.collection('events').doc(event.id).update(saveEvent),
     ]);
-    setModifiedEvent({ ...event, ...saveEvent });
+    dispatch(setSelectedEvent({ ...event, ...saveEvent }));
   }
 
   async function addItem(item) {
@@ -114,7 +111,7 @@ function EventProducts() {
       delete saveEvent.id;
       await firestore.collection('events').doc(event.id).update(saveEvent);
       setProducts([{ ...item, id: purchasableId }, ...products]);
-      setModifiedEvent({ ...event, ...saveEvent });
+      dispatch(setSelectedEvent({ ...event, ...saveEvent }));
     } catch (e) {
       Alert.alert(t('error'), JSON.stringify(e));
     } finally {
@@ -150,7 +147,7 @@ function EventProducts() {
         firestore.collection('events').doc(event.id).update(saveEvent),
       ]);
       setProducts([...products].filter(p => p.id !== anchor?.item?.id));
-      setModifiedEvent({ ...event, ...saveEvent });
+      dispatch(setSelectedEvent({ ...event, ...saveEvent }));
     } catch (e) {
       Alert.alert(t('error'), JSON.stringify(e));
     } finally {
@@ -173,71 +170,74 @@ function EventProducts() {
     await addItem(savePurchasable);
   }
 
-  return loading || !products ? (
-    <ActivityIndicator size="large" style={{ paddingTop: 30 }} />
-  ) : (
-    <>
-      <TouchableOpacity
-        onLongPress={e =>
-          setAnchor({
-            position: {
-              x: e.nativeEvent.pageX,
-              y: e.nativeEvent.pageY,
-            },
-          })
-        }
-        style={{ flex: 1 }}
-      >
-        <FlatList
-          data={products || []}
-          style={{ backgroundColor: TransparentBackdrop }}
-          contentContainerStyle={styles.container}
-          ListEmptyComponent={() => <Subheading>{t('noItems')}</Subheading>}
-          renderItem={({ item }) => (
-            <ProductItem
-              item={item}
-              onPress={() => onItemPress(item)}
-              setItemActive={value => setItemActive(item, value)}
-              setAnchor={setAnchor}
+  return (
+    <View style={{ backgroundColor: TransparentBackdrop, flex: 1 }}>
+      {loading || !products ? (
+        <ActivityIndicator size="large" style={{ paddingTop: 30 }} />
+      ) : (
+        <>
+          <TouchableOpacity
+            onLongPress={e =>
+              setAnchor({
+                position: {
+                  x: e.nativeEvent.pageX,
+                  y: e.nativeEvent.pageY,
+                },
+              })
+            }
+            style={{ flex: 1 }}
+          >
+            <FlatList
+              data={products || []}
+              contentContainerStyle={styles.container}
+              ListEmptyComponent={() => <Subheading>{t('noItems')}</Subheading>}
+              renderItem={({ item }) => (
+                <ProductItem
+                  item={item}
+                  onPress={() => onItemPress(item)}
+                  setItemActive={value => setItemActive(item, value)}
+                  setAnchor={setAnchor}
+                />
+              )}
             />
-          )}
-        />
-      </TouchableOpacity>
-      <Menu
-        visible={anchor !== undefined && !anchor?.item}
-        onDismiss={() => setAnchor(undefined)}
-        anchor={anchor?.position}
-      >
-        <Menu.Item
-          title={t('paste')}
-          icon="content-paste"
-          onPress={onPasteProduct}
-          disabled={!productClipboard}
-        />
-      </Menu>
-      <Menu
-        visible={anchor?.item !== undefined}
-        onDismiss={() => setAnchor(undefined)}
-        anchor={anchor?.position}
-      >
-        <Menu.Item
-          title={t('duplicate')}
-          icon="content-duplicate"
-          onPress={onDuplicateProduct}
-        />
-        <Menu.Item
-          title={t('copy')}
-          icon="content-copy"
-          onPress={onCopyProduct}
-        />
-        <Menu.Item
-          title={t('delete')}
-          icon="delete"
-          disabled={anchor?.item?.sold > 0}
-          onPress={onDeleteProduct}
-        />
-      </Menu>
-    </>
+          </TouchableOpacity>
+          <Menu
+            visible={anchor !== undefined && !anchor?.item}
+            onDismiss={() => setAnchor(undefined)}
+            anchor={anchor?.position}
+          >
+            <Menu.Item
+              title={t('paste')}
+              icon="content-paste"
+              onPress={onPasteProduct}
+              disabled={!productClipboard}
+            />
+          </Menu>
+          <Menu
+            visible={anchor?.item !== undefined}
+            onDismiss={() => setAnchor(undefined)}
+            anchor={anchor?.position}
+          >
+            <Menu.Item
+              title={t('duplicate')}
+              icon="content-duplicate"
+              onPress={onDuplicateProduct}
+            />
+            <Menu.Item
+              title={t('copy')}
+              icon="content-copy"
+              onPress={onCopyProduct}
+            />
+            <Menu.Item
+              title={t('delete')}
+              icon="delete"
+              disabled={anchor?.item?.sold > 0}
+              onPress={onDeleteProduct}
+            />
+          </Menu>
+        </>
+      )}
+    </View>
   );
 }
 

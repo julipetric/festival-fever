@@ -82,6 +82,24 @@ function TicketSegmentItem({ item, purchasable, setItemActive, setAnchor }) {
             alignItems: 'center',
           }}
         >
+          {purchasable?.sold !== undefined && (
+            <Text style={{ color: 'black' }}>
+              {t('sold')}: {purchasable?.sold}
+            </Text>
+          )}
+          {purchasable?.stock !== undefined && (
+            <Text style={{ color: 'black' }}>
+              {t('stock')}: {purchasable?.stock}
+            </Text>
+          )}
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
           <Text style={{ color: 'black', flex: 1 }}>
             {purchasable?.description}
           </Text>

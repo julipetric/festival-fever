@@ -80,7 +80,7 @@ function AmountLabel({ amount }) {
   );
 }
 
-function ItemRow({ item }) {
+function ItemRow({ item, hideItemPrice }) {
   return (
     <View
       style={{
@@ -109,7 +109,9 @@ function ItemRow({ item }) {
         >
           x{item.quantity}
         </Text>
-        <Text>${item.purchasable?.price * item.quantity}</Text>
+        {!hideItemPrice && (
+          <Text>${item.purchasable?.price * item.quantity}</Text>
+        )}
       </View>
     </View>
   );
@@ -117,11 +119,13 @@ function ItemRow({ item }) {
 
 ItemRow.propTypes = {
   item: PropTypes.object.isRequired,
+  hideItemPrice: PropTypes.bool.isRequired,
 };
 
 function TransactionItem({
   transaction,
   hideOrderTotal,
+  hideItemPrice,
   onPress,
   event,
   disabled,
@@ -142,7 +146,7 @@ function TransactionItem({
               <Subheading style={styles.eventName}>{event.name}</Subheading>
             )}
             {transaction.items.map(item => (
-              <ItemRow item={item} />
+              <ItemRow item={item} hideItemPrice={hideItemPrice} />
             ))}
           </>
         )}
@@ -170,6 +174,7 @@ function TransactionItem({
 
 TransactionItem.defaultProps = {
   hideOrderTotal: false,
+  hideItemPrice: false,
   onPress: undefined,
   event: undefined,
   disabled: false,
@@ -178,6 +183,7 @@ TransactionItem.defaultProps = {
 TransactionItem.propTypes = {
   transaction: PropTypes.object.isRequired,
   hideOrderTotal: PropTypes.bool,
+  hideItemPrice: PropTypes.bool,
   onPress: PropTypes.func,
   event: PropTypes.object,
   disabled: PropTypes.bool,

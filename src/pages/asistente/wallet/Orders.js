@@ -137,6 +137,7 @@ function Orders() {
             <TransactionItem
               transaction={item}
               hideOrderTotal
+              hideItemPrice
               onPress={() =>
                 setViewQRModal(activeOrders.find(order => order.id === item.id))
               }

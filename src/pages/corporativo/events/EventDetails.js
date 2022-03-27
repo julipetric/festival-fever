@@ -44,6 +44,10 @@ function EventDetails() {
             label={t('products')}
             onPress={() => navigation.navigate(t('products'))}
           />
+          <StyledButton
+            label={t('combos')}
+            onPress={() => navigation.navigate(t('combos'))}
+          />
         </View>
       )}
     </EventLandingPage>

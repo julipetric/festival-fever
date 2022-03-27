@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { StyleSheet, View, Animated } from 'react-native';
+import { StyleSheet, View, Animated, TouchableOpacity } from 'react-native';
 import { ActivityIndicator, FAB, Snackbar, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
@@ -8,9 +8,11 @@ import Accordion from 'react-native-collapsible/Accordion';
 import { useFirebase, useFirestore } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
 import { first, orderBy, remove, sumBy } from 'lodash';
+import PropTypes from 'prop-types';
 import { PinkPrimary, TransparentBackdrop } from '../../../assets/Colors';
 import EventLandingPage from '../../common/EventLandingPage';
 import ProductItem from '../../corporativo/products/ProductItem';
+import { ListItemBorderRadius } from '../../../assets/UIConstants';
 
 const styles = StyleSheet.create({
   floatingButton: {
@@ -55,7 +57,45 @@ const styles = StyleSheet.create({
   headerText: {
     fontWeight: 'bold',
   },
+  comboContainer: {
+    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: ListItemBorderRadius,
+    marginBottom: 15,
+  },
 });
+
+function ComboItem({ item, onPress }) {
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      style={styles.comboContainer}
+      key={item.id}
+    >
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Text style={{ color: 'black', fontSize: 16 }}>{item.name}</Text>
+        <Text style={{ color: 'black', fontSize: 16 }}>
+          ${Number(item.price).toFixed(2)}
+        </Text>
+      </View>
+      {item.description !== '' && (
+        <Text style={{ color: 'black', fontSize: 14, opacity: 0.6 }}>
+          {item.description}
+        </Text>
+      )}
+      <Text style={{ color: 'black', fontSize: 14, opacity: 0.6 }}>
+        {item.purchasables
+          ?.map(e => `${e.item.name} ($${e.item.price}) x${e.quantity}`)
+          .join(', ')}
+      </Text>
+    </TouchableOpacity>
+  );
+}
+
+ComboItem.propTypes = {
+  item: PropTypes.object.isRequired,
+  onPress: PropTypes.func.isRequired,
+};
 
 function EventDetails() {
   const navigation = useNavigation();
@@ -74,6 +114,8 @@ function EventDetails() {
   const [ticketSegments, setTicketSegments] = useState();
   const [eventTickets, setEventTickets] = useState();
   const [products, setProducts] = useState();
+  const [combos, setCombos] = useState();
+  const [combosPurchasables, setCombosPurchasables] = useState();
   const [loading, setLoading] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [activeSections, setActiveSections] = useState([]);
@@ -118,18 +160,60 @@ function EventDetails() {
       setProducts(array);
     }
 
+    async function fetchCombos() {
+      const array = [];
+      (
+        await firestore
+          .collection('combos')
+          .where('eventId', '==', event?.id)
+          .get()
+      ).forEach(doc => array.push({ ...doc.data(), id: doc.id }));
+      if (array?.length) {
+        const purchasables = [];
+        (
+          await firestore
+            .collection('purchasables')
+            .where(
+              firestore.FieldPath.documentId(),
+              'in',
+              array.flatMap(combo =>
+                combo.purchasables.map(p => p.purchasableId)
+              )
+            )
+            .get()
+        ).forEach(doc => purchasables.push({ ...doc.data(), id: doc.id }));
+        setCombosPurchasables(purchasables);
+      } else {
+        setCombosPurchasables([]);
+      }
+      setCombos(array);
+      setLoading(false);
+    }
+
     async function fetchEventData() {
       setLoading(true);
-      await Promise.all([fetchTickets(), fetchProducts()]);
+      await Promise.all([fetchTickets(), fetchProducts(), fetchCombos()]);
       setLoading(false);
     }
     fetchEventData();
   }, [event.id, event.products, firestore]);
 
+  const mappedCombos = combos?.map(e => ({
+    ...e,
+    purchasables: e.purchasables.map(p => ({
+      ...p,
+      item: combosPurchasables.find(i => i.id === p.purchasableId),
+    })),
+  }));
+
   const SECTIONS = [
     {
       title: t('tickets'),
       content: eventTickets,
+    },
+    {
+      title: t('combos'),
+      content: mappedCombos,
     },
     {
       title: t('products'),
@@ -153,6 +237,16 @@ function EventDetails() {
     }
   }
 
+  function onComboPress(item) {
+    const addItem = {
+      ...item,
+      description: item.purchasables
+        ?.map(e => `${e.item.name} ($${e.item.price}) x${e.quantity}`)
+        .join(', '),
+    };
+    onRowPress(addItem);
+  }
+
   function renderContent(section) {
     return (
       <>
@@ -166,13 +260,17 @@ function EventDetails() {
           <View style={styles.line} />
         </View>
         <View>
-          {section.content.map(item => (
-            <ProductItem
-              item={item}
-              hideOptions
-              onPress={() => onRowPress(item)}
-            />
-          ))}
+          {section.content.map(item =>
+            section?.title === t('combos') ? (
+              <ComboItem item={item} onPress={() => onComboPress(item)} />
+            ) : (
+              <ProductItem
+                item={item}
+                hideOptions
+                onPress={() => onRowPress(item)}
+              />
+            )
+          )}
         </View>
       </>
     );

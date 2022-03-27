@@ -14,6 +14,8 @@ import TicketSegments from './ticketSegments/TicketSegments';
 import EditTicketSegment from './ticketSegments/EditTicketSegment';
 import EventProducts from './products/EventProducts';
 import EditProduct from './products/EditProduct';
+import EventCombos from './combos/EventCombos';
+import EditCombo from './combos/EditCombo';
 
 const Stack = createStackNavigator();
 
@@ -93,6 +95,26 @@ export default function MainCorporativo() {
         <Stack.Screen
           name={t('productInfo')}
           component={EditProduct}
+          options={{ headerShown: true }}
+        />
+        <Stack.Screen
+          name={t('combos')}
+          component={EventCombos}
+          options={{
+            headerShown: true,
+            headerRight: () => (
+              <TouchableOpacity
+                style={{ marginRight: 15 }}
+                onPress={() => navigation.push(t('comboInfo'))}
+              >
+                <AntDesign name="pluscircle" size={24} color="white" />
+              </TouchableOpacity>
+            ),
+          }}
+        />
+        <Stack.Screen
+          name={t('comboInfo')}
+          component={EditCombo}
           options={{ headerShown: true }}
         />
         <Stack.Screen name={t('eventDetails')} component={EventDetails} />

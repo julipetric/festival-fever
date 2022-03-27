@@ -86,6 +86,8 @@ function EditTicketSegment() {
           timestamp: moment().unix(),
         },
       };
+      delete saveEvent.category;
+      delete saveEvent.id;
       await firestore.collection('events').doc(event.id).update(saveEvent);
       dispatch(setSelectedEvent({ ...event, ...saveEvent }));
       setLoading(false);

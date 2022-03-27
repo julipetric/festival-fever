@@ -306,7 +306,10 @@ function EditEventInfo() {
         locale={i18n.locale}
         visible={timeOpen}
         onConfirm={onConfirmTime}
-        onDismiss={() => setTimeOpen(false)}
+        onDismiss={() => {
+          setSettingStartTime(true);
+          setTimeOpen(false);
+        }}
         label={settingStartTime ? t('startTime') : t('endTime')}
       />
     </>

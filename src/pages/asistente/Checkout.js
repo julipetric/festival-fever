@@ -190,13 +190,29 @@ function Checkout() {
   });
 
   async function onConfirm() {
+    const orderItems = items.flatMap(i => {
+      if (i.item?.purchasables?.length) return i.item.purchasables;
+      return i;
+    });
     const currentBalance = profile.balance;
     setLoading(true);
 
     const order = {
       userId: firebase.auth()?.currentUser?.uid,
       eventId: event.id,
-      items: items.flatMap(item => {
+      items: orderItems.flatMap(item => {
+        if (item.purchasables?.length) {
+          return item.purchasables.flatMap(p => {
+            const array = [];
+            const itemObject = {
+              purchasableId: p.item.id,
+              status: 1,
+            };
+            for (let i = 0; i < item.quantity; i += 1)
+              array.push({ ...itemObject, orderItemId: uniqueId() });
+            return array;
+          });
+        }
         const array = [];
         const itemObject = {
           purchasableId: item.item.id,
@@ -215,7 +231,7 @@ function Checkout() {
       firestore.collection('orders').add(order),
     ];
 
-    items.forEach(e => {
+    orderItems.forEach(e => {
       const item = { ...e.item };
       delete item.id;
       promises.push(

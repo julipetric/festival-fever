@@ -1,7 +1,6 @@
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import { t } from 'i18n-js';
-import { isEqual } from 'lodash';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   StyleSheet,
   TouchableOpacity,
@@ -33,14 +32,12 @@ function TicketSegments() {
   const firestore = useFirestore();
   const firebase = useFirebase();
   const dispatch = useDispatch();
-  const navigation = useNavigation();
 
   const { event, ticketClipboard } = useSelector(state => ({
     event: state.myStore.selectedEvent,
     ticketClipboard: state.myStore.ticketClipboard,
   }));
 
-  const [modifiedEvent, setModifiedEvent] = useState({ ...event });
   const [anchor, setAnchor] = useState();
   const [loading, setLoading] = useState(false);
   const [ticketSegments, setTicketSegments] = useState();
@@ -83,14 +80,6 @@ function TicketSegments() {
     }, [fetchTicketSegments])
   );
 
-  useEffect(() => {
-    navigation.addListener('beforeRemove', () => {
-      if (!isEqual(modifiedEvent, event)) {
-        dispatch(setSelectedEvent(modifiedEvent));
-      }
-    });
-  }, [dispatch, event, modifiedEvent, navigation]);
-
   async function setItemActive(item, value) {
     const saveItem = { ...item, active: value };
     delete saveItem.id;
@@ -105,7 +94,7 @@ function TicketSegments() {
       firestore.collection('purchasables').doc(item.id).update(saveItem),
       firestore.collection('events').doc(event.id).update(saveEvent),
     ]);
-    setModifiedEvent({ ...event, ...saveEvent });
+    dispatch(setSelectedEvent({ ...event, ...saveEvent }));
   }
 
   async function addItem(item) {
@@ -185,7 +174,7 @@ function TicketSegments() {
       setTicketSegments(
         [...ticketSegments].filter(e => e.id !== anchor?.item?.id)
       );
-      setModifiedEvent({ ...event, ...saveEvent });
+      dispatch(setSelectedEvent({ ...event, ...saveEvent }));
     } catch (e) {
       Alert.alert(t('error'), JSON.stringify(e));
     } finally {

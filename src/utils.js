@@ -139,3 +139,19 @@ export async function cleanTicketSegments(firestoreInstance) {
 
   await batch.commit();
 }
+
+export async function updateEventTimestamp(
+  firestoreInstance,
+  firebaseIntance,
+  event
+) {
+  const saveEvent = { ...event };
+  delete saveEvent.category;
+  delete saveEvent.id;
+  saveEvent.lastEditBy = {
+    userId: firebaseIntance.auth()?.currentUser?.uid,
+    timestamp: moment().unix(),
+  };
+  await firestoreInstance.collection('events').doc(event.id).update(saveEvent);
+  return saveEvent;
+}
