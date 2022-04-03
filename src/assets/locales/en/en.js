@@ -55,6 +55,7 @@ export default {
   events: 'Events',
   explore: 'Explore',
   favorites: 'Favorites',
+  forgotPassword: 'Forgot Password?',
   from: 'From',
   getTickets: 'Get Tickets',
   genre: 'Genre',
@@ -94,6 +95,9 @@ export default {
   organizationUsers: 'Organization Users',
   paste: 'Paste',
   password: 'Password',
+  passwordReset: 'Password Reset',
+  passwordResetMessage:
+    'An email has been sent to {{email}} to reset your password',
   passwordsDontMatch: "The two passwords don't match",
   personalInformation: 'Personal Information',
   phone: 'Phone',

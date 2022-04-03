@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ToggleButton } from 'react-native-paper';
 import { useForm } from 'react-hook-form';
@@ -44,7 +44,7 @@ function PersonalInformation() {
   const { control, handleSubmit, formState } = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
-    resolver: UserRegisterSchema,
+    resolver: useMemo(() => UserRegisterSchema(), []),
     defaultValues: profile,
   });
 

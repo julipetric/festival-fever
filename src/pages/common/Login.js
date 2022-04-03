@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { t } from 'i18n-js';
 import { useForm } from 'react-hook-form';
@@ -16,6 +16,7 @@ import PasswordFormTextInput from '../components/PasswordFormTextInput';
 import FormCheckbox from '../components/FormCheckbox';
 import RoleSelectorModal from './RoleSelectorModal';
 import { setUserRole, setUserRoles } from '../../redux/myStoreSlice';
+import LoginSchema from '../../schemas/LoginSchema';
 
 const styles = StyleSheet.create({
   container: {
@@ -35,7 +36,10 @@ const styles = StyleSheet.create({
 });
 
 export default function Login() {
-  const { control, handleSubmit, getValues } = useForm();
+  const { control, handleSubmit, getValues, formState, trigger } = useForm({
+    resolver: useMemo(() => LoginSchema(), []),
+    mode: 'onChange',
+  });
 
   const firebase = useFirebase();
   const firestore = useFirestore();
@@ -132,6 +136,19 @@ export default function Login() {
     navigation.push(t('register'));
   }
 
+  async function handleForgotPassword() {
+    trigger('username', true);
+    if (!formState.errors?.username && formState.isDirty) {
+      setLoading(true);
+      await firebase.auth().sendPasswordResetEmail(getValues().username);
+      setLoading(false);
+      Alert.alert(
+        t('passwordReset'),
+        t('passwordResetMessage', { email: getValues().username })
+      );
+    }
+  }
+
   return (
     <>
       <View style={styles.container}>
@@ -189,13 +206,19 @@ export default function Login() {
             >
               {t('login')}
             </StyledButton>
-
             <StyledButton
               mode="text"
               style={styles.button}
               onPress={handleRegister}
             >
               {t('register')}
+            </StyledButton>
+            <StyledButton
+              mode="text"
+              style={styles.button}
+              onPress={handleForgotPassword}
+            >
+              {t('forgotPassword')}
             </StyledButton>
           </>
         )}
