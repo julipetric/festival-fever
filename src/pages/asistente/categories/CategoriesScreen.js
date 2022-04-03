@@ -3,6 +3,7 @@ import { FlatList } from 'react-native';
 import { useFirestoreConnect } from 'react-redux-firebase';
 import { useSelector } from 'react-redux';
 import { ActivityIndicator } from 'react-native-paper';
+import { t } from 'i18n-js';
 import CategoryItem from './CategoryItem';
 
 function CategoriesScreen() {
@@ -13,7 +14,14 @@ function CategoriesScreen() {
 
   return categories ? (
     <FlatList
-      data={categories}
+      data={[
+        {
+          name: t('allEvents'),
+          imageUrl: 'https://picsum.photos/1000/800',
+          iconUrl: 'https://picsum.photos/200',
+        },
+        ...categories,
+      ]}
       renderItem={({ item }) => <CategoryItem category={item} />}
     />
   ) : (

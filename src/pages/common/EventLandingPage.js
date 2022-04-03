@@ -244,11 +244,11 @@ function EventLandingPage({
           { position: 'absolute', top: 5, right: 10 },
         ]}
       >
-        <IconButton
+        {/*  <IconButton
           icon={() => <FontAwesome5 name="share-alt" size={20} color="white" />}
           style={styles.circleIcon}
           size={25}
-        />
+        /> */}
         {!corporativoMode && (
           <IconButton
             onPress={onFavPress}

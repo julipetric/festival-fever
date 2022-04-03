@@ -46,7 +46,8 @@ function CategoryDetails() {
   }));
 
   useFirestoreConnect(() => {
-    const where = [['categoryId', '==', category?.id]];
+    const where = [];
+    if (category?.id) where.push(['categoryId', '==', category?.id]);
     switch (selectedFilter) {
       case 'all':
         break;
@@ -89,7 +90,7 @@ function CategoryDetails() {
       return [
         {
           collection: 'events',
-          where,
+          where: where?.length ? where : undefined,
           storeAs: 'categoryEvents',
         },
       ];

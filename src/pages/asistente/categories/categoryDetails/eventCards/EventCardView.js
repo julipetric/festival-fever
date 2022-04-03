@@ -78,11 +78,11 @@ function EventCardView({ item, navigate, onFavAdded, isFavorite }) {
         style={styles.imageContainer}
         source={{ uri: event.imageUrl }}
       >
-        <IconButton
+        {/* <IconButton
           icon={() => <FontAwesome5 name="share-alt" size={17} color="white" />}
           style={styles.circleIcon}
           size={25}
-        />
+        /> */}
         <IconButton
           icon={() => (
             <AntDesign

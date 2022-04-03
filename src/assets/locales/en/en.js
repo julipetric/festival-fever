@@ -12,6 +12,7 @@ export default {
   accountBalance: 'Account Balance',
   active: 'Active',
   all: 'All',
+  allEvents: 'All Events',
   attendee: 'Attendee',
   balanceAfterOperation: 'Balance After Operation',
   birthday: 'Birthday',
