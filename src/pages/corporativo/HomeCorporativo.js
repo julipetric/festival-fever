@@ -19,6 +19,7 @@ import InactiveEvents from './InactiveEvents';
 import MyEvents from './events/MyEvents';
 import MyOrganization from './myOrganization/MyOrganization';
 import PersonalInformation from '../common/myAccount/PersonalInformation';
+import HelpAndSupport from './HelpAndSupport';
 
 const Drawer = createDrawerNavigator();
 
@@ -41,7 +42,6 @@ function CustomDrawerContent({ logout, ...props }) {
     <DrawerContentScrollView {...props}>
       {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <DrawerItemList {...props} />
-      <DrawerItem label={t('help')} onPress={logout} />
       <DrawerItem label={t('termsAndConditions')} onPress={logout} />
       <DrawerItem label={t('logout')} onPress={logout} />
     </DrawerContentScrollView>
@@ -127,6 +127,13 @@ function HomeCorporativo() {
             component={PersonalInformation}
             options={{}}
           />
+          {userRole?.userTypeId === 2 ? (
+            <Drawer.Screen
+              name={t('helpAndSupport')}
+              component={HelpAndSupport}
+              options={{}}
+            />
+          ) : undefined}
         </Drawer.Navigator>
       </View>
       {/* eslint-disable-next-line react/style-prop-object */}

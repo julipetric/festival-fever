@@ -1,9 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ToggleButton } from 'react-native-paper';
 import { useForm } from 'react-hook-form';
 import { t } from 'i18n-js';
 import { useSelector } from 'react-redux';
+import { useFirestore } from 'react-redux-firebase';
 import UserRegisterSchema from '../../../schemas/UserRegisterSchema';
 import StyledButton from '../../components/StyledButton';
 import FormTextInput from '../../components/FormTextInput';
@@ -35,18 +36,43 @@ const styles = StyleSheet.create({
 });
 
 function PersonalInformation() {
-  const [selectedGenre, setSelectedGenre] = React.useState('h');
+  const [selectedGenre, setSelectedGenre] = useState('h');
+  const [loading, setLoading] = useState(false);
+  const [organization, setOrganization] = useState();
 
-  const { profile } = useSelector(state => ({
+  const firestore = useFirestore();
+
+  const { profile, userRole } = useSelector(state => ({
     profile: state.firebase.profile,
+    userRole: state.myStore?.userRole,
   }));
 
-  const { control, handleSubmit, formState } = useForm({
+  const { control, handleSubmit, formState, reset } = useForm({
     mode: 'onChange',
     reValidateMode: 'onChange',
     resolver: useMemo(() => UserRegisterSchema(), []),
     defaultValues: profile,
   });
+
+  useEffect(() => {
+    async function getOrganization() {
+      setLoading(true);
+      const org = (
+        await firestore
+          .collection('organizations')
+          .doc(userRole?.organizationId)
+          .get()
+      ).data();
+      setOrganization(org);
+      reset({ ...profile, bankDetails: org.bankDetails });
+    }
+
+    if (userRole?.userTypeId === 2) {
+      getOrganization();
+    }
+  });
+
+  firestore.collection('organizations').doc(userRole.organizationId);
 
   function onSubmit() {}
 
@@ -83,6 +109,15 @@ function PersonalInformation() {
           style={{ backgroundColor: '#1A1C28' }}
           mode="outlined"
         />
+        {userRole?.userTypeId === 2 && (
+          <FormTextInput
+            label={t('withdrawalDetails')}
+            name="bankDetails"
+            control={control}
+            style={{ backgroundColor: '#1A1C28' }}
+            mode="outlined"
+          />
+        )}
         <Text style={styles.infoText}>{t('genre')}</Text>
         <View style={{}}>
           <ToggleButton.Row
