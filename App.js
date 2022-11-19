@@ -43,6 +43,7 @@ export default function App() {
   if (!firebase.apps.length) {
     firebase.initializeApp(fbConfig);
     firebase.firestore();
+    firebase.firestore().settings({ experimentalForceLongPolling: true });
   } else {
     firebase.app(); // if already initialized, use that one
   }

@@ -1,10 +1,8 @@
 import { t } from 'i18n-js';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { useDispatch } from 'react-redux';
 import Login from './Login';
 import Register from './Register';
-import { reset } from '../../redux/myStoreSlice';
 
 const Stack = createStackNavigator();
 

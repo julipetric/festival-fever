@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { useFirestore } from 'react-redux-firebase';
+import { useFirebase, useFirestore } from 'react-redux-firebase';
 import { useDispatch, useSelector } from 'react-redux';
 import { first } from 'lodash';
 import MainCorporativo from '../corporativo/MainCorporativo';
@@ -14,21 +14,21 @@ const Stack = createStackNavigator();
 
 export default function InitialNavigator() {
   const firestore = useFirestore();
+  const firebase = useFirebase();
   const dispatch = useDispatch();
 
   const attendeeRole = useSelector(state => state.myStore.attendeeRole);
 
   useEffect(() => {
     async function fetchRole() {
-      const { docs: query } = await firestore
-        .collection('roles')
-        .where('userTypeId', '==', 1)
-        .get();
+      const { docs: query } = await firestore.collection('roles').get();
       const role = { ...first(query).data(), id: first(query).id };
       dispatch(setAttendeeRole(role));
     }
-    if (!attendeeRole) fetchRole();
-  }, [attendeeRole, dispatch, firestore]);
+
+    const currentUser = firebase.auth()?.currentUser;
+    if (!attendeeRole && currentUser) fetchRole();
+  }, [attendeeRole, dispatch, firestore, firebase]);
 
   return (
     <NavigationContainer theme={theme}>
