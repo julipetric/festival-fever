@@ -14,6 +14,7 @@ function CategoriesScreen() {
 
   return categories ? (
     <FlatList
+      testID="CategoriesList"
       data={[
         {
           name: t('allEvents'),

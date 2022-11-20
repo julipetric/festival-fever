@@ -149,6 +149,7 @@ export default function Login() {
     <>
       <View style={styles.container}>
         <Title
+          testID="loginTitle"
           style={[
             styles.elementsPadding,
             {

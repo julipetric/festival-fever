@@ -5,7 +5,7 @@
     "prettier",
     "plugin:prettier/recommended"
   ],
-  "plugins": ["react", "prettier"],
+  "plugins": ["react", "prettier", "detox"],
   "env": {
     "browser": true,
     "commonjs": true,

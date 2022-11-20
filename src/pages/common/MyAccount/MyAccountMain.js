@@ -36,9 +36,10 @@ const styles = StyleSheet.create({
   },
 });
 
-function ListItem({ text, onPress, right, textStyle }) {
+function ListItem({ text, onPress, right, textStyle, testID }) {
   return (
     <TouchableOpacity
+      testID={testID}
       onPress={onPress}
       style={{
         alignItems: 'center',
@@ -64,12 +65,14 @@ ListItem.defaultProps = {
   onPress: () => {},
   right: undefined,
   textStyle: {},
+  testID: undefined,
 };
 ListItem.propTypes = {
   text: PropTypes.string.isRequired,
   onPress: PropTypes.func,
   right: PropTypes.element,
   textStyle: PropTypes.object,
+  testID: PropTypes.string,
 };
 
 function MyAccountMain() {
@@ -149,7 +152,8 @@ function MyAccountMain() {
           }
         />
         <ListItem
-          text="Cerrar sesión"
+          text={t('logout')}
+          testID="logoutItem"
           textStyle={{ color: '#FF6E6E' }}
           onPress={logoutFunc}
           right={

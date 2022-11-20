@@ -1,4 +1,5 @@
 /* eslint-disable import/prefer-default-export */
+/* eslint-env detox/detox, mocha */
 
 export const initializeWithBlacklist = {
   launchArgs: {

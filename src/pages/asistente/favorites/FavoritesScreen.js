@@ -21,15 +21,13 @@ function FavoritesScreen() {
 
   useFirestoreConnect(() => {
     const array = [];
-    array.push({
-      collection: 'events',
-      where: [
-        firestore.FieldPath.documentId(),
-        'in',
-        favorites?.length ? favorites : ['dummyId'],
-      ],
-      storeAs: 'favoriteEvents',
-    });
+    if (favorites?.length)
+      array.push({
+        collection: 'events',
+        where: [firestore.FieldPath.documentId(), 'in', favorites],
+        storeAs: 'favoriteEvents',
+      });
+
     if (events?.length)
       array.push({
         collection: 'categories',
@@ -44,9 +42,10 @@ function FavoritesScreen() {
   });
 
   // eslint-disable-next-line no-nested-ternary
-  return favorites && events && categories ? (
+  return favorites && (!favorites.length || (events && categories)) ? (
     events?.length ? (
       <FlatList
+        testID="FavoritesList"
         data={events}
         renderItem={({ item }) => (
           <EventListItem
@@ -57,7 +56,10 @@ function FavoritesScreen() {
         style={styles.scrollView}
       />
     ) : (
-      <Subheading style={{ alignSelf: 'center', paddingTop: 30 }}>
+      <Subheading
+        style={{ alignSelf: 'center', paddingTop: 30 }}
+        testID="FavoritesList"
+      >
         {t('noEventsAdded')}
       </Subheading>
     )

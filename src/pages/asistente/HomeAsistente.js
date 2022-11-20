@@ -52,6 +52,7 @@ function HomeAsistente() {
               tabBarIcon: ({ color }) => (
                 <AntDesign name="appstore1" size={23} color={color} />
               ),
+              tabBarTestID: 'categoriesTab',
             }}
           />
           <Tab.Screen
@@ -62,6 +63,7 @@ function HomeAsistente() {
               tabBarIcon: ({ color }) => (
                 <Entypo name="wallet" size={23} color={color} />
               ),
+              tabBarTestID: 'walletTab',
             }}
           />
           <Tab.Screen
@@ -72,6 +74,7 @@ function HomeAsistente() {
               tabBarIcon: ({ color }) => (
                 <FontAwesome name="star" size={23} color={color} />
               ),
+              tabBarTestID: 'favoritesTab',
             }}
           />
         </Tab.Navigator>

@@ -1,3 +1,4 @@
+/* eslint-env detox/detox, mocha */
 const { initializeWithBlacklist } = require('./util');
 
 describe('Login', () => {
@@ -60,5 +61,25 @@ describe('Login', () => {
     await device.terminateApp();
     await device.launchApp(initializeWithBlacklist);
     await expect(element(by.id('selectRoleTitle'))).toBeVisible();
+  });
+
+  it('logout properly', async () => {
+    await device.uninstallApp();
+    await device.installApp();
+    await device.launchApp(initializeWithBlacklist);
+    await element(by.id('username')).typeText('<E2E_ATTENDEE_EMAIL>');
+    await element(by.id('password')).typeText('<E2E_PASSWORD>');
+    await element(by.id('rememberLogin')).tap();
+    await element(by.id('loginButton')).tap();
+    await expect(element(by.id('FestivalFeverHeader'))).toBeVisible();
+    await device.terminateApp();
+    await device.launchApp(initializeWithBlacklist);
+    await expect(element(by.id('FestivalFeverHeader'))).toBeVisible();
+    await element(by.id('profileButton')).tap();
+    await element(by.id('logoutItem')).tap();
+    await expect(element(by.id('loginTitle'))).toBeVisible();
+    await device.terminateApp();
+    await device.launchApp(initializeWithBlacklist);
+    await expect(element(by.id('selectRoleTitle'))).not.toBeVisible();
   });
 });

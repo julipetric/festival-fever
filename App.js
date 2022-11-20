@@ -48,6 +48,8 @@ export default function App() {
     firebase.app(); // if already initialized, use that one
   }
 
+  LogBox.ignoreAllLogs();
+
   return (
     <Providers>
       <ImageBackground source={image} style={styles.image}>

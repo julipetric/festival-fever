@@ -87,6 +87,7 @@ export default function Register() {
           roles: [attendeeRole.id],
           balance: 0,
           email,
+          favorites: [],
         }
       );
       setLoading(false);

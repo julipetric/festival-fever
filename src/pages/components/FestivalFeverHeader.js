@@ -68,6 +68,7 @@ export default function FestivalFeverHeader({ corporativo }) {
       <View style={styles.buttonsContainer}>
         <HeaderButton>
           <IconButton
+            testID="searchButton"
             icon={() => <FontAwesome5 name="search" size={17} color="white" />}
             onPress={() => {
               if (tabIndex !== 0)
@@ -79,6 +80,7 @@ export default function FestivalFeverHeader({ corporativo }) {
         </HeaderButton>
         <HeaderButton>
           <IconButton
+            testID="profileButton"
             icon={() => <Ionicons name="person" size={17} color="white" />}
             onPress={() => navigation.navigate(t('myAccount'))}
             style={{ margin: 1 }}
