@@ -13,13 +13,14 @@ import { useFirebase, useFirestore } from 'react-redux-firebase';
 import PropTypes from 'prop-types';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { PinkPrimary, TransparentBackdrop } from '../../assets/Colors';
 import InactiveEvents from './InactiveEvents';
 import MyEvents from './events/MyEvents';
 import MyOrganization from './myOrganization/MyOrganization';
 import PersonalInformation from '../common/myAccount/PersonalInformation';
 import HelpAndSupport from './HelpAndSupport';
+import { logout } from '../../firebase/Auth';
 
 const Drawer = createDrawerNavigator();
 
@@ -36,23 +37,24 @@ const styles = StyleSheet.create({
   },
 });
 
-function CustomDrawerContent({ logout, ...props }) {
+function CustomDrawerContent({ onLogout, ...props }) {
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
     <DrawerContentScrollView {...props}>
       {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <DrawerItemList {...props} />
-      <DrawerItem label={t('termsAndConditions')} onPress={logout} />
-      <DrawerItem label={t('logout')} onPress={logout} />
+      <DrawerItem label={t('termsAndConditions')} onPress={onLogout} />
+      <DrawerItem label={t('logout')} onPress={onLogout} />
     </DrawerContentScrollView>
   );
 }
 
 CustomDrawerContent.propTypes = {
-  logout: PropTypes.func.isRequired,
+  onLogout: PropTypes.func.isRequired,
 };
 
 function HomeCorporativo() {
+  const dispatch = useDispatch();
   const firebase = useFirebase();
   const navigation = useNavigation();
   // eslint-disable-next-line no-unused-vars
@@ -64,8 +66,8 @@ function HomeCorporativo() {
     userRole: state.myStore?.userRole,
   }));
 
-  async function logout() {
-    await firebase.logout();
+  async function logoutFunc() {
+    await logout(firebase, dispatch);
     navigation.navigate('AuthNavigator');
   }
 
@@ -105,7 +107,7 @@ function HomeCorporativo() {
           initialRouteName={t('events')}
           drawerContent={props => (
             // eslint-disable-next-line react/jsx-props-no-spreading
-            <CustomDrawerContent logout={logout} {...props} />
+            <CustomDrawerContent onLogout={logoutFunc} {...props} />
           )}
           screenOptions={{ headerTintColor: 'white', headerRight: HeaderRight }}
         >

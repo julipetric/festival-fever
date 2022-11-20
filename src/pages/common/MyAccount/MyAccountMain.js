@@ -5,10 +5,10 @@ import { useFirebase } from 'react-redux-firebase';
 import { useNavigation } from '@react-navigation/native';
 import { Avatar } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-
 import PropTypes from 'prop-types';
+import { logout } from '../../../firebase/Auth';
 
 const styles = StyleSheet.create({
   scroll: {
@@ -73,6 +73,8 @@ ListItem.propTypes = {
 };
 
 function MyAccountMain() {
+  const dispatch = useDispatch();
+
   const { profile } = useSelector(state => ({
     profile: state.firebase.profile,
   }));
@@ -82,8 +84,8 @@ function MyAccountMain() {
   const firebase = useFirebase();
   const navigation = useNavigation();
 
-  async function logout() {
-    await firebase.logout();
+  async function logoutFunc() {
+    await logout(firebase, dispatch);
     navigation.navigate('AuthNavigator');
   }
 
@@ -149,7 +151,7 @@ function MyAccountMain() {
         <ListItem
           text="Cerrar sesión"
           textStyle={{ color: '#FF6E6E' }}
-          onPress={logout}
+          onPress={logoutFunc}
           right={
             <MaterialCommunityIcons
               name="login-variant"

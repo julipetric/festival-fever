@@ -23,6 +23,7 @@ export default function FormCheckbox({
       style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
     >
       <Checkbox
+        testID={name}
         theme={theme}
         label={label}
         error={fieldState.error}

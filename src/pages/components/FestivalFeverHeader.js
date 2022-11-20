@@ -60,6 +60,7 @@ export default function FestivalFeverHeader({ corporativo }) {
       colors={[GradientStart, GradientEnd]}
       end={[0, 1]}
       start={[1, 0]}
+      testID="FestivalFeverHeader"
     >
       <Title style={{ fontFamily: 'MADE-Evolve-Sans-Bold', fontSize: 30 }}>
         festival fever{corporativo ? ' corporativo' : ''}

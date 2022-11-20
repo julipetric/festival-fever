@@ -116,6 +116,7 @@ export default function Login() {
 
   useEffect(() => {
     if (currentUser && storeRoles) {
+      setLoading(false);
       if (storeRoles.length > 1) {
         setRoleSelectorVisible(true);
       } else if (storeRoles.some(role => role?.userTypeId === 1)) {
@@ -124,13 +125,8 @@ export default function Login() {
         navigateCorporativo();
       }
     }
-  }, [
-    currentUser,
-    navigateAsistente,
-    navigateCorporativo,
-    storeRoles,
-    userRoles,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storeRoles]);
 
   function handleRegister() {
     navigation.push(t('register'));
@@ -200,6 +196,7 @@ export default function Login() {
         ) : (
           <>
             <StyledButton
+              testID="loginButton"
               mode="contained"
               style={styles.button}
               onPress={handleSubmit(loginFunction)}
@@ -227,7 +224,6 @@ export default function Login() {
         visible={roleSelectorVisible}
         closeModal={() => {
           setRoleSelectorVisible(false);
-          setLoading(false);
         }}
         userRoles={userRoles}
         onRoleSelected={onRoleSelected}

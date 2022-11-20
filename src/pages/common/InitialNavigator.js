@@ -21,7 +21,10 @@ export default function InitialNavigator() {
 
   useEffect(() => {
     async function fetchRole() {
-      const { docs: query } = await firestore.collection('roles').get();
+      const { docs: query } = await firestore
+        .collection('roles')
+        .where('userTypeId', '==', 1)
+        .get();
       const role = { ...first(query).data(), id: first(query).id };
       dispatch(setAttendeeRole(role));
     }

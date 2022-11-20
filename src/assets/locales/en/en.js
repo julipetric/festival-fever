@@ -146,6 +146,6 @@ export default {
   viewQRForProduct: 'View QR for product:',
   wallet: 'Wallet',
   withdrawalDetails: 'Withdrawal Details',
-  wrongUserPasswordCombination: 'You entered an incorret user or password',
+  wrongUserPasswordCombination: 'You entered an incorrect user or password',
   youAlreadySoldUnits: 'You already sold units of this item',
 };

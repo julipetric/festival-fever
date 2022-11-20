@@ -1,19 +1,21 @@
 import i18n, { t } from 'i18n-js';
 import moment from 'moment';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Alert, StyleSheet } from 'react-native';
 import { ActivityIndicator, HelperText, TextInput } from 'react-native-paper';
 import { DatePickerModal } from 'react-native-paper-dates';
 import { Feather } from '@expo/vector-icons';
-import { useFirebase } from 'react-redux-firebase';
+import { useFirebase, useFirestore } from 'react-redux-firebase';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { first } from 'lodash';
 import UserRegisterSchema from '../../schemas/UserRegisterSchema';
 import FormTextInput from '../components/FormTextInput';
 import StyledButton from '../components/StyledButton';
 import PasswordFormTextInput from '../components/PasswordFormTextInput';
 import { BackgroundGray } from '../../assets/Colors';
+import { setAttendeeRole } from '../../redux/myStoreSlice';
 
 const styles = StyleSheet.create({
   keyboardScrollView: {
@@ -33,6 +35,9 @@ const styles = StyleSheet.create({
 });
 
 export default function Register() {
+  const firestore = useFirestore();
+  const dispatch = useDispatch();
+
   const { control, handleSubmit, formState, getValues } = useForm({
     mode: 'onSubmit',
     reValidateMode: 'onChange',
@@ -42,6 +47,19 @@ export default function Register() {
   const attendeeRole = useSelector(state => state.myStore.attendeeRole);
 
   const firebase = useFirebase();
+
+  useEffect(() => {
+    async function fetchRole() {
+      const { docs: query } = await firestore
+        .collection('roles')
+        .where('userTypeId', '==', 1)
+        .get();
+      const role = { ...first(query).data(), id: first(query).id };
+      dispatch(setAttendeeRole(role));
+    }
+
+    if (!attendeeRole) fetchRole();
+  }, [attendeeRole, dispatch, firestore]);
 
   const [birthday, setBirthday] = useState(undefined);
   const [open, setOpen] = useState(false);

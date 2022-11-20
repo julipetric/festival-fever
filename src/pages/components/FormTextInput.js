@@ -37,6 +37,7 @@ export default function FormTextInput({
         autoCapitalize={autoCapitalize}
         mode={mode}
         label={label}
+        testID={name}
         error={fieldState.error}
         onChangeText={field.onChange}
         style={{ backgroundColor: BackgroundGray, ...style }}
@@ -55,7 +56,11 @@ export default function FormTextInput({
         {...props}
       />
       {!hideHelperText && (
-        <HelperText visible={fieldState.error} type={helperTextType}>
+        <HelperText
+          visible={fieldState.error}
+          type={helperTextType}
+          testID={`${name}Helper`}
+        >
           {fieldState.error && fieldState.error.message}
         </HelperText>
       )}
