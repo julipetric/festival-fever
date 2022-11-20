@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { IconButton } from 'react-native-paper';
-import { FontAwesome5, AntDesign } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import { PinkPrimary } from '../../../../../assets/Colors';
 import { formatEventDateTime } from '../../../../../utils';
 
@@ -73,6 +73,7 @@ function EventCardView({ item, navigate, onFavAdded, isFavorite }) {
       key={event.id}
       style={styles.card}
       onPress={() => navigate(event)}
+      testID="eventCardItem"
     >
       <ImageBackground
         style={styles.imageContainer}

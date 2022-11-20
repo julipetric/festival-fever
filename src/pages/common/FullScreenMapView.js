@@ -78,7 +78,7 @@ function FullScreenMapView() {
   }, [errorMsg]);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1 }} testID="fullScreenMapView">
       <MapView
         style={styles.map}
         showsUserLocation

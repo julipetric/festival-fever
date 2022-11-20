@@ -44,6 +44,7 @@ function EventCards({ events }) {
 
   return events?.length > 0 ? (
     <Carousel
+      testID="eventCardsView"
       horizontal
       data={events}
       renderItem={({ item }) => (

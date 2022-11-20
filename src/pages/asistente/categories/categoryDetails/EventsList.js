@@ -28,6 +28,7 @@ function EventsList({ events }) {
     <View style={styles.container}>
       {events?.length > 0 ? (
         <FlatList
+          testID="eventListView"
           data={events}
           renderItem={({ item }) => (
             <EventListItem event={item} navigate={navigate} hideCategory />

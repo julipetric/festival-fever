@@ -16,8 +16,13 @@ const styles = StyleSheet.create({
 
 function CategoryDetailsHeader({ name, image }) {
   return (
-    <ImageBackground style={styles.container} source={image} blurRadius={1.4}>
-      <Text>{name}</Text>
+    <ImageBackground
+      style={styles.container}
+      source={image}
+      blurRadius={1.4}
+      testID="categoryDetailsHeader"
+    >
+      <Text testID="categoryDetailsHeaderTitle">{name}</Text>
     </ImageBackground>
   );
 }

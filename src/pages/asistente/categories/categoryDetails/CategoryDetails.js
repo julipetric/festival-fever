@@ -141,6 +141,7 @@ function CategoryDetails() {
                 style={[commonStyles.rowSpaceBetween, { paddingBottom: 7 }]}
               >
                 <PillButton
+                  testID="eventsCardModePill"
                   selected={cardsMode}
                   element={
                     <MaterialCommunityIcons
@@ -155,6 +156,7 @@ function CategoryDetails() {
                   }}
                 />
                 <PillButton
+                  testID="eventsListModePill"
                   selected={listMode}
                   element={
                     <FontAwesome5 name="th-list" size={16} color="white" />

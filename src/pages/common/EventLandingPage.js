@@ -18,7 +18,6 @@ import ZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNat
 import {
   AntDesign,
   Feather,
-  FontAwesome5,
   Ionicons,
   MaterialIcons,
 } from '@expo/vector-icons';
@@ -111,6 +110,7 @@ function DatePlaceRow({ event, navigateToMap }) {
       <TouchableOpacity
         style={{ flexDirection: 'row', alignItems: 'center' }}
         onPress={navigateToMap}
+        testID="goToMapButton"
       >
         <MaterialIcons name="location-pin" size={26} color={PinkPrimary} />
         <View style={{ marginLeft: 9 }}>
@@ -181,7 +181,9 @@ function EventLandingPage({
           <View style={styles.categoryPill}>
             <Text style={styles.categoryText}>{category.name}</Text>
           </View>
-          <Text style={styles.eventTitle}>{event.name}</Text>
+          <Text style={styles.eventTitle} testID="eventTitle">
+            {event.name}
+          </Text>
           <DatePlaceRow event={event} navigateToMap={navigateToMap} />
           {userRole?.userTypeId === 2 && (
             <Text style={{ paddingTop: 10, opacity: 0.6 }}>

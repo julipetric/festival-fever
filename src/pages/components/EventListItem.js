@@ -70,7 +70,11 @@ function EventListItem({ event, category, hideCategory }) {
   }
 
   return (
-    <TouchableOpacity style={styles.container} onPress={navigate}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={navigate}
+      testID="eventListItem"
+    >
       <View style={{ display: 'flex', flex: 7, alignItems: 'flex-start' }}>
         {!hideCategory && (
           <View style={styles.categoryPill}>

@@ -23,13 +23,17 @@ const styles = StyleSheet.create({
   },
 });
 
-function PillButton({ text, selected, onPress, element }) {
+function PillButton({ text, selected, onPress, element, testID }) {
   return (
     <View
       style={[styles.filterButton, { opacity: selected ? 1 : 0.3 }]}
       key={text || uniqueId()}
     >
-      <TouchableOpacity onPress={onPress}>
+      <TouchableOpacity
+        onPress={onPress}
+        testID={testID}
+        accessibilityValue={{ text: selected ? 'true' : 'false' }}
+      >
         <View style={styles.content}>
           {text && <Text style={{ fontSize: 12 }}>{text}</Text>}
           {element && text && <View style={{ width: 5 }} />}
@@ -45,6 +49,7 @@ PillButton.defaultProps = {
   selected: false,
   onPress: () => {},
   element: undefined,
+  testID: undefined,
 };
 
 PillButton.propTypes = {
@@ -52,6 +57,7 @@ PillButton.propTypes = {
   selected: PropTypes.bool,
   onPress: PropTypes.func,
   element: PropTypes.element,
+  testID: PropTypes.string,
 };
 
 export default PillButton;
