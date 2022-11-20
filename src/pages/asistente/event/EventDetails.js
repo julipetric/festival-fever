@@ -65,12 +65,13 @@ const styles = StyleSheet.create({
   },
 });
 
-function ComboItem({ item, onPress }) {
+function ComboItem({ item, onPress, testID }) {
   return (
     <TouchableOpacity
       onPress={onPress}
       style={styles.comboContainer}
       key={item.id}
+      testID={testID}
     >
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <Text style={{ color: 'black', fontSize: 16 }}>{item.name}</Text>
@@ -92,9 +93,14 @@ function ComboItem({ item, onPress }) {
   );
 }
 
+ComboItem.defaultProps = {
+  testID: undefined,
+};
+
 ComboItem.propTypes = {
   item: PropTypes.object.isRequired,
   onPress: PropTypes.func.isRequired,
+  testID: PropTypes.string,
 };
 
 function EventDetails() {
@@ -260,14 +266,19 @@ function EventDetails() {
           <View style={styles.line} />
         </View>
         <View>
-          {section.content.map(item =>
+          {section.content.map((item, index) =>
             section?.title === t('combos') ? (
-              <ComboItem item={item} onPress={() => onComboPress(item)} />
+              <ComboItem
+                item={item}
+                onPress={() => onComboPress(item)}
+                testID={`${section?.title}Item-${index}`}
+              />
             ) : (
               <ProductItem
                 item={item}
                 hideOptions
                 onPress={() => onRowPress(item)}
+                testID={`${section?.title}Item-${index}`}
               />
             )
           )}
@@ -368,8 +379,12 @@ function EventDetails() {
       </EventLandingPage>
       {cartItems?.length ? (
         <FAB
+          testID="cartFAB"
           icon={() => <AntDesign name="shoppingcart" size={24} color="white" />}
           label={`${t('cart')} (${sumBy(cartItems, 'quantity')})`}
+          accessibilityValue={{
+            text: `${t('cart')} (${sumBy(cartItems, 'quantity')})`,
+          }}
           style={styles.floatingButton}
           onPress={() => navigation.navigate(t('cart'), { cartItems })}
           disabled={!ticketSegments?.length}

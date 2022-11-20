@@ -172,6 +172,7 @@ function EventLandingPage({
       <ScrollView
         style={styles.container}
         contentContainerStyle={{ paddingBottom: 70 }}
+        testID="eventDetailsScrollView"
       >
         <ImageHeader
           image={image}

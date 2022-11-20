@@ -28,4 +28,32 @@ describe('Event Details Module', () => {
     await expect(element(by.text('Combos'))).toBeVisible();
     await expect(element(by.text('Products'))).toBeVisible();
   });
+
+  it('add items to cart', async () => {
+    await element(by.text('Tickets')).tap();
+    await waitFor(element(by.id('TicketsItem-0')))
+      .toBeVisible()
+      .whileElement(by.id('eventDetailsScrollView'))
+      .scroll(150, 'down');
+    await element(by.id('TicketsItem-0')).tap();
+    await waitFor(element(by.id('TicketsItem-1')))
+      .toBeVisible()
+      .whileElement(by.id('eventDetailsScrollView'))
+      .scroll(150, 'down');
+    await element(by.id('TicketsItem-1')).tap();
+    await element(by.text('Tickets')).tap();
+    await element(by.text('Combos')).tap();
+    await waitFor(element(by.id('CombosItem-0')))
+      .toBeVisible()
+      .whileElement(by.id('eventDetailsScrollView'))
+      .scroll(150, 'down');
+    await element(by.id('CombosItem-0')).tap({ x: 5, y: 10 });
+    await waitFor(element(by.text('Products')))
+      .toBeVisible()
+      .whileElement(by.id('eventDetailsScrollView'))
+      .scroll(150, 'down');
+    await element(by.text('Products')).tap();
+    await element(by.id('ProductsItem-0')).tap({ x: 5, y: 10 });
+    await expect(element(by.id('cartFAB'))).toHaveValue('Cart (4)');
+  });
 });

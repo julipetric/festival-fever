@@ -15,7 +15,14 @@ const styles = StyleSheet.create({
   },
 });
 
-function ProductItem({ item, onPress, setItemActive, hideOptions, setAnchor }) {
+function ProductItem({
+  item,
+  onPress,
+  setItemActive,
+  hideOptions,
+  setAnchor,
+  testID,
+}) {
   const [imageWidth, setImageWidth] = useState(0);
 
   const [imageHeight, setImageHeight] = useState(0);
@@ -58,6 +65,7 @@ function ProductItem({ item, onPress, setItemActive, hideOptions, setAnchor }) {
 
   return (
     <TouchableOpacity
+      testID={testID}
       onPress={onPress}
       onLongPress={event =>
         setAnchor({
@@ -131,6 +139,7 @@ ProductItem.defaultProps = {
   setItemActive: undefined,
   hideOptions: false,
   setAnchor: () => {},
+  testID: undefined,
 };
 
 ProductItem.propTypes = {
@@ -139,6 +148,7 @@ ProductItem.propTypes = {
   setItemActive: PropTypes.func,
   hideOptions: PropTypes.bool,
   setAnchor: PropTypes.func,
+  testID: PropTypes.string,
 };
 
 export default ProductItem;
