@@ -129,6 +129,7 @@ function TransactionItem({
   onPress,
   event,
   disabled,
+  testID,
 }) {
   return (
     <TouchableOpacity
@@ -136,6 +137,7 @@ function TransactionItem({
       key={transaction?.id}
       onPress={onPress}
       disabled={!onPress || disabled}
+      testID={testID}
     >
       <View style={{ flex: 1, paddingRight: 20 }}>
         {transaction.status === 10 ? (
@@ -178,6 +180,7 @@ TransactionItem.defaultProps = {
   onPress: undefined,
   event: undefined,
   disabled: false,
+  testID: undefined,
 };
 
 TransactionItem.propTypes = {
@@ -187,6 +190,7 @@ TransactionItem.propTypes = {
   onPress: PropTypes.func,
   event: PropTypes.object,
   disabled: PropTypes.bool,
+  testID: PropTypes.string,
 };
 
 AmountLabel.propTypes = {

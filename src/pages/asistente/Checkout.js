@@ -37,7 +37,9 @@ const styles = StyleSheet.create({
 function ScreenHeader() {
   return (
     <View style={{ marginBottom: 10 }}>
-      <Title style={{ color: PinkPrimary }}>{t('checkout')}</Title>
+      <Title style={{ color: PinkPrimary }} testID="checkoutHeader">
+        {t('checkout')}
+      </Title>
       <Text style={{ opacity: 0.6 }}>{t('confirmingOrder')}:</Text>
     </View>
   );
@@ -111,6 +113,7 @@ function ListFooter({ orderTotal, currentBalance, loading, addFundsPressed }) {
                 style={{ paddingHorizontal: 0, marginTop: 10 }}
                 mode="contained"
                 onPress={addFundsPressed}
+                testID="addFundsButton"
               />
             </View>
           )}
@@ -304,6 +307,7 @@ function Checkout() {
           style={styles.floatingButton}
           onPress={onConfirm}
           disabled={total > profile.balance}
+          testID="checkoutConfirmFAB"
         />
       )}
       <AddFundsModal

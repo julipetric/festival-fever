@@ -41,11 +41,12 @@ function RoleSelectorModal({ visible, closeModal, userRoles, onRoleSelected }) {
         <FlatList
           scrollEnabled={false}
           data={userRoles}
-          renderItem={({ item }) => (
+          renderItem={({ item, index }) => (
             <StyledButton
               label={item?.userTypeId === 1 ? t('attendee') : item.name}
               mode="text"
               onPress={() => onRoleSelected(item)}
+              testID={`roleOption-${index}`}
             />
           )}
         />

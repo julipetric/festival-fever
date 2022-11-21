@@ -35,8 +35,13 @@ function AddFundsModal({ visible, setVisible, input, setInput, onConfirm }) {
           style={{ backgroundColor: 'rgb(150,150,150)' }}
           value={input}
           onChangeText={text => setInput(text)}
+          testID="fundsInput"
         />
-        <StyledButton label={t('confirm')} onPress={onConfirm} />
+        <StyledButton
+          label={t('confirm')}
+          onPress={onConfirm}
+          testID="addFundsConfirm"
+        />
       </Modal>
     </Portal>
   );

@@ -35,6 +35,7 @@ function EventDetails() {
           <StyledButton
             label={t('eventInfo')}
             onPress={() => navigation.navigate(t('eventInfo'))}
+            testID="eventInfoButton"
           />
           <StyledButton
             label={t('ticketSegments')}

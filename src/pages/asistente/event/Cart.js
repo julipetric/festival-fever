@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function Item({ item, setItem, showNoStock }) {
+function Item({ item, setItem, showNoStock, testID }) {
   function onAdd() {
     const newQuantity = item.quantity + 1;
     if (item.item.stock && newQuantity + item.item.sold > item.item.stock)
@@ -106,6 +106,7 @@ function Item({ item, setItem, showNoStock }) {
           style={{ width: 20, opacity: item.quantity < 1 ? 0.5 : 1 }}
           onPress={onSubstract}
           disabled={item.quantity < 1}
+          testID={`${testID}-minus`}
         >
           <Text
             style={{
@@ -132,7 +133,11 @@ function Item({ item, setItem, showNoStock }) {
         >
           {item.quantity}
         </Text>
-        <TouchableOpacity style={{ width: 20 }} onPress={onAdd}>
+        <TouchableOpacity
+          style={{ width: 20 }}
+          onPress={onAdd}
+          testID={`${testID}-plus`}
+        >
           <Text
             style={{
               color: 'black',
@@ -149,10 +154,15 @@ function Item({ item, setItem, showNoStock }) {
   );
 }
 
+Item.defaultProps = {
+  testID: undefined,
+};
+
 Item.propTypes = {
   item: PropTypes.object.isRequired,
   setItem: PropTypes.func.isRequired,
   showNoStock: PropTypes.func.isRequired,
+  testID: PropTypes.string,
 };
 
 function ScreenHeader({ event }) {
@@ -185,12 +195,12 @@ function OrderSummary({ items }) {
   return (
     <View style={{ paddingVertical: 10, width: '100%' }}>
       <View style={styles.line} />
-      <Subheading style={{ color: PinkPrimary }}>
+      <Subheading style={{ color: PinkPrimary }} testID="orderSummaryTitle">
         {t('orderSummary')}
       </Subheading>
       {orderedItems?.length ? (
         <>
-          {orderedItems?.map(item => (
+          {orderedItems?.map((item, index) => (
             <View
               style={{
                 display: 'flex',
@@ -198,6 +208,7 @@ function OrderSummary({ items }) {
                 justifyContent: 'space-between',
               }}
               key={item.item.id}
+              testID={`orderSummaryItem-${index}`}
             >
               <Text>{item.item.name}</Text>
               <View
@@ -271,6 +282,7 @@ function Cart() {
             item={item}
             setItem={newItem => onItemChange(newItem, index)}
             showNoStock={() => setSnackbarVisible(true)}
+            testID={`cartItem-${index}`}
           />
         )}
         keyExtractor={item => item.item.id}
@@ -283,6 +295,7 @@ function Cart() {
         style={styles.floatingButton}
         onPress={onContinue}
         disabled={!items.length}
+        testID="checkoutFAB"
       />
       <Snackbar
         visible={snackbarVisible}

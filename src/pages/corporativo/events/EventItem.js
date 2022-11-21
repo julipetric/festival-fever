@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   },
 });
 
-function EventItem({ event, category }) {
+function EventItem({ event, category, testID }) {
   const { dateString, hoursString } = formatEventDateTime(event);
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -94,7 +94,7 @@ function EventItem({ event, category }) {
   }
 
   return (
-    <TouchableHighlight onPress={onEventPress}>
+    <TouchableHighlight onPress={onEventPress} testID={testID}>
       <View style={styles.container}>
         <View style={styles.categoryPill}>
           <Text style={styles.categoryText}>{category?.name}</Text>
@@ -189,9 +189,14 @@ function EventItem({ event, category }) {
   );
 }
 
+EventItem.defaultProps = {
+  testID: undefined,
+};
+
 EventItem.propTypes = {
   event: PropTypes.object.isRequired,
   category: PropTypes.object.isRequired,
+  testID: PropTypes.string,
 };
 
 export default EventItem;

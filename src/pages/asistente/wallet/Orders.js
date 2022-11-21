@@ -133,7 +133,8 @@ function Orders() {
       <View style={styles.container}>
         <Text style={styles.ordersLabel}>{t('activeOrders')}</Text>
         <FlatList
-          renderItem={({ item }) => (
+          testID="activeOrdersList"
+          renderItem={({ item, index }) => (
             <TransactionItem
               transaction={item}
               hideOrderTotal
@@ -145,6 +146,7 @@ function Orders() {
               disabled={activeOrders
                 .find(order => order.id === item.id)
                 .items?.every(orderItem => orderItem.status !== 1)}
+              testID={`walletOrderItem-${index}`}
             />
           )}
           data={activeOrders?.map(order => {

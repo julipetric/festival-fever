@@ -75,11 +75,13 @@ function MyEvents() {
     (!events?.length || ticketSegments) &&
     (!ticketSegments?.length || ticketSegmentsPurchasables) ? (
     <FlatList
+      testID="myEventsList"
       contentContainerStyle={styles.contentContainer}
       data={events || []}
       keyExtractor={item => item.id}
-      renderItem={({ item: event }) => (
+      renderItem={({ item: event, index }) => (
         <EventItem
+          testID={`myEventsItem-${index}`}
           event={event}
           category={categories.find(
             category => category.id === event.categoryId
@@ -99,6 +101,7 @@ function MyEvents() {
           <Title>{t('myEvents')}</Title>
           {userRole?.userTypeId === 2 && (
             <StyledButton
+              testID="addEventButton"
               icon={({ color }) => (
                 <Ionicons name="add-circle" size={26} color={color} />
               )}

@@ -6,12 +6,12 @@ import {
   DrawerItem,
   DrawerItemList,
 } from '@react-navigation/drawer';
+import { DrawerActions, useNavigation } from '@react-navigation/native';
 import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { StyleSheet, View } from 'react-native';
 import { t } from 'i18n-js';
 import { useFirebase, useFirestore } from 'react-redux-firebase';
 import PropTypes from 'prop-types';
-import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useDispatch, useSelector } from 'react-redux';
 import { PinkPrimary, TransparentBackdrop } from '../../assets/Colors';
@@ -75,7 +75,7 @@ function HomeCorporativo() {
     navigation.navigate('QRScanner');
   }
 
-  const onDevPress = undefined;
+  const onDevPress = () => navigation.dispatch(DrawerActions.toggleDrawer());
 
   function HeaderRight() {
     return (
@@ -85,6 +85,7 @@ function HomeCorporativo() {
           onPress={onDevPress || (() => {})}
           containerStyle={{ opacity: onDevPress ? 1 : 0.5 }}
           disabled={!onDevPress}
+          testID="devButton"
         >
           <FontAwesome5 name="dev" size={24} color="white" />
         </TouchableOpacity>
@@ -101,7 +102,7 @@ function HomeCorporativo() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.mainLayout}>
+      <View style={styles.mainLayout} testID="mainLayoutCorporativo">
         <Drawer.Navigator
           activeColor={PinkPrimary}
           initialRouteName={t('events')}

@@ -48,7 +48,7 @@ export default function App() {
     firebase.app(); // if already initialized, use that one
   }
 
-  LogBox.ignoreAllLogs();
+  // LogBox.ignoreAllLogs();
 
   return (
     <Providers>

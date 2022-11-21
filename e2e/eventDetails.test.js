@@ -29,7 +29,9 @@ describe('Event Details Module', () => {
     await expect(element(by.text('Products'))).toBeVisible();
   });
 
-  it('add items to cart', async () => {
+  it('buy items flow', async () => {
+    const initialOrdersQuantity = 3;
+
     await element(by.text('Tickets')).tap();
     await waitFor(element(by.id('TicketsItem-0')))
       .toBeVisible()
@@ -55,5 +57,24 @@ describe('Event Details Module', () => {
     await element(by.text('Products')).tap();
     await element(by.id('ProductsItem-0')).tap({ x: 5, y: 10 });
     await expect(element(by.id('cartFAB'))).toHaveValue('Cart (4)');
+    await element(by.id('cartFAB')).tap();
+    await expect(element(by.id('orderSummaryTitle'))).toBeVisible();
+    await element(by.id('cartItem-1-minus')).tap();
+    await expect(element(by.id('orderSummaryItem-3'))).not.toBeVisible();
+    await element(by.id('checkoutFAB')).tap();
+    await expect(element(by.id('checkoutHeader'))).toBeVisible();
+    await expect(element(by.text('Insufficient Funds'))).toBeVisible();
+    await element(by.id('addFundsButton')).tap();
+    await element(by.id('fundsInput')).typeText('4500');
+    await element(by.id('addFundsConfirm')).tap();
+    await expect(element(by.text('Insufficient Funds'))).not.toBeVisible();
+    await element(by.id('checkoutConfirmFAB')).tap();
+    await element(by.id('walletTab')).tap();
+
+    // using initialOrdersQuantity since index is based 0
+    await waitFor(element(by.id(`walletOrderItem-${initialOrdersQuantity}`)))
+      .toBeVisible()
+      .whileElement(by.id('activeOrdersList'))
+      .scroll(150, 'down');
   });
 });
