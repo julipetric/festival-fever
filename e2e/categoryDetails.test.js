@@ -1,6 +1,9 @@
 /* eslint-env detox/detox, mocha */
 const { initializeWithBlacklist } = require('./util');
 
+const category1Name = 'Música en Vivo';
+const category2Name = 'Cine';
+
 describe('Category Details module', () => {
   beforeAll(async () => {
     await device.launchApp(initializeWithBlacklist);
@@ -15,9 +18,6 @@ describe('Category Details module', () => {
   });
 
   it('navigate to category and back', async () => {
-    const category1Name = 'Música en Vivo';
-    const category2Name = 'Cine';
-
     await expect(element(by.id('CategoriesList'))).toBeVisible();
     await element(by.text(category1Name)).tap();
     await expect(element(by.id('categoryDetailsHeader'))).toBeVisible();
@@ -41,9 +41,7 @@ describe('Category Details module', () => {
   });
 
   it('show gallery/list view', async () => {
-    const categoryName = 'Música en Vivo';
-
-    await element(by.text(categoryName)).tap();
+    await element(by.text(category1Name)).tap();
     await expect(element(by.id('eventsCardModePill'))).toHaveValue('true');
     await expect(element(by.id('eventsListModePill'))).toHaveValue('false');
     await expect(element(by.id('eventCardsView'))).toBeVisible();

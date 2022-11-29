@@ -96,7 +96,10 @@ function ProductItem({
             </Text>
           )}
           {!hideOptions && item.sold !== undefined && (
-            <Text style={{ color: 'black', opacity: 0.7, fontSize: 16 }}>
+            <Text
+              style={{ color: 'black', opacity: 0.7, fontSize: 16 }}
+              testID={`${testID}-sold`}
+            >
               {t('sold')}: {item.sold}
             </Text>
           )}

@@ -15,7 +15,16 @@ const styles = StyleSheet.create({
   },
 });
 
-function ComboItem({ item, onPress, setItemActive, hideOptions, setAnchor }) {
+function ComboItem({
+  item,
+  onPress,
+  setItemActive,
+  hideOptions,
+  setAnchor,
+  index,
+}) {
+  const testID = `ComboItem-${index}`;
+
   const [imageWidth, setImageWidth] = useState(0);
 
   const [imageHeight, setImageHeight] = useState(0);
@@ -56,6 +65,8 @@ function ComboItem({ item, onPress, setItemActive, hideOptions, setAnchor }) {
     }
   }
 
+  console.log(`${testID}-sold`);
+
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -88,7 +99,10 @@ function ComboItem({ item, onPress, setItemActive, hideOptions, setAnchor }) {
             </Text>
           )}
           {!hideOptions && item.sold !== undefined && (
-            <Text style={{ color: 'black', opacity: 0.7, fontSize: 16 }}>
+            <Text
+              style={{ color: 'black', opacity: 0.7, fontSize: 16 }}
+              testID={`${testID}-sold`}
+            >
               {t('sold')}: {item.sold}
             </Text>
           )}
@@ -139,6 +153,7 @@ ComboItem.propTypes = {
   setItemActive: PropTypes.func,
   hideOptions: PropTypes.bool,
   setAnchor: PropTypes.func,
+  index: PropTypes.number.isRequired,
 };
 
 export default ComboItem;

@@ -40,14 +40,17 @@ function EventDetails() {
           <StyledButton
             label={t('ticketSegments')}
             onPress={() => navigation.navigate(t('ticketSegments'))}
+            testID="ticketSegmentsButton"
           />
           <StyledButton
             label={t('products')}
             onPress={() => navigation.navigate(t('products'))}
+            testID="productsButton"
           />
           <StyledButton
             label={t('combos')}
             onPress={() => navigation.navigate(t('combos'))}
+            testID="combosButton"
           />
         </View>
       )}

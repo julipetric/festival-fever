@@ -191,12 +191,13 @@ function EventProducts() {
               data={products || []}
               contentContainerStyle={styles.container}
               ListEmptyComponent={() => <Subheading>{t('noItems')}</Subheading>}
-              renderItem={({ item }) => (
+              renderItem={({ item, index }) => (
                 <ProductItem
                   item={item}
                   onPress={() => onItemPress(item)}
                   setItemActive={value => setItemActive(item, value)}
                   setAnchor={setAnchor}
+                  testID={`ProductsItem-${index}`}
                 />
               )}
             />

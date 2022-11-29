@@ -41,6 +41,7 @@ function AddFundsModal({ visible, setVisible, input, setInput, onConfirm }) {
           label={t('confirm')}
           onPress={onConfirm}
           testID="addFundsConfirm"
+          style={{ marginTop: 10 }}
         />
       </Modal>
     </Portal>

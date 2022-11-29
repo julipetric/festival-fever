@@ -156,7 +156,7 @@ function EventCombos() {
             data={mappedCombos || []}
             contentContainerStyle={styles.container}
             ListEmptyComponent={() => <Subheading>{t('noItems')}</Subheading>}
-            renderItem={({ item }) => (
+            renderItem={({ item, index }) => (
               <ComboItem
                 item={{
                   ...item,
@@ -170,6 +170,7 @@ function EventCombos() {
                 onPress={() => onItemPress(item)}
                 setItemActive={value => setItemActive(item, value)}
                 setAnchor={setAnchor}
+                index={index}
               />
             )}
           />

@@ -17,7 +17,13 @@ const styles = StyleSheet.create({
   itemName: { fontSize: 16, color: 'black', fontWeight: 'bold' },
 });
 
-function TicketSegmentItem({ item, purchasable, setItemActive, setAnchor }) {
+function TicketSegmentItem({
+  item,
+  purchasable,
+  setItemActive,
+  setAnchor,
+  index,
+}) {
   const [active, setActive] = useState(purchasable?.active || false);
   const navigation = useNavigation();
 
@@ -83,7 +89,10 @@ function TicketSegmentItem({ item, purchasable, setItemActive, setAnchor }) {
           }}
         >
           {purchasable?.sold !== undefined && (
-            <Text style={{ color: 'black' }}>
+            <Text
+              style={{ color: 'black' }}
+              testID={`ticketSegment-${index}-sold`}
+            >
               {t('sold')}: {purchasable?.sold}
             </Text>
           )}
@@ -130,6 +139,7 @@ TicketSegmentItem.propTypes = {
   purchasable: PropTypes.object.isRequired,
   setItemActive: PropTypes.func.isRequired,
   setAnchor: PropTypes.func,
+  index: PropTypes.number.isRequired,
 };
 
 export default TicketSegmentItem;

@@ -33,7 +33,7 @@ describe('Modo Corporativo', () => {
     await element(by.id('myEventsItem-0')).tap();
     await element(by.id('eventInfoButton')).tap();
     await element(by.id('name')).clearText();
-    const number = Math.random() * 100;
+    const number = (Math.random() * 100).toPrecision(0);
     await element(by.id('name')).typeText(`testing event - ${number}`);
   });
 });

@@ -224,7 +224,7 @@ function TicketSegments() {
               ListEmptyComponent={() => (
                 <Text style={{ paddingTop: 10 }}>{t('noTicketSegments')}</Text>
               )}
-              renderItem={({ item }) => (
+              renderItem={({ item, index }) => (
                 <TicketSegmentItem
                   item={item}
                   purchasable={ticketSegmentsPurchasables?.find(
@@ -239,6 +239,7 @@ function TicketSegments() {
                     )
                   }
                   setAnchor={setAnchor}
+                  index={index}
                 />
               )}
             />

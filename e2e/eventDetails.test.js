@@ -1,10 +1,11 @@
 /* eslint-env detox/detox, mocha */
 const { initializeWithBlacklist } = require('./util');
 
+const initialOrdersQuantity = 0;
+const categoryName = 'Música en Vivo';
+
 describe('Event Details Module', () => {
   beforeAll(async () => {
-    const categoryName = 'Música en Vivo';
-
     await device.launchApp(initializeWithBlacklist);
     await element(by.id('username')).typeText('<E2E_ATTENDEE_EMAIL>');
     await element(by.id('password')).typeText('<E2E_PASSWORD>');
@@ -30,8 +31,6 @@ describe('Event Details Module', () => {
   });
 
   it('buy items flow', async () => {
-    const initialOrdersQuantity = 3;
-
     await element(by.text('Tickets')).tap();
     await waitFor(element(by.id('TicketsItem-0')))
       .toBeVisible()
@@ -55,6 +54,10 @@ describe('Event Details Module', () => {
       .whileElement(by.id('eventDetailsScrollView'))
       .scroll(150, 'down');
     await element(by.text('Products')).tap();
+    await waitFor(element(by.id('ProductsItem-0')))
+      .toBeVisible()
+      .whileElement(by.id('eventDetailsScrollView'))
+      .scroll(150, 'down');
     await element(by.id('ProductsItem-0')).tap({ x: 5, y: 10 });
     await expect(element(by.id('cartFAB'))).toHaveValue('Cart (4)');
     await element(by.id('cartFAB')).tap();

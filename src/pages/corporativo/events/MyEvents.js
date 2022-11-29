@@ -70,6 +70,8 @@ function MyEvents() {
     return array;
   });
 
+  console.log(categories);
+
   return events &&
     categories &&
     (!events?.length || ticketSegments) &&
