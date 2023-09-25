@@ -65,6 +65,8 @@ export default {
   home: 'Home',
   inactiveEvents: 'Inactive Events',
   insufficientFunds: 'Insufficient Funds',
+  invalidEmail: 'Invalid Email',
+  isRequired: '{{label}} is a required field',
   items: 'Items',
   lastEditBy: 'Last edit by',
   lastName: 'Last Name',

@@ -3,6 +3,7 @@ import React from 'react';
 import { useController } from 'react-hook-form';
 import { HelperText, TextInput } from 'react-native-paper';
 import PropTypes from 'prop-types';
+import { t } from 'i18n-js';
 import { BackgroundGray } from '../../assets/Colors';
 
 export default function FormTextInput({
@@ -61,7 +62,9 @@ export default function FormTextInput({
           type={helperTextType}
           testID={`${name}Helper`}
         >
-          {fieldState.error && fieldState.error.message}
+          {fieldState.error &&
+            fieldState.error.message &&
+            t(fieldState.error.message.key, fieldState.error.message.values)}
         </HelperText>
       )}
     </>

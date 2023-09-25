@@ -213,7 +213,7 @@ export default function Login() {
             </StyledButton>
             <StyledButton
               mode="text"
-              style={styles.button}
+              style={[styles.button, { paddingHorizontal: 0 }]}
               onPress={handleForgotPassword}
             >
               {t('forgotPassword')}

@@ -1,26 +1,27 @@
-import { StatusBar } from "expo-status-bar";
-import React from "react";
-import * as Localization from "expo-localization";
-import i18n from "i18n-js";
-import { ImageBackground, LogBox, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import firebase from "firebase/app";
-import "firebase/auth";
-import "firebase/firestore";
-import "firebase/storage";
-import InitialNavigator from "./src/pages/common/InitialNavigator";
-import en from "./src/assets/locales/en/en";
-import es from "./src/assets/locales/es/es";
-import image from "./src/assets/default_bg.png";
-import Providers from "./src/context/Providers";
-import { fbConfig } from "./src/context/FirebaseConfig";
-import SplashGate from "./src/context/SplashGate";
-import initializePolyfill from "./src/context/Polyfill";
+import { StatusBar } from 'expo-status-bar';
+import React from 'react';
+import * as Localization from 'expo-localization';
+import i18n from 'i18n-js';
+import { ImageBackground, LogBox, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
+import 'firebase/storage';
+import { setLocale } from 'yup';
+import InitialNavigator from './src/pages/common/InitialNavigator';
+import en from './src/assets/locales/en/en';
+import es from './src/assets/locales/es/es';
+import image from './src/assets/default_bg.png';
+import Providers from './src/context/Providers';
+import { fbConfig } from './src/context/FirebaseConfig';
+import SplashGate from './src/context/SplashGate';
+import initializePolyfill from './src/context/Polyfill';
 
 const styles = StyleSheet.create({
   image: {
-    height: "100%",
-    resizeMode: "cover",
+    height: '100%',
+    resizeMode: 'cover',
   },
 });
 
@@ -31,13 +32,28 @@ function initializeLanguage() {
     es,
   };
   // Set the locale once at the beginning of your app.
-  i18n.defaultLocale = "en";
+  i18n.defaultLocale = 'en';
   i18n.locale = Localization.locale;
   i18n.fallbacks = true;
+
+  setLocale({
+    mixed: {
+      required: field => ({
+        key: 'isRequired',
+        values: { label: field.label },
+      }),
+    },
+    string: {
+      email: () => ({ key: 'invalidEmail' }),
+      /* email: fieldName =>
+        `invalidEmail ${fieldName.label}
+         ${Object.keys(fieldName).join(', ')}`, */
+    },
+  });
 }
 
 export default function App() {
-  LogBox.ignoreLogs(["Setting a timer"]);
+  LogBox.ignoreLogs(['Setting a timer']);
 
   initializeLanguage();
   initializePolyfill();
