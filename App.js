@@ -9,6 +9,8 @@ import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/storage';
 import { setLocale } from 'yup';
+import moment from 'moment';
+import 'moment/locale/es';
 import InitialNavigator from './src/pages/common/InitialNavigator';
 import en from './src/assets/locales/en/en';
 import es from './src/assets/locales/es/es';
@@ -66,7 +68,9 @@ export default function App() {
     firebase.app(); // if already initialized, use that one
   }
 
-  LogBox.ignoreAllLogs();
+  // LogBox.ignoreAllLogs();
+
+  moment.locale(['es-ar', 'es-es', 'es']);
 
   return (
     <Providers>

@@ -18,8 +18,10 @@ function CategoriesScreen() {
       data={[
         {
           name: t('allEvents'),
-          imageUrl: 'https://picsum.photos/1000/800',
-          iconUrl: 'https://picsum.photos/200',
+          imageUrl:
+            'https://firebasestorage.invalid/<STORAGE_DOWNLOAD_URL>',
+          iconUrl:
+            'https://firebasestorage.invalid/<STORAGE_DOWNLOAD_URL>',
         },
         ...categories,
       ]}

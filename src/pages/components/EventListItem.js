@@ -65,7 +65,9 @@ function EventListItem({ event, category, hideCategory }) {
 
   const navigation = useNavigation();
   function navigate() {
-    dispatch(setSelectedEvent(event));
+    dispatch(
+      setSelectedEvent({ ...event, category: category || event?.category })
+    );
     navigation.navigate(t('eventDetails'));
   }
 

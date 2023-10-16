@@ -25,7 +25,7 @@ export function formatEventDateTime(event) {
   let dateString;
   dateString = moment.unix(event.startDate).format('LLLL');
   if (moment().year() === moment.unix(event.startDate).year())
-    dateString = dateString.substring(0, dateString.lastIndexOf(',') - 1);
+    dateString = dateString.substring(0, dateString.lastIndexOf(' de'));
   else
     dateString = dateString.substring(
       0,

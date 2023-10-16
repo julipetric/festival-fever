@@ -128,7 +128,12 @@ function EditEventInfo() {
       if (newEvent || !event)
         await firestore.collection('events').add(saveEvent);
       else await firestore.collection('events').doc(event.id).update(saveEvent);
-      dispatch(setSelectedEvent({ ...saveEvent, category: event.category }));
+      dispatch(
+        setSelectedEvent({
+          ...saveEvent,
+          category: event?.category || watch('category'),
+        })
+      );
       onSaveSuccess();
     } catch (e) {
       Alert.alert(t('error'), JSON.stringify(e));
