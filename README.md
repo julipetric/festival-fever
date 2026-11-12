@@ -6,6 +6,19 @@ It was the final project of the Information Systems Engineering degree at UTN Sa
 
 > **Status.** This is an archived snapshot that targets Expo SDK 41 and React Native 0.63 (bare workflow; the native project in the repository is Android). The original Firebase backend is not provisioned, so running the app requires your own Firebase project. See [Running it](#running-it).
 
+## Screens
+
+| | Screen 1 | Screen 2 | Screen 3 | Screen 4 |
+| --- | --- | --- | --- | --- |
+| **Attendee** | <img src="docs/screenshots/attendee-categories.jpg" alt="Attendee category grid with the all events, live music, nightlife and theatre categories" width="200"> | <img src="docs/screenshots/attendee-event-details.jpg" alt="Attendee event page for a cinema event, with its date, venue, ticket, combo and product sections and a cart button" width="200"> | <img src="docs/screenshots/attendee-checkout.jpg" alt="Attendee checkout summary listing a combo and four tickets, with the wallet balance before and after the purchase" width="200"> | <img src="docs/screenshots/attendee-wallet.jpg" alt="Attendee wallet with the list of active orders and the current balance" width="200"> |
+| **Organizer** | <img src="docs/screenshots/organizer-my-events.jpg" alt="Organizer list of events with category, date, venue, image and tickets sold" width="200"> | <img src="docs/screenshots/organizer-ticket-segments.jpg" alt="Organizer ticket segments screen showing a ticket type with its price, stock and active switch" width="200"> | <img src="docs/screenshots/organizer-products.jpg" alt="Organizer products screen listing two products with price, units sold and an active switch" width="200"> | <img src="docs/screenshots/organizer-qr-scan.jpg" alt="Organizer QR scanner showing the confirmation dialog after a code is validated" width="200"> |
+
+Left to right. Attendee: categories, event details, checkout, wallet. Organizer: my events, ticket segments, products, QR scan.
+
+An organizer scanning an attendee's QR code at the entrance (12 s):
+
+<img src="docs/scan-qr.gif" alt="Screen recording of the organizer opening the QR scanner, scanning an attendee ticket and getting a code validated confirmation" width="240">
+
 ## Features
 
 ### Attendee (`src/pages/asistente`)
