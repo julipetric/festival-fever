@@ -16,7 +16,7 @@ function loadDotEnv() {
       if (!match) return;
       const [, key, value] = match;
       if (process.env[key] === undefined) {
-        process.env[key] = value.replace(/^(['"])(.*)$/, '$2');
+        process.env[key] = value.replace(/^(['"])(.*)\1$/, '$2');
       }
     });
 }
