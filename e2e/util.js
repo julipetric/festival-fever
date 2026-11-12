@@ -5,7 +5,7 @@ const path = require('path');
 
 // Carga `.env` (en la raíz del repo, ignorado por git) sin pisar las variables
 // que ya estén definidas en el entorno. Formato: una línea CLAVE=valor por
-// variable.
+// variable, con comillas opcionales alrededor del valor.
 function loadDotEnv() {
   const envPath = path.join(__dirname, '..', '.env');
   if (!fs.existsSync(envPath)) return;
@@ -15,7 +15,9 @@ function loadDotEnv() {
       const match = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$/);
       if (!match) return;
       const [, key, value] = match;
-      if (process.env[key] === undefined) process.env[key] = value;
+      if (process.env[key] === undefined) {
+        process.env[key] = value.replace(/^(['"])(.*)$/, '$2');
+      }
     });
 }
 
