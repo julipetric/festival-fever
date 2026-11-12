@@ -62,7 +62,7 @@ export default function FestivalFeverHeader({ corporativo }) {
       start={[1, 0]}
       testID="FestivalFeverHeader"
     >
-      <Title style={{ fontFamily: 'MADE-Evolve-Sans-Bold', fontSize: 30 }}>
+      <Title style={{ fontFamily: 'Poppins-Bold', fontSize: 30 }}>
         festival fever{corporativo ? ' corporativo' : ''}
       </Title>
       <View style={styles.buttonsContainer}>

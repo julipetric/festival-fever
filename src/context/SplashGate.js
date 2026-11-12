@@ -11,7 +11,7 @@ export default function SplashGate({ children }) {
 
   const [fontsLoaded] = useFonts({
     // eslint-disable-next-line global-require
-    'MADE-Evolve-Sans-Bold': require('../assets/fonts/MADE-Evolve-Sans-Bold.otf'),
+    'Poppins-Bold': require('../assets/fonts/Poppins-Bold.ttf'),
   });
 
   if (!isLoaded(auth) || !fontsLoaded)

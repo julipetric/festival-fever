@@ -156,7 +156,7 @@ export default function Login() {
               fontWeight: 'bold',
               fontSize: 40,
               color: 'white',
-              fontFamily: 'MADE-Evolve-Sans-Bold',
+              fontFamily: 'Poppins-Bold',
             },
           ]}
         >

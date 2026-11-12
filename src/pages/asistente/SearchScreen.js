@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 42,
-    fontFamily: 'MADE-Evolve-Sans-Bold',
+    fontFamily: 'Poppins-Bold',
     color: 'white',
   },
   searchField: {
