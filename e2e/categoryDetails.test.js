@@ -1,5 +1,7 @@
 /* eslint-env detox/detox, mocha */
-const { initializeWithBlacklist } = require('./util');
+const { initializeWithBlacklist, credentials } = require('./util');
+
+const { attendee } = credentials;
 
 const category1Name = 'Música en Vivo';
 const category2Name = 'Cine';
@@ -7,8 +9,8 @@ const category2Name = 'Cine';
 describe('Category Details module', () => {
   beforeAll(async () => {
     await device.launchApp(initializeWithBlacklist);
-    await element(by.id('username')).typeText('<E2E_ATTENDEE_EMAIL>');
-    await element(by.id('password')).typeText('<E2E_PASSWORD>');
+    await element(by.id('username')).typeText(attendee.email);
+    await element(by.id('password')).typeText(attendee.password);
     await element(by.id('rememberLogin')).tap();
     await element(by.id('loginButton')).tap();
   });

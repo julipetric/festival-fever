@@ -1,5 +1,7 @@
 /* eslint-env detox/detox, mocha */
-const { initializeWithBlacklist } = require('./util');
+const { initializeWithBlacklist, credentials } = require('./util');
+
+const { attendee, organizer } = credentials;
 
 const categoryName = 'Música en Vivo';
 const intialSoldQuantity = 0;
@@ -15,8 +17,8 @@ describe('Integration', () => {
 
   it('get ticket for attendee', async () => {
     // log in
-    await element(by.id('username')).typeText('<E2E_ATTENDEE_EMAIL>');
-    await element(by.id('password')).typeText('<E2E_PASSWORD>');
+    await element(by.id('username')).typeText(attendee.email);
+    await element(by.id('password')).typeText(attendee.password);
     await element(by.id('loginButton')).tap();
     await waitFor(element(by.id('CategoriesList')))
       .toBeVisible()
@@ -47,8 +49,8 @@ describe('Integration', () => {
 
   it('check ticket sold quantity', async () => {
     // login
-    await element(by.id('username')).typeText('<E2E_ORGANIZER_EMAIL>');
-    await element(by.id('password')).typeText('<E2E_PASSWORD>');
+    await element(by.id('username')).typeText(organizer.email);
+    await element(by.id('password')).typeText(organizer.password);
     await element(by.id('loginButton')).tap();
     await element(by.id('roleOption-0')).tap();
 
@@ -67,8 +69,8 @@ describe('Integration', () => {
 
   it('get product for attendee', async () => {
     // log in
-    await element(by.id('username')).typeText('<E2E_ATTENDEE_EMAIL>');
-    await element(by.id('password')).typeText('<E2E_PASSWORD>');
+    await element(by.id('username')).typeText(attendee.email);
+    await element(by.id('password')).typeText(attendee.password);
     await element(by.id('loginButton')).tap();
     await waitFor(element(by.id('CategoriesList')))
       .toBeVisible()
@@ -99,8 +101,8 @@ describe('Integration', () => {
 
   it('check product sold quantity', async () => {
     // login
-    await element(by.id('username')).typeText('<E2E_ORGANIZER_EMAIL>');
-    await element(by.id('password')).typeText('<E2E_PASSWORD>');
+    await element(by.id('username')).typeText(organizer.email);
+    await element(by.id('password')).typeText(organizer.password);
     await element(by.id('loginButton')).tap();
     await element(by.id('roleOption-0')).tap();
 
@@ -119,8 +121,8 @@ describe('Integration', () => {
 
   it('get combo for attendee', async () => {
     // log in
-    await element(by.id('username')).typeText('<E2E_ATTENDEE_EMAIL>');
-    await element(by.id('password')).typeText('<E2E_PASSWORD>');
+    await element(by.id('username')).typeText(attendee.email);
+    await element(by.id('password')).typeText(attendee.password);
     await element(by.id('loginButton')).tap();
     await waitFor(element(by.id('CategoriesList')))
       .toBeVisible()
@@ -151,8 +153,8 @@ describe('Integration', () => {
 
   it('check pruchasables (combo) sold quantity', async () => {
     // login
-    await element(by.id('username')).typeText('<E2E_ORGANIZER_EMAIL>');
-    await element(by.id('password')).typeText('<E2E_PASSWORD>');
+    await element(by.id('username')).typeText(organizer.email);
+    await element(by.id('password')).typeText(organizer.password);
     await element(by.id('loginButton')).tap();
     await element(by.id('roleOption-0')).tap();
 

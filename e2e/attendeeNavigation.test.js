@@ -1,5 +1,7 @@
 /* eslint-env detox/detox, mocha */
-const { initializeWithBlacklist } = require('./util');
+const { initializeWithBlacklist, credentials } = require('./util');
+
+const { attendee } = credentials;
 
 describe('Navigation (attendee)', () => {
   beforeAll(async () => {
@@ -11,8 +13,8 @@ describe('Navigation (attendee)', () => {
   });
 
   it('bottom tabs navigation', async () => {
-    await element(by.id('username')).typeText('<E2E_ATTENDEE_EMAIL>');
-    await element(by.id('password')).typeText('<E2E_PASSWORD>');
+    await element(by.id('username')).typeText(attendee.email);
+    await element(by.id('password')).typeText(attendee.password);
     await element(by.id('loginButton')).tap();
     await element(by.id('walletTab')).tap();
     await expect(element(by.text('Active Orders'))).toBeVisible();

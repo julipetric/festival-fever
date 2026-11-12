@@ -1,5 +1,7 @@
 /* eslint-env detox/detox, mocha */
-const { initializeWithBlacklist } = require('./util');
+const { initializeWithBlacklist, credentials } = require('./util');
+
+const { attendee, organizer } = credentials;
 
 describe('Login', () => {
   beforeAll(async () => {
@@ -11,14 +13,15 @@ describe('Login', () => {
   });
 
   it('should validate email format', async () => {
-    await element(by.id('username')).typeText('asistentedemo');
+    const [localPart, domain] = attendee.email.split('@');
+    await element(by.id('username')).typeText(localPart);
     await expect(element(by.id('usernameHelper'))).toBeVisible();
-    await element(by.id('username')).typeText('@mailinator.com');
+    await element(by.id('username')).typeText(`@${domain}`);
     await expect(element(by.id('usernameHelper'))).toHaveText('');
   });
 
   it('should not login with wrong credentials', async () => {
-    await element(by.id('password')).typeText('<E2E_PASSWORD>ee');
+    await element(by.id('password')).typeText(`${attendee.password}ee`);
     await element(by.id('loginButton')).tap();
     await expect(element(by.text('Error'))).toBeVisible();
     await element(by.text('OK')).tap();
@@ -26,14 +29,14 @@ describe('Login', () => {
   });
 
   it("do/don't remember session (attendee only)", async () => {
-    await element(by.id('password')).typeText('<E2E_PASSWORD>');
+    await element(by.id('password')).typeText(attendee.password);
     await element(by.id('loginButton')).tap();
     await expect(element(by.id('FestivalFeverHeader'))).toBeVisible();
     await device.terminateApp();
     await device.launchApp(initializeWithBlacklist);
     await expect(element(by.id('FestivalFeverHeader'))).not.toBeVisible();
-    await element(by.id('username')).typeText('<E2E_ATTENDEE_EMAIL>');
-    await element(by.id('password')).typeText('<E2E_PASSWORD>');
+    await element(by.id('username')).typeText(attendee.email);
+    await element(by.id('password')).typeText(attendee.password);
     await element(by.id('rememberLogin')).tap();
     await element(by.id('loginButton')).tap();
     await expect(element(by.id('FestivalFeverHeader'))).toBeVisible();
@@ -46,15 +49,15 @@ describe('Login', () => {
     await device.uninstallApp();
     await device.installApp();
     await device.launchApp(initializeWithBlacklist);
-    await element(by.id('username')).typeText('<E2E_ORGANIZER_EMAIL>');
-    await element(by.id('password')).typeText('<E2E_PASSWORD>');
+    await element(by.id('username')).typeText(organizer.email);
+    await element(by.id('password')).typeText(organizer.password);
     await element(by.id('loginButton')).tap();
     await expect(element(by.id('selectRoleTitle'))).toBeVisible();
     await device.terminateApp();
     await device.launchApp(initializeWithBlacklist);
     await expect(element(by.id('selectRoleTitle'))).not.toBeVisible();
-    await element(by.id('username')).typeText('<E2E_ORGANIZER_EMAIL>');
-    await element(by.id('password')).typeText('<E2E_PASSWORD>');
+    await element(by.id('username')).typeText(organizer.email);
+    await element(by.id('password')).typeText(organizer.password);
     await element(by.id('rememberLogin')).tap();
     await element(by.id('loginButton')).tap();
     await expect(element(by.id('selectRoleTitle'))).toBeVisible();
@@ -67,8 +70,8 @@ describe('Login', () => {
     await device.uninstallApp();
     await device.installApp();
     await device.launchApp(initializeWithBlacklist);
-    await element(by.id('username')).typeText('<E2E_ATTENDEE_EMAIL>');
-    await element(by.id('password')).typeText('<E2E_PASSWORD>');
+    await element(by.id('username')).typeText(attendee.email);
+    await element(by.id('password')).typeText(attendee.password);
     await element(by.id('rememberLogin')).tap();
     await element(by.id('loginButton')).tap();
     await expect(element(by.id('FestivalFeverHeader'))).toBeVisible();

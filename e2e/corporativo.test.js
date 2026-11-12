@@ -1,11 +1,13 @@
 /* eslint-env detox/detox, mocha */
-const { initializeWithBlacklist } = require('./util');
+const { initializeWithBlacklist, credentials } = require('./util');
+
+const { organizer } = credentials;
 
 describe('Modo Corporativo', () => {
   beforeAll(async () => {
     await device.launchApp(initializeWithBlacklist);
-    await element(by.id('username')).typeText('<E2E_ORGANIZER_EMAIL>');
-    await element(by.id('password')).typeText('<E2E_PASSWORD>');
+    await element(by.id('username')).typeText(organizer.email);
+    await element(by.id('password')).typeText(organizer.password);
     await element(by.id('rememberLogin')).tap();
     await element(by.id('loginButton')).tap();
     await element(by.id('roleOption-0')).tap();
