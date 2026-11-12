@@ -8,6 +8,9 @@ plugins {
 
 
 apply plugin: "com.android.application"
+// El plugin necesita android/app/google-services.json (ignorado por git). Se
+// genera desde la consola de Firebase; android/app/google-services.example.json
+// muestra la estructura esperada.
 apply plugin: 'com.google.gms.google-services'
 
 import com.android.build.OutputFile
