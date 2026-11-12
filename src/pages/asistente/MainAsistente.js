@@ -24,7 +24,7 @@ export default function MainAsistente() {
   return (
     <View style={styles.container}>
       <Stack.Navigator
-        initialRouteName="HomeCorporativo"
+        initialRouteName="HomeAsistente"
         screenOptions={{ header: () => <FestivalFeverHeader /> }}
       >
         <Stack.Screen name="HomeAsistente" component={HomeAsistente} />
