@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { t } from 'i18n-js';
 import HomeAsistente from './HomeAsistente';
-import MyAccount from '../common/myAccount/MyAccount';
+import MyAccount from '../common/MyAccount/MyAccount';
 import FestivalFeverHeader from '../components/FestivalFeverHeader';
 import SearchScreen from './SearchScreen';
 import FullScreenMapView from '../common/FullScreenMapView';

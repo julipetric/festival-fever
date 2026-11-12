@@ -17,8 +17,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { PinkPrimary, TransparentBackdrop } from '../../assets/Colors';
 import InactiveEvents from './InactiveEvents';
 import MyEvents from './events/MyEvents';
-import MyOrganization from './myOrganization/MyOrganization';
-import PersonalInformation from '../common/myAccount/PersonalInformation';
+import MyOrganization from './MyOrganization/MyOrganization';
+import PersonalInformation from '../common/MyAccount/PersonalInformation';
 import HelpAndSupport from './HelpAndSupport';
 import { logout } from '../../firebase/Auth';
 
