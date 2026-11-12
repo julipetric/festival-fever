@@ -43,7 +43,6 @@ function CustomDrawerContent({ onLogout, ...props }) {
     <DrawerContentScrollView {...props}>
       {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <DrawerItemList {...props} />
-      <DrawerItem label={t('termsAndConditions')} onPress={onLogout} />
       <DrawerItem label={t('logout')} onPress={onLogout} />
     </DrawerContentScrollView>
   );
