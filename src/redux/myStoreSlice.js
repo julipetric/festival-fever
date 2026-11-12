@@ -1,17 +1,19 @@
 /* eslint-disable no-param-reassign */
 const { createSlice } = require('@reduxjs/toolkit');
 
+const initialState = {
+  attendeeRole: undefined,
+  userRole: undefined,
+  userRoles: undefined,
+  selectedEvent: undefined,
+  selectedCategory: undefined,
+  productClipboard: undefined,
+  ticketClipboard: undefined,
+};
+
 const myStoreSlice = createSlice({
   name: 'myStore',
-  initialState: {
-    attendeeRole: undefined,
-    userRole: undefined,
-    userRoles: undefined,
-    selectedEvent: undefined,
-    selectedCategory: undefined,
-    productClipboard: undefined,
-    ticketClipboard: undefined,
-  },
+  initialState,
   reducers: {
     setAttendeeRole(state, action) {
       state.attendeeRole = action.payload;
@@ -34,11 +36,6 @@ const myStoreSlice = createSlice({
     setTicketClipboard(state, action) {
       state.ticketClipboard = action.payload;
     },
-    reset(state) {
-      const tempVars = { attendeeRole: state.attendeeRole };
-      state = myStoreSlice.initialState;
-      state = { ...state, ...tempVars };
-    },
   },
 });
 
@@ -50,6 +47,5 @@ export const {
   setSelectedCategory,
   setProductClipboard,
   setTicketClipboard,
-  reset,
 } = myStoreSlice.actions;
 export default myStoreSlice.reducer;
