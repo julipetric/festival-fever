@@ -71,3 +71,8 @@ buck-out/
 web-build/
 
 # @end expo-cli
+
+# Credenciales locales
+/firebase.config.js
+/android/app/google-services.json
+/.env
