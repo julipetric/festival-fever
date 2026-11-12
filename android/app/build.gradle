@@ -153,6 +153,10 @@ android {
         testBuildType System.getProperty('testBuildType', 'debug')
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         missingDimensionStrategy 'detox', 'full'
+        // Clave de Google Maps para AndroidManifest.xml. Se toma de la propiedad de
+        // Gradle MAPS_API_KEY (-PMAPS_API_KEY=... o ~/.gradle/gradle.properties) o de
+        // la variable de entorno del mismo nombre; vacía si no está definida.
+        manifestPlaceholders = [MAPS_API_KEY: project.findProperty('MAPS_API_KEY') ?: System.getenv('MAPS_API_KEY') ?: '']
     }
     splits {
         abi {
