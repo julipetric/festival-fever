@@ -4,7 +4,9 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "e2e:build": "detox build --configuration android.emu.debug",
+    "e2e:test": "detox test --configuration android.emu.debug"
   },
   "dependencies": {
     "@expo/vector-icons": "^12.0.0",
@@ -86,6 +88,6 @@
     "prettier": "^2.2.1"
   },
   "private": true,
-  "name": "festival-fever-native",
+  "name": "festival-fever",
   "version": "1.0.0"
 }

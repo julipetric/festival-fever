@@ -128,12 +128,13 @@ npm run android    # builds and installs the debug app on a running emulator
 
 **Run the Detox suites**
 
-`package.json` defines no Detox scripts; use the CLI with the configurations from `.detoxrc.js` (`android.emu.debug` is the default, plus `android.emu.release`, and `android.att.debug` / `android.att.release` for an attached device):
+`package.json` wraps the Detox CLI for the default configuration, `android.emu.debug` (`.detoxrc.js` also defines `android.emu.release`, and `android.att.debug` / `android.att.release` for an attached device):
 
 ```sh
-npx detox build --configuration android.emu.debug
-npx detox test  --configuration android.emu.debug
-npx detox test  --configuration android.emu.debug e2e/login.test.js   # a single suite
+npm run e2e:build
+npm run e2e:test
+npm run e2e:test -- e2e/login.test.js   # a single suite
+npx detox test --configuration android.att.debug   # another configuration
 ```
 
 The build command in `.detoxrc.js` calls `gradlew` as a Windows shell command. Debug builds need Metro running (`npm start`); port 8081 is reversed to the emulator.
