@@ -4,7 +4,8 @@ const fs = require('fs');
 const path = require('path');
 
 // Carga `.env` (en la raíz del repo, ignorado por git) sin pisar las variables
-// que ya estén definidas en el entorno. Formato: una línea CLAVE=valor por variable.
+// que ya estén definidas en el entorno. Formato: una línea CLAVE=valor por
+// variable.
 function loadDotEnv() {
   const envPath = path.join(__dirname, '..', '.env');
   if (!fs.existsSync(envPath)) return;

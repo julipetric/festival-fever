@@ -1,7 +1,8 @@
 // Plantilla de la configuración web de Firebase.
 //
-// Copiá este archivo como `firebase.config.js` (ignorado por git) y completá los
-// valores desde la consola de Firebase: Configuración del proyecto > Tus apps.
+// Copiá este archivo como `firebase.config.js` (ignorado por git) y completá
+// los valores desde la consola de Firebase: Configuración del proyecto > Tus
+// apps.
 // `src/context/FirebaseConfig.js` importa `firebase.config.js`; sin ese archivo
 // Metro no puede resolver el módulo y la app no compila.
 module.exports = {
